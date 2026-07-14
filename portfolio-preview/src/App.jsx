@@ -411,6 +411,10 @@ function LanguageProvider({ children }) {
 
   useEffect(() => {
     document.documentElement.lang = lang;
+    document.title =
+      lang === "es"
+        ? "YHOSINC — Arquitecto Frontend y Director Creativo"
+        : "YHOSINC — Frontend Architect & Creative Director";
   }, [lang]);
 
   return (

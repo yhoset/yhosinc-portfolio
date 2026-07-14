@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "dev": "node src/server.js",
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "test": "vitest run"
   },
   "keywords": [],
   "author": "",
@@ -15,6 +16,7 @@
     "@libsql/client": "^0.17.4",
     "@prisma/adapter-libsql": "^7.8.0",
     "@prisma/client": "^7.8.0",
+    "@sentry/node": "^10.65.0",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
@@ -25,7 +27,9 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "prisma": "^7.8.0"
+    "prisma": "^7.8.0",
+    "supertest": "^7.2.2",
+    "vitest": "^4.1.10"
   },
   "allowScripts": {
     "prisma@7.8.0": true,

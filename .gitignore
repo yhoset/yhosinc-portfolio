@@ -10,10 +10,13 @@ dist/
 # Environment variables / secrets — never commit
 .env
 .env.local
+.env.test
 
 # SQLite database — local data, never versioned
 backend/dev.db
 backend/dev.db-journal
+backend/test.db
+backend/test.db-journal
 
 # Generated Prisma client
 backend/src/generated/

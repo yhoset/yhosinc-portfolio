@@ -2,7 +2,7 @@ import { Router } from "express";
 import rateLimit from "express-rate-limit";
 import { contactSchema } from "../schemas/contact.js";
 import { prisma } from "../lib/prisma.js";
-import { sendContactEmail } from "../lib/mailer.js";
+import { sendContactEmail, sendVisitorConfirmationEmail } from "../lib/mailer.js";
 
 export const contactRouter = Router();
 
@@ -25,6 +25,13 @@ contactRouter.post("/", contactLimiter, async (req, res, next) => {
   try {
     await prisma.contactMessage.create({ data: { name, email, message } });
     await sendContactEmail({ name, email, message });
+    // La confirmación al visitante es un "nice to have" — si Resend la
+    // rechaza (ej. dirección inválida que igual pasó la validación de
+    // formato), no debe tumbar una petición que ya guardó el mensaje y
+    // avisó al dueño del sitio correctamente.
+    sendVisitorConfirmationEmail({ name, email }).catch((err) => {
+      console.error("No se pudo enviar la confirmación al visitante:", err);
+    });
     res.status(201).json({ status: "ok" });
   } catch (err) {
     next(err);

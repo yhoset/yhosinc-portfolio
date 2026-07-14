@@ -1,6 +1,6 @@
 const RESEND_API_URL = "https://api.resend.com/emails";
 
-export async function sendContactEmail({ name, email, message }) {
+async function sendEmail({ to, replyTo, subject, text }) {
   // Corta la llamada a Resend si tarda demasiado, para que una petición
   // externa colgada no vaya acumulando conexiones abiertas en el servidor.
   const controller = new AbortController();
@@ -16,10 +16,10 @@ export async function sendContactEmail({ name, email, message }) {
       },
       body: JSON.stringify({
         from: process.env.RESEND_FROM_EMAIL,
-        to: process.env.CONTACT_INBOX_EMAIL,
-        reply_to: email,
-        subject: `Nuevo mensaje de contacto — ${name}`,
-        text: `De: ${name} <${email}>\n\n${message}`,
+        to,
+        ...(replyTo ? { reply_to: replyTo } : {}),
+        subject,
+        text,
       }),
       signal: controller.signal,
     });
@@ -34,5 +34,22 @@ export async function sendContactEmail({ name, email, message }) {
     throw new Error(data.message || "No se pudo enviar el email");
   }
 
-  console.log("Email enviado vía Resend:", { id: data.id });
+  console.log("Email enviado vía Resend:", { id: data.id, to });
+}
+
+export async function sendContactEmail({ name, email, message }) {
+  await sendEmail({
+    to: process.env.CONTACT_INBOX_EMAIL,
+    replyTo: email,
+    subject: `Nuevo mensaje de contacto — ${name}`,
+    text: `De: ${name} <${email}>\n\n${message}`,
+  });
+}
+
+export async function sendVisitorConfirmationEmail({ name, email }) {
+  await sendEmail({
+    to: email,
+    subject: "Recibimos tu mensaje — YHOSINC",
+    text: `Hola ${name},\n\nRecibimos tu mensaje y te vamos a responder pronto a esta misma dirección.\n\n— YHOSINC`,
+  });
 }
