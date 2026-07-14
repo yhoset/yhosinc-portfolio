@@ -41,10 +41,10 @@ const CONTACT_EMAIL_DISPLAY = "yhosinc@gmail.com";
    DATA — Projects, Skills, Nav
    ═══════════════════════════════════════════════════════════════ */
 const NAV_LINKS = [
-  { label: "WORK", href: "#projects" },
-  { label: "SKILLS", href: "#skills" },
-  { label: "ABOUT", href: "#about" },
-  { label: "CONTACT", href: "#contact" },
+  { key: "work", href: "#projects" },
+  { key: "skills", href: "#skills" },
+  { key: "about", href: "#about" },
+  { key: "contact", href: "#contact" },
 ];
 
 const PROJECTS = [
@@ -145,6 +145,280 @@ const CATEGORY_COLORS = {
   DEV: THEME.red,
   RESEARCH: THEME.white,
 };
+
+/* ═══════════════════════════════════════════════════════════════
+   I18N — diccionario EN/ES + contexto de idioma
+   ═══════════════════════════════════════════════════════════════ */
+const CATEGORY_LABELS = {
+  en: { WEB: "WEB", DESIGN: "DESIGN", DEV: "DEV", RESEARCH: "RESEARCH" },
+  es: { WEB: "WEB", DESIGN: "DISEÑO", DEV: "DEV", RESEARCH: "INVESTIGACIÓN" },
+};
+
+const PROJECT_I18N = {
+  "neon-commerce": {
+    en: { title: "NEON COMMERCE", tagline: "Web app · E-commerce reimagined", blurb: "A brutalist storefront engine pushing 120fps WebGL product viewers. Shipped with a custom design system and an event-driven checkout that reduced cart abandonment by 34%.", tags: ["React", "WebGL", "Node"] },
+    es: { title: "COMERCIO NEÓN", tagline: "Web app · E-commerce reinventado", blurb: "Un motor de tienda brutalista que mueve visores de producto en WebGL a 120fps. Se entregó con un design system propio y un checkout basado en eventos que redujo el abandono de carrito un 34%.", tags: ["React", "WebGL", "Node"] },
+  },
+  "ronin-identity": {
+    en: { title: "RONIN IDENTITY", tagline: "Branding · Visual system", blurb: "Complete brand rebuild for a Tokyo-based cybersecurity studio. Logomark, motion principles, and a 60-page manga-coded brand bible.", tags: ["Identity", "Type"] },
+    es: { title: "IDENTIDAD RONIN", tagline: "Branding · Sistema visual", blurb: "Rediseño completo de marca para un estudio de ciberseguridad en Tokio. Isotipo, principios de motion y una guía de marca de 60 páginas con estética manga.", tags: ["Identidad", "Tipografía"] },
+  },
+  "forge-engine": {
+    en: { title: "FORGE ENGINE", tagline: "Dev · Real-time infrastructure", blurb: "Edge compute platform handling 2M concurrent sockets. Rust core, TypeScript SDK, observable by default.", tags: ["Rust", "Edge", "WS"] },
+    es: { title: "MOTOR FORJA", tagline: "Dev · Infraestructura en tiempo real", blurb: "Plataforma de edge computing que maneja 2M de sockets concurrentes. Núcleo en Rust, SDK en TypeScript, observable por defecto.", tags: ["Rust", "Edge", "WS"] },
+  },
+  "cognitive-maps": {
+    en: { title: "COGNITIVE MAPS", tagline: "Research · UX strategy", blurb: "12-week ethnographic study mapping decision fatigue in fintech onboarding. Findings restructured a product line for a Series C startup.", tags: ["Research", "Fintech"] },
+    es: { title: "MAPAS COGNITIVOS", tagline: "Investigación · Estrategia UX", blurb: "Estudio etnográfico de 12 semanas mapeando la fatiga de decisión en el onboarding de una fintech. Los hallazgos reestructuraron una línea de producto para una startup Serie C.", tags: ["Investigación", "Fintech"] },
+  },
+  "kinetic-type": {
+    en: { title: "KINETIC TYPE", tagline: "Motion · Animation reel", blurb: "Experimental typography set animated frame-by-frame. Featured in Motionographer and used in 3 ad campaigns.", tags: ["Motion", "After Effects"] },
+    es: { title: "TIPOGRAFÍA CINÉTICA", tagline: "Motion · Reel de animación", blurb: "Set tipográfico experimental animado cuadro por cuadro. Publicado en Motionographer y usado en 3 campañas publicitarias.", tags: ["Animación", "After Effects"] },
+  },
+  "supernova-os": {
+    en: { title: "SUPERNOVA OS", tagline: "Hero piece · Full-stack product", blurb: "A collaborative canvas tool built from the first pixel to the last migration. 18 months. 40k weekly active. Acquired in 2025.", tags: ["Product", "Canvas", "CRDT"] },
+    es: { title: "SO SUPERNOVA", tagline: "Pieza insignia · Producto full-stack", blurb: "Una herramienta de canvas colaborativo construida desde el primer pixel hasta la última migración. 18 meses. 40k usuarios activos semanales. Adquirida en 2025.", tags: ["Producto", "Lienzo", "CRDT"] },
+  },
+};
+
+const SKILL_LABELS = {
+  en: { FRONTEND: "FRONTEND", "DESIGN SYS": "DESIGN SYS", MOTION: "MOTION", "3D / WEBGL": "3D / WEBGL", BACKEND: "BACKEND", RESEARCH: "RESEARCH", PROTOTYPING: "PROTOTYPING", SHIPPING: "SHIPPING" },
+  es: { FRONTEND: "FRONTEND", "DESIGN SYS": "DESIGN SYS", MOTION: "MOTION", "3D / WEBGL": "3D / WEBGL", BACKEND: "BACKEND", RESEARCH: "INVESTIGACIÓN", PROTOTYPING: "PROTOTIPADO", SHIPPING: "ENTREGAS" },
+};
+
+const TRANSLATIONS = {
+  en: {
+    nav: { work: "WORK", skills: "SKILLS", about: "ABOUT", contact: "CONTACT", hireMe: "HIRE ME", openMenu: "Open menu", closeMenu: "Close menu", home: "YHOSINC home" },
+    hero: {
+      badge: "CH. 01 — PORTFOLIO ONLINE",
+      subtitlePrefix: "Frontend architect & creative director. ",
+      subtitleShipping: "Shipping",
+      subtitleMid: " interfaces with ",
+      subtitleInk: "ink & code",
+      subtitleEnd: ".",
+      body: "I design systems that feel like the splash page of a manga — loud where it matters, precise where it counts. Six years turning product chaos into shipping velocity.",
+      seeWork: "SEE THE WORK",
+      getInTouch: "GET IN TOUCH",
+      statProjects: "SHIPPED PROJECTS",
+      statYears: "IN THE FIELD",
+      statCoffee: "COFFEE LEVEL",
+      scroll: "SCROLL",
+      scrollAria: "Scroll to projects",
+      codeInk: "CODE + INK",
+    },
+    ticker: ["BUILDING IN PUBLIC", "INK & CODE", "SHIPPING VELOCITY", "DESIGN × ENGINEERING", "YHOSINC 2026"],
+    projects: {
+      eyebrow: "// 02 — SELECTED WORK",
+      title: "THE WORK",
+      intro: "Six chapters. Six disciplines. Every panel shipped, stress-tested, and kept alive in production.",
+      chapter: "CHAPTER",
+      viewProject: "VIEW PROJECT",
+      viewProjectAria: "View project",
+      backToAllWork: "← BACK TO ALL WORK",
+      letsTalk: "LET'S TALK",
+      notFoundTitle: "This chapter doesn't exist.",
+      backToPortfolio: "BACK TO PORTFOLIO",
+    },
+    skills: { eyebrow: "// 03 — POWER LEVELS", title: "STACK & SKILLS" },
+    about: {
+      eyebrow: "// 04 — CHARACTER PROFILE",
+      title: "ABOUT THE PROTAGONIST",
+      handle: "@yhosinc_studio",
+      class_: "CLASS",
+      classVal: "Frontend Architect",
+      specialty: "SPECIALTY",
+      specialtyVal: "Motion × Systems",
+      level: "LEVEL",
+      xp: "XP",
+      xpVal: "72,450 PTS",
+      base: "BASE",
+      baseVal: "Remote / EU+LATAM",
+      weapon: "WEAPON",
+      weaponVal: "React + Ink",
+      status: "STATUS",
+      statusVal: "AVAILABLE",
+      originStory: "// ORIGIN STORY",
+      storyTitle1: "I BUILD INTERFACES",
+      storyTitle2: "LIKE ",
+      storyTitle2Highlight: "MANGA PANELS",
+      storyTitle3: ".",
+      story1: "Started shipping websites in my teens. Spent the last six years in product teams that cared equally about frame-perfect animation and Lighthouse scores. I write the CSS, draw the wireframes, and argue with backend engineers about state shape.",
+      story2Prefix: "",
+      story2Studio: "YHOSINC",
+      story2Mid: " is a solo studio built on two beliefs: that interfaces are ",
+      story2Compositions: "compositions",
+      story2End: ", and that every product deserves a loud, confident first frame.",
+      tag1: "DESIGN SYSTEMS",
+      tag2: "MOTION-FIRST",
+      tag3: "PRODUCT THINKING",
+    },
+    contact: {
+      eyebrow: "// 05 — SPLASH PAGE",
+      title1: "LET'S",
+      title2: "SHIP",
+      title3: "SOMETHING",
+      subtitle: "Briefs, collaborations, wild ideas — the inbox is open.",
+      newMessage: "NEW MESSAGE",
+      close: "Close",
+      to: "To:",
+      yourName: "YOUR NAME",
+      namePlaceholder: "What's your name",
+      yourEmail: "YOUR EMAIL",
+      emailPlaceholder: "you@email.com",
+      message: "MESSAGE",
+      messagePlaceholder: "Tell me about your idea, project, or question...",
+      sending: "SENDING...",
+      send: "SEND",
+      messageSent: "MESSAGE SENT!",
+      thanks: "Thanks for reaching out — I'll get back to you at your email.",
+      closeBtn: "CLOSE",
+      errName: "Please enter your name.",
+      errEmail: "Please enter a valid email.",
+      errMessage: "Please enter a message.",
+      errGeneric: "Couldn't send the message.",
+      leavingTo: "YOU'RE LEAVING TO",
+      leavingBody: "This link opens an external site in a new tab.",
+      cancel: "CANCEL",
+      continue_: "CONTINUE",
+    },
+    footer: { rights: "© 2026 YHOSINC · BUILT WITH", tagline: "INK & CODE" },
+  },
+  es: {
+    nav: { work: "TRABAJO", skills: "SKILLS", about: "SOBRE MÍ", contact: "CONTACTO", hireMe: "CONTRATAME", openMenu: "Abrir menú", closeMenu: "Cerrar menú", home: "Inicio YHOSINC" },
+    hero: {
+      badge: "CAP. 01 — PORTFOLIO EN LÍNEA",
+      subtitlePrefix: "Arquitecto frontend y director creativo. ",
+      subtitleShipping: "Entregando",
+      subtitleMid: " interfaces con ",
+      subtitleInk: "tinta y código",
+      subtitleEnd: ".",
+      body: "Diseño sistemas que se sienten como la portada de un manga: fuertes donde importa, precisos donde cuenta. Seis años convirtiendo el caos de producto en velocidad de entrega.",
+      seeWork: "VER EL TRABAJO",
+      getInTouch: "ESCRIBIME",
+      statProjects: "PROYECTOS ENTREGADOS",
+      statYears: "AÑOS EN EL RUBRO",
+      statCoffee: "NIVEL DE CAFÉ",
+      scroll: "SCROLL",
+      scrollAria: "Ir a proyectos",
+      codeInk: "TINTA + CÓDIGO",
+    },
+    ticker: ["CONSTRUYENDO EN PÚBLICO", "TINTA Y CÓDIGO", "VELOCIDAD DE ENTREGA", "DISEÑO × INGENIERÍA", "YHOSINC 2026"],
+    projects: {
+      eyebrow: "// 02 — TRABAJOS SELECCIONADOS",
+      title: "EL TRABAJO",
+      intro: "Seis capítulos. Seis disciplinas. Cada panel entregado, probado a fondo, y vivo en producción.",
+      chapter: "CAPÍTULO",
+      viewProject: "VER PROYECTO",
+      viewProjectAria: "Ver proyecto",
+      backToAllWork: "← VOLVER A TODO EL TRABAJO",
+      letsTalk: "HABLEMOS",
+      notFoundTitle: "Este capítulo no existe.",
+      backToPortfolio: "VOLVER AL PORTFOLIO",
+    },
+    skills: { eyebrow: "// 03 — NIVELES DE PODER", title: "STACK Y HABILIDADES" },
+    about: {
+      eyebrow: "// 04 — PERFIL DEL PROTAGONISTA",
+      title: "SOBRE EL PROTAGONISTA",
+      handle: "@yhosinc_studio",
+      class_: "CLASE",
+      classVal: "Arquitecto Frontend",
+      specialty: "ESPECIALIDAD",
+      specialtyVal: "Motion × Sistemas",
+      level: "NIVEL",
+      xp: "XP",
+      xpVal: "72.450 PTS",
+      base: "BASE",
+      baseVal: "Remoto / EU+LATAM",
+      weapon: "ARMA",
+      weaponVal: "React + Tinta",
+      status: "ESTADO",
+      statusVal: "DISPONIBLE",
+      originStory: "// HISTORIA DE ORIGEN",
+      storyTitle1: "CONSTRUYO INTERFACES",
+      storyTitle2: "COMO ",
+      storyTitle2Highlight: "PÁGINAS DE MANGA",
+      storyTitle3: ".",
+      story1: "Empecé a lanzar sitios web en la adolescencia. Pasé los últimos seis años en equipos de producto donde importaba tanto la animación cuadro perfecto como el puntaje de Lighthouse. Escribo el CSS, dibujo los wireframes, y discuto con los de backend sobre la forma del estado.",
+      story2Prefix: "",
+      story2Studio: "YHOSINC",
+      story2Mid: " es un estudio unipersonal construido sobre dos convicciones: que las interfaces son ",
+      story2Compositions: "composiciones",
+      story2End: ", y que todo producto merece un primer cuadro fuerte y seguro de sí mismo.",
+      tag1: "DESIGN SYSTEMS",
+      tag2: "MOTION-FIRST",
+      tag3: "PENSAMIENTO DE PRODUCTO",
+    },
+    contact: {
+      eyebrow: "// 05 — PÁGINA FINAL",
+      title1: "HAGAMOS",
+      title2: "ENVÍOS",
+      title3: "DE VERDAD",
+      subtitle: "Propuestas, colaboraciones, ideas locas — la bandeja está abierta.",
+      newMessage: "MENSAJE NUEVO",
+      close: "Cerrar",
+      to: "Para:",
+      yourName: "TU NOMBRE",
+      namePlaceholder: "¿Cómo te llamás?",
+      yourEmail: "TU EMAIL",
+      emailPlaceholder: "vos@email.com",
+      message: "MENSAJE",
+      messagePlaceholder: "Contame tu idea, proyecto, o pregunta...",
+      sending: "ENVIANDO...",
+      send: "ENVIAR",
+      messageSent: "¡MENSAJE ENVIADO!",
+      thanks: "Gracias por escribir — te voy a responder a tu email.",
+      closeBtn: "CERRAR",
+      errName: "Ingresá tu nombre.",
+      errEmail: "Ingresá un email válido.",
+      errMessage: "Ingresá un mensaje.",
+      errGeneric: "No se pudo enviar el mensaje.",
+      leavingTo: "ESTÁS SALIENDO A",
+      leavingBody: "Este link abre un sitio externo en una pestaña nueva.",
+      cancel: "CANCELAR",
+      continue_: "CONTINUAR",
+    },
+    footer: { rights: "© 2026 YHOSINC · HECHO CON", tagline: "TINTA Y CÓDIGO" },
+  },
+};
+
+const LanguageContext = React.createContext({ lang: "en", setLang: () => {}, t: TRANSLATIONS.en });
+
+function useLanguage() {
+  return React.useContext(LanguageContext);
+}
+
+function detectInitialLanguage() {
+  try {
+    const saved = window.localStorage.getItem("yhosinc_lang");
+    if (saved === "en" || saved === "es") return saved;
+  } catch {
+    // localStorage puede fallar en modo privado — seguimos con detección normal
+  }
+  return navigator.language && navigator.language.toLowerCase().startsWith("es") ? "es" : "en";
+}
+
+function LanguageProvider({ children }) {
+  const [lang, setLangState] = useState(detectInitialLanguage);
+
+  const setLang = (next) => {
+    setLangState(next);
+    try {
+      window.localStorage.setItem("yhosinc_lang", next);
+    } catch {
+      // sin persistencia si localStorage no está disponible — no rompe la función
+    }
+  };
+
+  useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
+
+  return (
+    <LanguageContext.Provider value={{ lang, setLang, t: TRANSLATIONS[lang] }}>
+      {children}
+    </LanguageContext.Provider>
+  );
+}
 
 /* ═══════════════════════════════════════════════════════════════
    GLOBAL CSS — fonts, variables, keyframes, base classes
@@ -849,6 +1123,7 @@ const OrbitingGeom = () => (
 
 /* Project thumbnail — per project, an abstract manga "action shot" */
 const ProjectThumb = ({ project }) => {
+  const { lang } = useLanguage();
   const { code, color } = project;
   const variant = code;
   return (
@@ -915,7 +1190,7 @@ const ProjectThumb = ({ project }) => {
       {/* Category badge overlaid */}
       <div style={{ position: "absolute", top: 12, left: 12, zIndex: 3 }}>
         <span className="tag-pill" style={{ background: CATEGORY_COLORS[project.category], color: project.category === "RESEARCH" ? THEME.ink : THEME.ink }}>
-          {project.category}
+          {CATEGORY_LABELS[lang][project.category]}
         </span>
       </div>
     </div>
@@ -923,9 +1198,52 @@ const ProjectThumb = ({ project }) => {
 };
 
 /* ═══════════════════════════════════════════════════════════════
+   COMPONENT: Language toggle (EN/ES)
+   ═══════════════════════════════════════════════════════════════ */
+function LanguageToggle({ compact }) {
+  const { lang, setLang } = useLanguage();
+  return (
+    <div
+      role="group"
+      aria-label="Language"
+      style={{
+        display: "inline-flex",
+        border: `2.5px solid ${THEME.ink}`,
+        borderRadius: 999,
+        overflow: "hidden",
+        background: THEME.white,
+      }}
+    >
+      {["en", "es"].map((code) => (
+        <button
+          key={code}
+          type="button"
+          onClick={() => setLang(code)}
+          aria-pressed={lang === code}
+          style={{
+            border: "none",
+            cursor: "pointer",
+            fontFamily: "var(--font-body)",
+            fontWeight: 700,
+            fontSize: compact ? "0.78rem" : "0.72rem",
+            letterSpacing: "0.08em",
+            padding: compact ? "0.5rem 0.7rem" : "0.35rem 0.6rem",
+            background: lang === code ? THEME.ink : "transparent",
+            color: lang === code ? THEME.white : THEME.ink,
+          }}
+        >
+          {code.toUpperCase()}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
    COMPONENT: Navigation Bar
    ═══════════════════════════════════════════════════════════════ */
 function NavigationBar({ menuOpen, setMenuOpen }) {
+  const { t } = useLanguage();
   return (
     <>
     <nav
@@ -957,7 +1275,7 @@ function NavigationBar({ menuOpen, setMenuOpen }) {
         <a
           href="#top"
           className="load-logo"
-          aria-label="YHOSINC home"
+          aria-label={t.nav.home}
           style={{
             fontFamily: "var(--font-display)",
             fontSize: "2.2rem",
@@ -982,9 +1300,9 @@ function NavigationBar({ menuOpen, setMenuOpen }) {
           }}
         >
           {NAV_LINKS.map((l) => (
-            <li key={l.label}>
-              <a href={l.href} className="pill-nav" aria-label={l.label}>
-                {l.label}
+            <li key={l.key}>
+              <a href={l.href} className="pill-nav" aria-label={t.nav[l.key]}>
+                {t.nav[l.key]}
                 <span className="speed-hover">
                   <SpeedLines direction="right" count={4} color={THEME.ink} strokeWidth={1.5} />
                 </span>
@@ -992,8 +1310,11 @@ function NavigationBar({ menuOpen, setMenuOpen }) {
             </li>
           ))}
           <li>
-            <a href="#contact" className="btn-manga red" aria-label="Hire me">
-              HIRE ME <ArrowRight size={18} strokeWidth={3} />
+            <LanguageToggle />
+          </li>
+          <li>
+            <a href="#contact" className="btn-manga red" aria-label={t.nav.hireMe}>
+              {t.nav.hireMe} <ArrowRight size={18} strokeWidth={3} />
             </a>
           </li>
         </ul>
@@ -1002,7 +1323,7 @@ function NavigationBar({ menuOpen, setMenuOpen }) {
         <button
           className="mobile-only"
           onClick={() => setMenuOpen(!menuOpen)}
-          aria-label={menuOpen ? "Close menu" : "Open menu"}
+          aria-label={menuOpen ? t.nav.closeMenu : t.nav.openMenu}
           aria-expanded={menuOpen}
           style={{
             background: THEME.yellow,
@@ -1037,7 +1358,7 @@ function NavigationBar({ menuOpen, setMenuOpen }) {
         <button
           type="button"
           onClick={() => setMenuOpen(false)}
-          aria-label="Close menu"
+          aria-label={t.nav.closeMenu}
           tabIndex={menuOpen ? 0 : -1}
           style={{
             position: "absolute",
@@ -1057,18 +1378,21 @@ function NavigationBar({ menuOpen, setMenuOpen }) {
         <div style={{ marginTop: "1rem" }}>
           {NAV_LINKS.map((l) => (
             <a
-              key={l.label}
+              key={l.key}
               href={l.href}
               className="mobile-link"
               tabIndex={menuOpen ? 0 : -1}
               onClick={() => setMenuOpen(false)}
             >
-              {l.label}
+              {t.nav[l.key]}
             </a>
           ))}
-          <div style={{ marginTop: "2rem" }}>
+          <div style={{ marginTop: "1.5rem" }}>
+            <LanguageToggle compact />
+          </div>
+          <div style={{ marginTop: "1.5rem" }}>
             <a href="#contact" className="btn-manga red" tabIndex={menuOpen ? 0 : -1} onClick={() => setMenuOpen(false)}>
-              HIRE ME <ArrowRight size={18} strokeWidth={3} />
+              {t.nav.hireMe} <ArrowRight size={18} strokeWidth={3} />
             </a>
           </div>
         </div>
@@ -1081,6 +1405,7 @@ function NavigationBar({ menuOpen, setMenuOpen }) {
    COMPONENT: Hero
    ═══════════════════════════════════════════════════════════════ */
 function HeroSection() {
+  const { t } = useLanguage();
   return (
     <section
       id="top"
@@ -1133,7 +1458,7 @@ function HeroSection() {
             }}
           >
             <span style={{ width: 8, height: 8, borderRadius: "50%", background: THEME.red, boxShadow: `0 0 8px ${THEME.red}`, animation: "pulseGlow 2s infinite" }} />
-            CH. 01 — PORTFOLIO ONLINE
+            {t.hero.badge}
           </div>
 
           <h1 className="hero-title">YHOSINC</h1>
@@ -1149,7 +1474,7 @@ function HeroSection() {
               lineHeight: 1.2,
             }}
           >
-            Frontend architect & creative director. <span style={{ color: THEME.cyan }}>Shipping</span> interfaces with <span style={{ color: THEME.yellow }}>ink & code</span>.
+            {t.hero.subtitlePrefix}<span style={{ color: THEME.cyan }}>{t.hero.subtitleShipping}</span>{t.hero.subtitleMid}<span style={{ color: THEME.yellow }}>{t.hero.subtitleInk}</span>{t.hero.subtitleEnd}
           </p>
 
           <p
@@ -1162,15 +1487,15 @@ function HeroSection() {
               maxWidth: "48ch",
             }}
           >
-            I design systems that feel like the splash page of a manga — loud where it matters, precise where it counts. Six years turning product chaos into shipping velocity.
+            {t.hero.body}
           </p>
 
           <div style={{ display: "flex", flexWrap: "wrap", gap: "0.8rem", marginTop: "2rem" }}>
             <a href="#projects" className="btn-manga cyan">
-              SEE THE WORK <ArrowDown size={18} strokeWidth={3} />
+              {t.hero.seeWork} <ArrowDown size={18} strokeWidth={3} />
             </a>
             <a href="#contact" className="btn-manga">
-              GET IN TOUCH <Mail size={18} strokeWidth={3} />
+              {t.hero.getInTouch} <Mail size={18} strokeWidth={3} />
             </a>
           </div>
 
@@ -1180,7 +1505,7 @@ function HeroSection() {
                 47+
               </div>
               <div className="mono" style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.6)", letterSpacing: "0.12em", marginTop: 4 }}>
-                SHIPPED PROJECTS
+                {t.hero.statProjects}
               </div>
             </div>
             <div>
@@ -1188,7 +1513,7 @@ function HeroSection() {
                 6YR
               </div>
               <div className="mono" style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.6)", letterSpacing: "0.12em", marginTop: 4 }}>
-                IN THE FIELD
+                {t.hero.statYears}
               </div>
             </div>
             <div>
@@ -1196,7 +1521,7 @@ function HeroSection() {
                 ∞
               </div>
               <div className="mono" style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.6)", letterSpacing: "0.12em", marginTop: 4 }}>
-                COFFEE LEVEL
+                {t.hero.statCoffee}
               </div>
             </div>
           </div>
@@ -1256,7 +1581,7 @@ function HeroSection() {
                 letterSpacing: "0.04em",
               }}
             >
-              CODE + INK
+              {t.hero.codeInk}
             </div>
           </div>
         </div>
@@ -1265,7 +1590,7 @@ function HeroSection() {
       {/* Scroll indicator */}
       <a
         href="#projects"
-        aria-label="Scroll to projects"
+        aria-label={t.hero.scrollAria}
         style={{
           position: "absolute",
           bottom: "1.5rem",
@@ -1281,7 +1606,7 @@ function HeroSection() {
         }}
       >
         <span className="mono" style={{ fontSize: "0.72rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.6)" }}>
-          SCROLL
+          {t.hero.scroll}
         </span>
         <div
           style={{
@@ -1308,7 +1633,9 @@ function HeroSection() {
    ═══════════════════════════════════════════════════════════════ */
 function ProjectDetailPage() {
   const { slug } = useParams();
+  const { lang, t } = useLanguage();
   const project = PROJECTS.find((p) => p.slug === slug);
+  const projectText = project ? PROJECT_I18N[project.slug][lang] : null;
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -1329,9 +1656,9 @@ function ProjectDetailPage() {
         <style>{GLOBAL_CSS}</style>
         <section className="halftone-bg" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "2rem", textAlign: "center" }}>
           <h1 className="splash-title" style={{ fontSize: "clamp(2.5rem, 8vw, 5rem)" }}>404</h1>
-          <p style={{ color: "rgba(255,255,255,0.75)", marginTop: "1rem", fontSize: "1.1rem" }}>This chapter doesn't exist.</p>
+          <p style={{ color: "rgba(255,255,255,0.75)", marginTop: "1rem", fontSize: "1.1rem" }}>{t.projects.notFoundTitle}</p>
           <Link to="/" className="btn-manga cyan" style={{ marginTop: "2rem" }}>
-            BACK TO PORTFOLIO
+            {t.projects.backToPortfolio}
           </Link>
         </section>
       </>
@@ -1356,7 +1683,7 @@ function ProjectDetailPage() {
           padding: "0.9rem 1.5rem",
         }}
       >
-        <div style={{ maxWidth: 1400, margin: "0 auto" }}>
+        <div style={{ maxWidth: 1400, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1rem" }}>
           <Link
             to="/"
             style={{
@@ -1369,6 +1696,7 @@ function ProjectDetailPage() {
           >
             YHOSINC
           </Link>
+          <LanguageToggle />
         </div>
       </nav>
 
@@ -1379,7 +1707,7 @@ function ProjectDetailPage() {
             className="mono"
             style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", color: THEME.cyan, textDecoration: "none", fontSize: "0.85rem", letterSpacing: "0.1em", marginBottom: "2rem" }}
           >
-            ← BACK TO ALL WORK
+            {t.projects.backToAllWork}
           </Link>
 
           <div className="panel-3d" style={{ overflow: "hidden" }}>
@@ -1396,10 +1724,10 @@ function ProjectDetailPage() {
             >
               <div>
                 <div className="mono" style={{ fontSize: "0.8rem", color: THEME.ink, letterSpacing: "0.15em", fontWeight: 700 }}>
-                  CHAPTER {project.chapter}
+                  {t.projects.chapter} {project.chapter}
                 </div>
                 <h1 className="t-title" style={{ fontSize: "clamp(1.8rem, 5vw, 2.8rem)", color: THEME.ink, lineHeight: 1.05, marginTop: 4 }}>
-                  {project.title}
+                  {projectText.title}
                 </h1>
               </div>
               <div className="chapter-num" style={{ flexShrink: 0, color: THEME.ink, WebkitTextStroke: `2px ${THEME.ink}`, textShadow: `3px 3px 0 ${THEME.white}` }}>
@@ -1412,27 +1740,27 @@ function ProjectDetailPage() {
             <div style={{ padding: "2rem 1.5rem" }}>
               <div style={{ display: "flex", flexWrap: "wrap", gap: "0.6rem", alignItems: "center", marginBottom: "1.2rem" }}>
                 <span className="tag-pill" style={{ background: project.color, color: THEME.ink }}>
-                  {project.category}
+                  {CATEGORY_LABELS[lang][project.category]}
                 </span>
                 <span className="mono" style={{ color: project.color, fontSize: "0.9rem", fontWeight: 700 }}>
-                  {project.tagline}
+                  {projectText.tagline}
                 </span>
               </div>
 
               <p style={{ fontSize: "1.15rem", lineHeight: 1.65, color: "rgba(255,255,255,0.85)", marginBottom: "1.5rem" }}>
-                {project.blurb}
+                {projectText.blurb}
               </p>
 
               <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginBottom: "2rem" }}>
-                {project.tags.map((t) => (
-                  <span key={t} className="tag-pill" style={{ background: "rgba(255,255,255,0.05)", color: THEME.white, borderColor: "rgba(255,255,255,0.3)" }}>
-                    {t}
+                {projectText.tags.map((tag) => (
+                  <span key={tag} className="tag-pill" style={{ background: "rgba(255,255,255,0.05)", color: THEME.white, borderColor: "rgba(255,255,255,0.3)" }}>
+                    {tag}
                   </span>
                 ))}
               </div>
 
               <Link to="/#contact" className="btn-manga red">
-                LET'S TALK <ArrowRight size={18} strokeWidth={3} />
+                {t.projects.letsTalk} <ArrowRight size={18} strokeWidth={3} />
               </Link>
             </div>
           </div>
@@ -1448,8 +1776,8 @@ function ProjectDetailPage() {
    COMPONENT: Ticker Marquee
    ═══════════════════════════════════════════════════════════════ */
 function Ticker() {
-  const words = ["BUILDING IN PUBLIC", "INK & CODE", "SHIPPING VELOCITY", "DESIGN × ENGINEERING", "YHOSINC 2026"];
-  const repeated = [...words, ...words, ...words, ...words];
+  const { t } = useLanguage();
+  const repeated = [...t.ticker, ...t.ticker, ...t.ticker, ...t.ticker];
   return (
     <div
       style={{
@@ -1480,6 +1808,8 @@ function Ticker() {
    COMPONENT: Projects (manga panel masonry)
    ═══════════════════════════════════════════════════════════════ */
 function ProjectCard({ project, index, hoveredCard, setHoveredCard }) {
+  const { lang, t } = useLanguage();
+  const projectText = PROJECT_I18N[project.slug][lang];
   const delay = `${index * 90}ms`;
   const isHovered = hoveredCard === project.code;
   return (
@@ -1509,7 +1839,7 @@ function ProjectCard({ project, index, hoveredCard, setHoveredCard }) {
       >
         <div style={{ flex: 1, minWidth: 0 }}>
           <div className="mono" style={{ fontSize: "0.7rem", color: THEME.ink, letterSpacing: "0.15em", fontWeight: 700 }}>
-            CHAPTER {project.chapter}
+            {t.projects.chapter} {project.chapter}
           </div>
           <h3
             id={`title-${project.code}`}
@@ -1525,7 +1855,7 @@ function ProjectCard({ project, index, hoveredCard, setHoveredCard }) {
               textOverflow: "ellipsis",
             }}
           >
-            {project.title}
+            {projectText.title}
           </h3>
         </div>
         <div className="chapter-num" style={{ flexShrink: 0, color: THEME.ink, WebkitTextStroke: `2px ${THEME.ink}`, textShadow: `3px 3px 0 ${THEME.white}` }}>
@@ -1539,15 +1869,15 @@ function ProjectCard({ project, index, hoveredCard, setHoveredCard }) {
       {/* Body */}
       <div style={{ padding: "1rem 1.1rem 1.2rem" }}>
         <div className="mono" style={{ fontSize: "0.75rem", color: project.color, letterSpacing: "0.12em", marginBottom: "0.6rem", fontWeight: 700 }}>
-          {project.tagline}
+          {projectText.tagline}
         </div>
         <p style={{ fontSize: "0.95rem", color: "rgba(255,255,255,0.8)", lineHeight: 1.5, marginBottom: "0.9rem" }}>
-          {project.blurb}
+          {projectText.blurb}
         </p>
         <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem", marginBottom: "1rem" }}>
-          {project.tags.map((t) => (
-            <span key={t} className="tag-pill" style={{ background: "rgba(255,255,255,0.05)", color: THEME.white, borderColor: "rgba(255,255,255,0.3)" }}>
-              {t}
+          {projectText.tags.map((tag) => (
+            <span key={tag} className="tag-pill" style={{ background: "rgba(255,255,255,0.05)", color: THEME.white, borderColor: "rgba(255,255,255,0.3)" }}>
+              {tag}
             </span>
           ))}
         </div>
@@ -1560,9 +1890,9 @@ function ProjectCard({ project, index, hoveredCard, setHoveredCard }) {
             background: isHovered ? project.color : THEME.white,
             transition: "background 200ms",
           }}
-          aria-label={`View project ${project.title}`}
+          aria-label={`${t.projects.viewProjectAria} ${projectText.title}`}
         >
-          VIEW PROJECT <ArrowRight size={18} strokeWidth={3} />
+          {t.projects.viewProject} <ArrowRight size={18} strokeWidth={3} />
         </Link>
       </div>
     </article>
@@ -1570,6 +1900,7 @@ function ProjectCard({ project, index, hoveredCard, setHoveredCard }) {
 }
 
 function ProjectsSection({ hoveredCard, setHoveredCard }) {
+  const { t } = useLanguage();
   return (
     <section
       id="projects"
@@ -1584,11 +1915,11 @@ function ProjectsSection({ hoveredCard, setHoveredCard }) {
       <div style={{ maxWidth: 1400, margin: "0 auto", position: "relative", zIndex: 2 }}>
         <header style={{ marginBottom: "3rem", display: "flex", flexDirection: "column", gap: "0.8rem" }}>
           <div className="mono" style={{ color: THEME.cyan, fontSize: "0.82rem", letterSpacing: "0.2em", fontWeight: 700 }}>
-            // 02 — SELECTED WORK
+            {t.projects.eyebrow}
           </div>
-          <h2 className="section-title-panel">THE WORK</h2>
+          <h2 className="section-title-panel">{t.projects.title}</h2>
           <p style={{ color: "rgba(255,255,255,0.7)", maxWidth: "60ch", fontSize: "1.05rem", marginTop: "0.5rem" }}>
-            Six chapters. Six disciplines. Every panel shipped, stress-tested, and kept alive in production.
+            {t.projects.intro}
           </p>
         </header>
 
@@ -1612,14 +1943,16 @@ function ProjectsSection({ hoveredCard, setHoveredCard }) {
    COMPONENT: Skills
    ═══════════════════════════════════════════════════════════════ */
 function SkillOrb({ skill, index }) {
+  const { lang } = useLanguage();
   const { name, level, Icon, color } = skill;
+  const label = SKILL_LABELS[lang][name];
   const circumference = 283; // 2πr for r=45
   const offset = circumference - (level / 100) * circumference;
 
   return (
-    <div className="skill-orb" style={{ animationDelay: `${index * 80}ms` }} tabIndex={0} role="button" aria-label={`${name} ${level} percent`}>
+    <div className="skill-orb" style={{ animationDelay: `${index * 80}ms` }} tabIndex={0} role="button" aria-label={`${label} ${level} percent`}>
       <div className="skill-tip">
-        {name} · LV.{level}
+        {label} · LV.{level}
       </div>
       <div style={{ position: "relative", width: "100%", maxWidth: 140, aspectRatio: "1/1" }}>
         <svg className="ring" viewBox="0 0 100 100" style={{ width: "100%", height: "100%", transform: "rotate(-90deg)" }}>
@@ -1656,7 +1989,7 @@ function SkillOrb({ skill, index }) {
       </div>
       <div style={{ textAlign: "center" }}>
         <div className="t-title" style={{ fontSize: "0.9rem", color: THEME.white, letterSpacing: "0.1em" }}>
-          {name}
+          {label}
         </div>
       </div>
     </div>
@@ -1664,6 +1997,7 @@ function SkillOrb({ skill, index }) {
 }
 
 function SkillsSection() {
+  const { t } = useLanguage();
   return (
     <section
       id="skills"
@@ -1678,10 +2012,10 @@ function SkillsSection() {
       <div style={{ maxWidth: 1400, margin: "0 auto", position: "relative", zIndex: 2 }}>
         <header style={{ textAlign: "center", marginBottom: "3rem" }}>
           <div className="mono" style={{ color: THEME.yellow, fontSize: "0.82rem", letterSpacing: "0.2em", fontWeight: 700, marginBottom: "0.8rem" }}>
-            // 03 — POWER LEVELS
+            {t.skills.eyebrow}
           </div>
           <h2 className="section-title-panel" style={{ background: THEME.yellow, boxShadow: "var(--shadow-3d-yellow)" }}>
-            STACK & SKILLS
+            {t.skills.title}
           </h2>
         </header>
 
@@ -1708,16 +2042,17 @@ function SkillsSection() {
    COMPONENT: About
    ═══════════════════════════════════════════════════════════════ */
 function AboutSection() {
+  const { t } = useLanguage();
   return (
     <section id="about" style={{ position: "relative", padding: "6rem 1.5rem 4rem", background: THEME.ink }}>
       <HalftonePatternSVG opacity={0.05} color={THEME.red} />
       <div style={{ maxWidth: 1400, margin: "0 auto", position: "relative", zIndex: 2 }}>
         <header style={{ marginBottom: "3rem", textAlign: "center" }}>
           <div className="mono" style={{ color: THEME.red, fontSize: "0.82rem", letterSpacing: "0.2em", fontWeight: 700, marginBottom: "0.8rem" }}>
-            // 04 — CHARACTER PROFILE
+            {t.about.eyebrow}
           </div>
           <h2 className="section-title-panel" style={{ background: THEME.red, color: THEME.white, boxShadow: "var(--shadow-3d-red)" }}>
-            ABOUT THE PROTAGONIST
+            {t.about.title}
           </h2>
         </header>
 
@@ -1764,41 +2099,41 @@ function AboutSection() {
                   YHOSINC
                 </div>
                 <div className="mono" style={{ fontSize: "0.8rem", color: THEME.cyan, letterSpacing: "0.12em", marginTop: 4 }}>
-                  @yhosinc_studio
+                  {t.about.handle}
                 </div>
               </div>
             </div>
 
             <div>
               <div className="profile-row">
-                <span className="profile-key">CLASS</span>
-                <span className="profile-val" style={{ color: THEME.cyan }}>Frontend Architect</span>
+                <span className="profile-key">{t.about.class_}</span>
+                <span className="profile-val" style={{ color: THEME.cyan }}>{t.about.classVal}</span>
               </div>
               <div className="profile-row">
-                <span className="profile-key">SPECIALTY</span>
-                <span className="profile-val">Motion × Systems</span>
+                <span className="profile-key">{t.about.specialty}</span>
+                <span className="profile-val">{t.about.specialtyVal}</span>
               </div>
               <div className="profile-row">
-                <span className="profile-key">LEVEL</span>
+                <span className="profile-key">{t.about.level}</span>
                 <span className="profile-val" style={{ color: THEME.yellow }}>87 / 100</span>
               </div>
               <div className="profile-row">
-                <span className="profile-key">XP</span>
-                <span className="profile-val">72,450 PTS</span>
+                <span className="profile-key">{t.about.xp}</span>
+                <span className="profile-val">{t.about.xpVal}</span>
               </div>
               <div className="profile-row">
-                <span className="profile-key">BASE</span>
-                <span className="profile-val">Remote / EU+LATAM</span>
+                <span className="profile-key">{t.about.base}</span>
+                <span className="profile-val">{t.about.baseVal}</span>
               </div>
               <div className="profile-row">
-                <span className="profile-key">WEAPON</span>
-                <span className="profile-val" style={{ color: THEME.red }}>React + Ink</span>
+                <span className="profile-key">{t.about.weapon}</span>
+                <span className="profile-val" style={{ color: THEME.red }}>{t.about.weaponVal}</span>
               </div>
               <div className="profile-row">
-                <span className="profile-key">STATUS</span>
+                <span className="profile-key">{t.about.status}</span>
                 <span className="profile-val" style={{ color: THEME.cyan, display: "inline-flex", alignItems: "center", gap: 6 }}>
                   <span style={{ width: 10, height: 10, borderRadius: "50%", background: THEME.cyan, boxShadow: `0 0 10px ${THEME.cyan}` }} />
-                  AVAILABLE
+                  {t.about.statusVal}
                 </span>
               </div>
             </div>
@@ -1816,27 +2151,27 @@ function AboutSection() {
             </div>
 
             <div className="mono" style={{ color: THEME.yellow, fontSize: "0.8rem", letterSpacing: "0.15em", marginBottom: "1rem", fontWeight: 700 }}>
-              // ORIGIN STORY
+              {t.about.originStory}
             </div>
             <h3 className="t-display" style={{ fontSize: "clamp(1.8rem, 3vw, 2.8rem)", color: THEME.white, lineHeight: 1, marginBottom: "1rem", letterSpacing: "0.03em" }}>
-              I BUILD INTERFACES<br />
-              LIKE <span style={{ color: THEME.cyan }}>MANGA PANELS</span>.
+              {t.about.storyTitle1}<br />
+              {t.about.storyTitle2}<span style={{ color: THEME.cyan }}>{t.about.storyTitle2Highlight}</span>{t.about.storyTitle3}
             </h3>
             <p style={{ fontSize: "1.05rem", color: "rgba(255,255,255,0.82)", lineHeight: 1.6, marginBottom: "1rem" }}>
-              Started shipping websites in my teens. Spent the last six years in product teams that cared equally about frame-perfect animation and Lighthouse scores. I write the CSS, draw the wireframes, and argue with backend engineers about state shape.
+              {t.about.story1}
             </p>
             <p style={{ fontSize: "1.05rem", color: "rgba(255,255,255,0.82)", lineHeight: 1.6, marginBottom: "1.2rem" }}>
-              <strong style={{ color: THEME.yellow }}>YHOSINC</strong> is a solo studio built on two beliefs: that interfaces are <em style={{ color: THEME.cyan }}>compositions</em>, and that every product deserves a loud, confident first frame.
+              <strong style={{ color: THEME.yellow }}>{t.about.story2Studio}</strong>{t.about.story2Mid}<em style={{ color: THEME.cyan }}>{t.about.story2Compositions}</em>{t.about.story2End}
             </p>
             <div style={{ display: "flex", gap: "0.8rem", flexWrap: "wrap" }}>
               <div className="mono" style={{ padding: "0.4rem 0.9rem", background: "rgba(0,245,255,0.1)", border: `2px solid ${THEME.cyan}`, borderRadius: 999, color: THEME.cyan, fontSize: "0.78rem", fontWeight: 700, letterSpacing: "0.1em" }}>
-                DESIGN SYSTEMS
+                {t.about.tag1}
               </div>
               <div className="mono" style={{ padding: "0.4rem 0.9rem", background: "rgba(255,224,0,0.1)", border: `2px solid ${THEME.yellow}`, borderRadius: 999, color: THEME.yellow, fontSize: "0.78rem", fontWeight: 700, letterSpacing: "0.1em" }}>
-                MOTION-FIRST
+                {t.about.tag2}
               </div>
               <div className="mono" style={{ padding: "0.4rem 0.9rem", background: "rgba(255,45,85,0.1)", border: `2px solid ${THEME.red}`, borderRadius: 999, color: THEME.red, fontSize: "0.78rem", fontWeight: 700, letterSpacing: "0.1em" }}>
-                PRODUCT THINKING
+                {t.about.tag3}
               </div>
             </div>
           </div>
@@ -1850,6 +2185,7 @@ function AboutSection() {
    COMPONENT: Contact / CTA Final
    ═══════════════════════════════════════════════════════════════ */
 function ContactSection() {
+  const { t } = useLanguage();
   const [composeOpen, setComposeOpen] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [submitState, setSubmitState] = useState({ status: "idle", error: "" });
@@ -1867,15 +2203,15 @@ function ContactSection() {
     // para "required"/"type=email" salen en el idioma del navegador, no en
     // el de la página).
     if (!form.name.trim()) {
-      setSubmitState({ status: "error", error: "Please enter your name." });
+      setSubmitState({ status: "error", error: t.contact.errName });
       return;
     }
     if (!form.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
-      setSubmitState({ status: "error", error: "Please enter a valid email." });
+      setSubmitState({ status: "error", error: t.contact.errEmail });
       return;
     }
     if (!form.message.trim()) {
-      setSubmitState({ status: "error", error: "Please enter a message." });
+      setSubmitState({ status: "error", error: t.contact.errMessage });
       return;
     }
 
@@ -1888,12 +2224,12 @@ function ContactSection() {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        throw new Error(data.error || "Couldn't send the message.");
+        throw new Error(data.error || t.contact.errGeneric);
       }
       setSubmitState({ status: "success", error: "" });
       setForm({ name: "", email: "", message: "" });
     } catch (err) {
-      setSubmitState({ status: "error", error: err.message || "Couldn't send the message." });
+      setSubmitState({ status: "error", error: err.message || t.contact.errGeneric });
     }
   };
 
@@ -1917,16 +2253,16 @@ function ContactSection() {
 
       <div style={{ position: "relative", zIndex: 2, textAlign: "center", maxWidth: 1200, margin: "0 auto" }}>
         <div className="mono" style={{ color: THEME.cyan, fontSize: "0.82rem", letterSpacing: "0.2em", fontWeight: 700, marginBottom: "1.2rem" }}>
-          // 05 — SPLASH PAGE
+          {t.contact.eyebrow}
         </div>
         <h2 className="splash-title">
-          LET&apos;S<br />
-          SHIP<br />
-          SOMETHING
+          {t.contact.title1}<br />
+          {t.contact.title2}<br />
+          {t.contact.title3}
         </h2>
 
         <p className="t-title" style={{ fontSize: "clamp(1rem, 2vw, 1.4rem)", color: THEME.white, letterSpacing: "0.08em", marginTop: "2rem", maxWidth: "48ch", marginInline: "auto" }}>
-          Briefs, collaborations, wild ideas — the inbox is open.
+          {t.contact.subtitle}
         </p>
 
         <div style={{ display: "flex", justifyContent: "center", marginTop: "2.5rem", position: "relative" }}>
@@ -1977,12 +2313,12 @@ function ContactSection() {
                 }}
               >
                 <span className="t-title" style={{ color: THEME.white, letterSpacing: "0.06em", fontSize: "1rem" }}>
-                  NEW MESSAGE
+                  {t.contact.newMessage}
                 </span>
                 <button
                   type="button"
                   onClick={() => setComposeOpen(false)}
-                  aria-label="Close"
+                  aria-label={t.contact.close}
                   style={{ background: "transparent", border: "none", cursor: "pointer", color: THEME.white, display: "flex" }}
                 >
                   <X size={20} strokeWidth={3} />
@@ -1993,13 +2329,13 @@ function ContactSection() {
                 {submitState.status === "success" ? (
                   <div style={{ textAlign: "center", padding: "1.5rem 0.5rem" }}>
                     <p className="t-title" style={{ color: THEME.cyan, fontSize: "1.2rem", letterSpacing: "0.05em" }}>
-                      MESSAGE SENT!
+                      {t.contact.messageSent}
                     </p>
                     <p style={{ color: "rgba(255,255,255,0.75)", marginTop: "0.6rem", fontSize: "0.95rem" }}>
-                      Thanks for reaching out — I'll get back to you at your email.
+                      {t.contact.thanks}
                     </p>
                     <button type="button" className="btn-manga" style={{ marginTop: "1.2rem" }} onClick={() => setComposeOpen(false)}>
-                      CLOSE
+                      {t.contact.closeBtn}
                     </button>
                   </div>
                 ) : (
@@ -2014,11 +2350,11 @@ function ContactSection() {
                         marginBottom: "0.9rem",
                       }}
                     >
-                      To: <span style={{ color: THEME.white }}>{CONTACT_EMAIL_DISPLAY}</span>
+                      {t.contact.to} <span style={{ color: THEME.white }}>{CONTACT_EMAIL_DISPLAY}</span>
                     </div>
 
                     <label className="mono" style={{ display: "block", fontSize: "0.75rem", color: "rgba(255,255,255,0.6)", letterSpacing: "0.1em", marginBottom: "0.3rem" }}>
-                      YOUR NAME
+                      {t.contact.yourName}
                     </label>
                     <input
                       type="text"
@@ -2026,7 +2362,7 @@ function ContactSection() {
                       maxLength={100}
                       value={form.name}
                       onChange={handleChange("name")}
-                      placeholder="What's your name"
+                      placeholder={t.contact.namePlaceholder}
                       style={{
                         width: "100%",
                         padding: "0.7rem 0.9rem",
@@ -2041,7 +2377,7 @@ function ContactSection() {
                     />
 
                     <label className="mono" style={{ display: "block", fontSize: "0.75rem", color: "rgba(255,255,255,0.6)", letterSpacing: "0.1em", marginBottom: "0.3rem" }}>
-                      YOUR EMAIL
+                      {t.contact.yourEmail}
                     </label>
                     <input
                       type="email"
@@ -2049,7 +2385,7 @@ function ContactSection() {
                       maxLength={200}
                       value={form.email}
                       onChange={handleChange("email")}
-                      placeholder="you@email.com"
+                      placeholder={t.contact.emailPlaceholder}
                       style={{
                         width: "100%",
                         padding: "0.7rem 0.9rem",
@@ -2064,7 +2400,7 @@ function ContactSection() {
                     />
 
                     <label className="mono" style={{ display: "block", fontSize: "0.75rem", color: "rgba(255,255,255,0.6)", letterSpacing: "0.1em", marginBottom: "0.3rem" }}>
-                      MESSAGE
+                      {t.contact.message}
                     </label>
                     <textarea
                       required
@@ -2072,7 +2408,7 @@ function ContactSection() {
                       rows={5}
                       value={form.message}
                       onChange={handleChange("message")}
-                      placeholder="Tell me about your idea, project, or question..."
+                      placeholder={t.contact.messagePlaceholder}
                       style={{
                         width: "100%",
                         padding: "0.7rem 0.9rem",
@@ -2097,7 +2433,7 @@ function ContactSection() {
                       className="btn-manga red"
                       style={{ width: "100%", justifyContent: "center", opacity: submitState.status === "submitting" ? 0.7 : 1 }}
                     >
-                      {submitState.status === "submitting" ? "SENDING..." : "SEND"} <ArrowRight size={18} strokeWidth={3} />
+                      {submitState.status === "submitting" ? t.contact.sending : t.contact.send} <ArrowRight size={18} strokeWidth={3} />
                     </button>
                   </form>
                 )}
@@ -2144,7 +2480,7 @@ function ContactSection() {
           <div
             role="dialog"
             aria-modal="true"
-            aria-label={`Leaving to ${pendingExternalLink.label}`}
+            aria-label={`${t.contact.leavingTo} ${pendingExternalLink.label}`}
             style={{
               position: "fixed",
               inset: 0,
@@ -2163,14 +2499,14 @@ function ContactSection() {
               onClick={(e) => e.stopPropagation()}
             >
               <p className="t-title" style={{ fontSize: "1.1rem", color: THEME.white, letterSpacing: "0.04em" }}>
-                YOU'RE LEAVING TO {pendingExternalLink.label}
+                {t.contact.leavingTo} {pendingExternalLink.label}
               </p>
               <p style={{ color: "rgba(255,255,255,0.75)", marginTop: "0.7rem", fontSize: "0.95rem" }}>
-                This link opens an external site in a new tab.
+                {t.contact.leavingBody}
               </p>
               <div style={{ display: "flex", gap: "0.7rem", justifyContent: "center", marginTop: "1.4rem", flexWrap: "wrap" }}>
                 <button type="button" className="btn-manga" onClick={() => setPendingExternalLink(null)}>
-                  CANCEL
+                  {t.contact.cancel}
                 </button>
                 <a
                   href={pendingExternalLink.href}
@@ -2179,7 +2515,7 @@ function ContactSection() {
                   className="btn-manga yellow"
                   onClick={() => setPendingExternalLink(null)}
                 >
-                  CONTINUE <ArrowRight size={16} strokeWidth={3} />
+                  {t.contact.continue_} <ArrowRight size={16} strokeWidth={3} />
                 </a>
               </div>
             </div>
@@ -2194,6 +2530,7 @@ function ContactSection() {
    COMPONENT: Footer
    ═══════════════════════════════════════════════════════════════ */
 function Footer() {
+  const { t } = useLanguage();
   return (
     <footer
       className="halftone-panel"
@@ -2220,13 +2557,13 @@ function Footer() {
         </div>
         <div style={{ display: "flex", gap: "1.2rem", flexWrap: "wrap" }}>
           {NAV_LINKS.map((l) => (
-            <a key={l.label} href={l.href} className="mono" style={{ color: "rgba(255,255,255,0.7)", textDecoration: "none", fontSize: "0.82rem", letterSpacing: "0.12em", fontWeight: 700 }}>
-              {l.label}
+            <a key={l.key} href={l.href} className="mono" style={{ color: "rgba(255,255,255,0.7)", textDecoration: "none", fontSize: "0.82rem", letterSpacing: "0.12em", fontWeight: 700 }}>
+              {t.nav[l.key]}
             </a>
           ))}
         </div>
         <div className="mono" style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.78rem", letterSpacing: "0.1em" }}>
-          © 2026 YHOSINC · BUILT WITH <Zap size={12} style={{ display: "inline", verticalAlign: "middle", color: THEME.cyan }} /> INK & CODE
+          {t.footer.rights} <Zap size={12} style={{ display: "inline", verticalAlign: "middle", color: THEME.cyan }} /> {t.footer.tagline}
         </div>
       </div>
     </footer>
@@ -2492,13 +2829,15 @@ function CustomCursor() {
 
 function App() {
   return (
-    <BrowserRouter>
-      <CustomCursor />
-      <Routes>
-        <Route path="/" element={<YhosincPortfolio />} />
-        <Route path="/proyectos/:slug" element={<ProjectDetailPage />} />
-      </Routes>
-    </BrowserRouter>
+    <LanguageProvider>
+      <BrowserRouter>
+        <CustomCursor />
+        <Routes>
+          <Route path="/" element={<YhosincPortfolio />} />
+          <Route path="/proyectos/:slug" element={<ProjectDetailPage />} />
+        </Routes>
+      </BrowserRouter>
+    </LanguageProvider>
   );
 }
 
