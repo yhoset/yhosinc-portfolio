@@ -1,0 +1,19 @@
+# Local tooling config, not part of the project
+.claude/
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Environment variables / secrets — never commit
+.env
+.env.local
+
+# SQLite database — local data, never versioned
+backend/dev.db
+backend/dev.db-journal
+
+# Generated Prisma client
+backend/src/generated/

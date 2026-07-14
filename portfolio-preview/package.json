@@ -1,0 +1,24 @@
+{
+  "name": "yhosinc-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 5500",
+    "build": "vite build",
+    "preview": "vite preview --port 5500"
+  },
+  "dependencies": {
+    "lucide-react": "^0.372.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.2"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
+    "vite": "^6.4.3"
+  },
+  "allowScripts": {
+    "esbuild@0.25.12": true
+  }
+}
