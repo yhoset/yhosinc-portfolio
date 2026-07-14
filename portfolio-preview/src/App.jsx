@@ -2831,6 +2831,263 @@ function CustomCursor() {
   );
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   COMPONENT: Admin (login + panel privado)
+   Ruta sin link público — solo accesible entrando directo a /admin.
+   No pasa por el sistema de i18n del sitio público: es una
+   herramienta interna, siempre en español.
+   ═══════════════════════════════════════════════════════════════ */
+function AdminPage() {
+  const [token, setToken] = useState(() => {
+    try {
+      return window.localStorage.getItem("yhosinc_admin_token") || "";
+    } catch {
+      return "";
+    }
+  });
+  const [checking, setChecking] = useState(true);
+  const [authed, setAuthed] = useState(false);
+  const [loginForm, setLoginForm] = useState({ email: "", password: "" });
+  const [loginError, setLoginError] = useState("");
+  const [loggingIn, setLoggingIn] = useState(false);
+  const [messages, setMessages] = useState([]);
+  const [analytics, setAnalytics] = useState(null);
+  const [dataError, setDataError] = useState("");
+  const [loadingData, setLoadingData] = useState(false);
+
+  // No indexar esta ruta — es un panel privado, no debería aparecer
+  // en buscadores aunque no esté linkeada desde ningún lado del sitio.
+  useEffect(() => {
+    const meta = document.createElement("meta");
+    meta.name = "robots";
+    meta.content = "noindex, nofollow";
+    document.head.appendChild(meta);
+    return () => meta.remove();
+  }, []);
+
+  // Al montar, si hay un token guardado, confirmar que sigue siendo
+  // válido contra el backend antes de mostrar el panel.
+  useEffect(() => {
+    if (!token) {
+      setChecking(false);
+      return;
+    }
+    fetch(`${API_BASE_URL}/api/auth/me`, { headers: { Authorization: `Bearer ${token}` } })
+      .then((res) => {
+        if (!res.ok) throw new Error();
+        setAuthed(true);
+      })
+      .catch(() => {
+        setToken("");
+        try {
+          window.localStorage.removeItem("yhosinc_admin_token");
+        } catch {
+          // sin acceso a localStorage — igual seguimos, solo no persiste
+        }
+      })
+      .finally(() => setChecking(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (!authed) return;
+    setLoadingData(true);
+    setDataError("");
+    const headers = { Authorization: `Bearer ${token}` };
+    Promise.all([
+      fetch(`${API_BASE_URL}/api/admin/messages`, { headers }).then((r) => (r.ok ? r.json() : Promise.reject())),
+      fetch(`${API_BASE_URL}/api/admin/analytics`, { headers }).then((r) => (r.ok ? r.json() : Promise.reject())),
+    ])
+      .then(([msgs, an]) => {
+        setMessages(msgs);
+        setAnalytics(an);
+      })
+      .catch(() => setDataError("No se pudo cargar la información. Probá recargar la página."))
+      .finally(() => setLoadingData(false));
+  }, [authed, token]);
+
+  const handleLoginChange = (field) => (e) => {
+    setLoginForm((f) => ({ ...f, [field]: e.target.value }));
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setLoginError("");
+    setLoggingIn(true);
+    let res;
+    try {
+      res = await fetch(`${API_BASE_URL}/api/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(loginForm),
+      });
+    } catch {
+      // fetch rechaza por red/CORS antes de llegar a tener una respuesta —
+      // "Failed to fetch" del navegador no es un mensaje para mostrarle al usuario.
+      setLoginError("No se pudo conectar con el servidor. Probá de nuevo en unos segundos.");
+      setLoggingIn(false);
+      return;
+    }
+    try {
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || "No se pudo iniciar sesión.");
+      setToken(data.token);
+      try {
+        window.localStorage.setItem("yhosinc_admin_token", data.token);
+      } catch {
+        // sin persistencia si localStorage falla — la sesión sigue viva en memoria
+      }
+      setAuthed(true);
+    } catch (err) {
+      setLoginError(err.message || "No se pudo iniciar sesión.");
+    } finally {
+      setLoggingIn(false);
+    }
+  };
+
+  const handleLogout = () => {
+    setToken("");
+    setAuthed(false);
+    setMessages([]);
+    setAnalytics(null);
+    try {
+      window.localStorage.removeItem("yhosinc_admin_token");
+    } catch {
+      // nada que limpiar si localStorage no está disponible
+    }
+  };
+
+  const formatDate = (iso) => {
+    try {
+      return new Date(iso).toLocaleString("es-AR", { dateStyle: "medium", timeStyle: "short" });
+    } catch {
+      return iso;
+    }
+  };
+
+  const pageStyle = { position: "relative", minHeight: "100vh", background: THEME.ink };
+
+  if (checking) {
+    return (
+      <div style={{ ...pageStyle, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <style>{GLOBAL_CSS}</style>
+        <p className="mono" style={{ color: "rgba(255,255,255,0.6)" }}>Cargando…</p>
+      </div>
+    );
+  }
+
+  if (!authed) {
+    return (
+      <div style={{ ...pageStyle, display: "flex", alignItems: "center", justifyContent: "center", padding: "1.5rem" }}>
+        <style>{GLOBAL_CSS}</style>
+        <div className="panel-3d" style={{ maxWidth: 380, width: "100%", padding: "2rem" }}>
+          <h1 className="t-title" style={{ fontSize: "1.5rem", color: THEME.white, marginBottom: "1.5rem" }}>
+            ACCESO ADMIN
+          </h1>
+          <form onSubmit={handleLogin} noValidate>
+            <label className="mono" style={{ display: "block", fontSize: "0.75rem", color: "rgba(255,255,255,0.6)", letterSpacing: "0.1em", marginBottom: "0.3rem" }}>
+              EMAIL
+            </label>
+            <input
+              type="email"
+              required
+              value={loginForm.email}
+              onChange={handleLoginChange("email")}
+              style={{ width: "100%", padding: "0.7rem 0.9rem", marginBottom: "0.9rem", borderRadius: 10, border: `2px solid ${THEME.ink}`, background: THEME.panelBgAlt, color: THEME.white, fontFamily: "var(--font-body)", fontSize: "1rem" }}
+            />
+            <label className="mono" style={{ display: "block", fontSize: "0.75rem", color: "rgba(255,255,255,0.6)", letterSpacing: "0.1em", marginBottom: "0.3rem" }}>
+              CONTRASEÑA
+            </label>
+            <input
+              type="password"
+              required
+              value={loginForm.password}
+              onChange={handleLoginChange("password")}
+              style={{ width: "100%", padding: "0.7rem 0.9rem", marginBottom: "0.9rem", borderRadius: 10, border: `2px solid ${THEME.ink}`, background: THEME.panelBgAlt, color: THEME.white, fontFamily: "var(--font-body)", fontSize: "1rem" }}
+            />
+            {loginError && <p style={{ color: THEME.red, fontSize: "0.85rem", marginBottom: "0.9rem" }}>{loginError}</p>}
+            <button type="submit" disabled={loggingIn} className="btn-manga red" style={{ width: "100%", justifyContent: "center", opacity: loggingIn ? 0.7 : 1 }}>
+              {loggingIn ? "ENTRANDO..." : "ENTRAR"} <ArrowRight size={18} strokeWidth={3} />
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={pageStyle}>
+      <style>{GLOBAL_CSS}</style>
+      <div style={{ maxWidth: 1000, margin: "0 auto", padding: "2.5rem 1.5rem 4rem" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem", marginBottom: "2rem" }}>
+          <h1 className="t-display" style={{ fontSize: "2rem", color: THEME.white }}>PANEL ADMIN</h1>
+          <button type="button" onClick={handleLogout} className="btn-manga">
+            CERRAR SESIÓN
+          </button>
+        </div>
+
+        {dataError && (
+          <p style={{ color: THEME.red, marginBottom: "1.5rem" }}>{dataError}</p>
+        )}
+
+        {loadingData && !analytics && (
+          <p className="mono" style={{ color: "rgba(255,255,255,0.6)" }}>Cargando datos…</p>
+        )}
+
+        {analytics && (
+          <div style={{ marginBottom: "2.5rem" }}>
+            <h2 className="mono" style={{ color: THEME.cyan, fontSize: "0.85rem", letterSpacing: "0.15em", fontWeight: 700, marginBottom: "1rem" }}>
+              // ANALÍTICAS
+            </h2>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: "1rem", marginBottom: "1.2rem" }}>
+              <div className="panel-3d" style={{ padding: "1.2rem" }}>
+                <div className="t-display" style={{ fontSize: "2rem", color: THEME.cyan }}>{analytics.totalPageviews}</div>
+                <div className="mono" style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.6)", letterSpacing: "0.08em" }}>PAGEVIEWS</div>
+              </div>
+              <div className="panel-3d" style={{ padding: "1.2rem" }}>
+                <div className="t-display" style={{ fontSize: "2rem", color: THEME.yellow }}>{analytics.totalProjectViews}</div>
+                <div className="mono" style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.6)", letterSpacing: "0.08em" }}>VISTAS DE PROYECTOS</div>
+              </div>
+            </div>
+            {analytics.byProject.length > 0 && (
+              <div className="panel-3d" style={{ padding: "1.2rem" }}>
+                {analytics.byProject.map((p) => (
+                  <div key={p.projectSlug} className="profile-row">
+                    <span className="profile-key">{p.projectSlug}</span>
+                    <span className="profile-val">{p.views}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        <div>
+          <h2 className="mono" style={{ color: THEME.yellow, fontSize: "0.85rem", letterSpacing: "0.15em", fontWeight: 700, marginBottom: "1rem" }}>
+            // MENSAJES ({messages.length})
+          </h2>
+          {messages.length === 0 && !loadingData ? (
+            <p style={{ color: "rgba(255,255,255,0.6)" }}>Todavía no hay mensajes.</p>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+              {messages.map((m) => (
+                <div key={m.id} className="panel-3d" style={{ padding: "1.2rem" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "0.5rem", marginBottom: "0.6rem" }}>
+                    <span className="t-title" style={{ color: THEME.white, fontSize: "1rem" }}>{m.name}</span>
+                    <span className="mono" style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.75rem" }}>{formatDate(m.createdAt)}</span>
+                  </div>
+                  <a href={`mailto:${m.email}`} className="mono" style={{ color: THEME.cyan, fontSize: "0.85rem", textDecoration: "none" }}>{m.email}</a>
+                  <p style={{ color: "rgba(255,255,255,0.85)", marginTop: "0.6rem", lineHeight: 1.5 }}>{m.message}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function App() {
   return (
     <LanguageProvider>
@@ -2839,6 +3096,7 @@ function App() {
         <Routes>
           <Route path="/" element={<YhosincPortfolio />} />
           <Route path="/proyectos/:slug" element={<ProjectDetailPage />} />
+          <Route path="/admin" element={<AdminPage />} />
         </Routes>
       </BrowserRouter>
     </LanguageProvider>
