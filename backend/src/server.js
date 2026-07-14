@@ -10,6 +10,11 @@ import { adminRouter } from "./routes/admin.js";
 
 const app = express();
 
+// Render pone la app detrás de un proxy inverso: sin esto, express-rate-limit
+// no puede confiar en X-Forwarded-For para identificar la IP real del
+// cliente y tira ERR_ERL_UNEXPECTED_X_FORWARDED_FOR en cada request.
+app.set("trust proxy", 1);
+
 // Nunca dejar que una petición o un error inesperado tumbe el proceso
 // completo — se loggea y el servidor sigue de pie. Los datos (SQLite en
 // disco) no se pierden aunque el proceso se reinicie de todas formas.
