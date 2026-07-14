@@ -599,6 +599,43 @@ button:focus-visible, a:focus-visible{
   background: radial-gradient(600px circle at var(--mx, 50%) var(--my, 50%), rgba(0,245,255,0.22), transparent 55%);
 }
 
+/* Custom comic-arrow cursor — replaces the native cursor site-wide on
+   desktop. Position comes from --cx/--cy (raw viewport coords, written in
+   the same rAF loop as --mx/--my), so this costs nothing extra to track. */
+*, *::before, *::after{ cursor: none !important; }
+.custom-cursor{
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+}
+/* Posición: se mueve con --cx/--cy en su propia capa GPU (will-change),
+   así el navegador no tiene que repintar la flecha en el hilo principal en
+   cada frame de scroll — evita el tembleque que se veía scrolleando rápido. */
+.custom-cursor-pos{
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translate3d(var(--cx, -100px), var(--cy, -100px), 0);
+  will-change: transform;
+}
+/* Rebote: transform separado del de posición, así el "aplastón" al click
+   no compite con el seguimiento del mouse. Un solo tirón elástico al
+   soltar (overshoot), coherente con el resto de la estética "cómic". */
+.custom-cursor-arrow{
+  display: block;
+  transform: scale(1) rotate(0deg);
+  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.custom-cursor-arrow.is-down{
+  transform: scale(0.88) rotate(-4deg);
+  transition: transform 0.08s cubic-bezier(0.4, 0, 0.2, 1);
+}
+@media (max-width: 768px), (hover: none){
+  *, *::before, *::after{ cursor: auto !important; }
+  .custom-cursor{ display: none; }
+}
+
 /* Media */
 @media (max-width: 1024px){
   .project-grid{ column-count: 2 !important; }
@@ -2237,8 +2274,15 @@ function YhosincPortfolio() {
     const onMove = (e) => {
       if (rafMouseRef.current) return;
       rafMouseRef.current = requestAnimationFrame(() => {
-        root.style.setProperty("--mx", `${e.clientX}px`);
-        root.style.setProperty("--my", `${e.clientY}px`);
+        // .cursor-spotlight vive dentro de la sección Hero (position: absolute),
+        // así que la posición del glow tiene que ser relativa a esa sección, no
+        // a la ventana — si no, se "despega" del cursor apenas hay scroll.
+        const hero = document.getElementById("top");
+        if (hero) {
+          const rect = hero.getBoundingClientRect();
+          root.style.setProperty("--mx", `${e.clientX - rect.left}px`);
+          root.style.setProperty("--my", `${e.clientY - rect.top}px`);
+        }
         rafMouseRef.current = null;
       });
     };
@@ -2387,9 +2431,69 @@ function YhosincPortfolio() {
   );
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   COMPONENT: Custom cursor (site-wide, todas las rutas)
+   Vive fuera de <Routes> para no desmontarse en cada navegación —
+   antes estaba dentro de YhosincPortfolio y por eso desaparecía al
+   entrar a /proyectos/:slug (esa ruta no renderiza ese componente).
+   ═══════════════════════════════════════════════════════════════ */
+function CustomCursor() {
+  const cursorArrowRef = useRef(null);
+  const rafRef = useRef(null);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    const onMove = (e) => {
+      if (rafRef.current) return;
+      rafRef.current = requestAnimationFrame(() => {
+        root.style.setProperty("--cx", `${e.clientX}px`);
+        root.style.setProperty("--cy", `${e.clientY}px`);
+        rafRef.current = null;
+      });
+    };
+    const onDown = () => cursorArrowRef.current?.classList.add("is-down");
+    const onUp = () => cursorArrowRef.current?.classList.remove("is-down");
+    const onClick = (e) => {
+      const burst = document.createElement("div");
+      burst.setAttribute("aria-hidden", "true");
+      burst.style.cssText = `position:fixed;left:${e.clientX - 9}px;top:${e.clientY - 9}px;width:18px;height:18px;z-index:9999;pointer-events:none;transform:scale(0.5);opacity:0.75;transition:transform 0.28s cubic-bezier(0.22,1,0.36,1),opacity 0.28s ease-in;will-change:transform,opacity;`;
+      burst.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24"><path fill="${THEME.red}" stroke="${THEME.ink}" stroke-width="1.2" stroke-linejoin="round" d="M19.064 10.109l1.179-2.387c.074-.149.068-.327-.015-.471-.083-.145-.234-.238-.401-.249l-2.656-.172-.172-2.656c-.011-.167-.104-.317-.249-.401-.145-.084-.322-.09-.472-.015l-2.385 1.18-1.477-2.215c-.186-.278-.646-.278-.832 0l-1.477 2.215-2.385-1.18c-.151-.075-.327-.069-.472.015-.145.083-.238.234-.249.401l-.171 2.656-2.657.171c-.167.011-.318.104-.401.249-.084.145-.089.322-.015.472l1.179 2.386-2.214 1.477c-.139.093-.223.249-.223.416s.083.323.223.416l2.215 1.477-1.18 2.386c-.074.15-.068.327.015.472.083.144.234.238.401.248l2.656.171.171 2.657c.011.167.104.317.249.401.144.083.32.088.472.015l2.386-1.179 1.477 2.214c.093.139.249.223.416.223s.323-.083.416-.223l1.477-2.214 2.386 1.179c.15.073.327.068.472-.015s.238-.234.249-.401l.171-2.656 2.656-.172c.167-.011.317-.104.401-.249.083-.145.089-.322.015-.472l-1.179-2.385 2.214-1.478c.139-.093.223-.249.223-.416s-.083-.323-.223-.416l-2.214-1.475z"/></svg>`;
+      document.body.appendChild(burst);
+      requestAnimationFrame(() => {
+        burst.style.transform = "scale(1.3) rotate(8deg)";
+        burst.style.opacity = "0";
+      });
+      setTimeout(() => burst.remove(), 300);
+    };
+    window.addEventListener("mousemove", onMove, { passive: true });
+    window.addEventListener("mousedown", onDown);
+    window.addEventListener("mouseup", onUp);
+    window.addEventListener("click", onClick);
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mousedown", onDown);
+      window.removeEventListener("mouseup", onUp);
+      window.removeEventListener("click", onClick);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
+
+  return (
+    <div aria-hidden className="custom-cursor">
+      <div className="custom-cursor-pos">
+        <svg ref={cursorArrowRef} className="custom-cursor-arrow" width="34" height="34" viewBox="0 0 34 34">
+          <polygon points="4,2 30,16 17,19 12,31 4,2" fill={THEME.white} stroke={THEME.ink} strokeWidth="3" strokeLinejoin="round" />
+          <polygon points="4,2 30,16 17,19 12,31 4,2" fill="none" stroke={THEME.cyan} strokeWidth="1.5" strokeLinejoin="round" />
+        </svg>
+      </div>
+    </div>
+  );
+}
+
 function App() {
   return (
     <BrowserRouter>
+      <CustomCursor />
       <Routes>
         <Route path="/" element={<YhosincPortfolio />} />
         <Route path="/proyectos/:slug" element={<ProjectDetailPage />} />
