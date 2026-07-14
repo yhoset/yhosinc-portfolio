@@ -33,8 +33,8 @@ const THEME = {
   panelBgAlt: "#16161F",
 };
 
-/* Backend API — local mientras no haya un dominio de producción */
-const API_BASE_URL = "http://localhost:3001";
+/* Backend API — Render (producción) */
+const API_BASE_URL = "https://yhosinc-portfolio.onrender.com";
 const CONTACT_EMAIL_DISPLAY = "yhosinc@gmail.com";
 
 /* ═══════════════════════════════════════════════════════════════
