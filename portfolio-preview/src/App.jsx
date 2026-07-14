@@ -592,6 +592,8 @@ button:focus-visible, a:focus-visible{
   gap: 0.55rem;
   text-decoration: none;
   position: relative;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 .btn-manga:hover{ transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--ink), 10px 10px 0 rgba(0,245,255,0.45); }
 .btn-manga:active{ transform: translate(3px,3px); box-shadow: 1px 1px 0 var(--ink), 2px 2px 0 rgba(0,245,255,0.3); }
@@ -612,6 +614,8 @@ button:focus-visible, a:focus-visible{
   transition: all 180ms;
   position: relative;
   overflow: hidden;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 .pill-nav:hover{
   background: var(--cyan);
@@ -905,7 +909,7 @@ button:focus-visible, a:focus-visible{
   transform: scale(0.88) rotate(-4deg);
   transition: transform 0.08s cubic-bezier(0.4, 0, 0.2, 1);
 }
-@media (max-width: 768px), (hover: none){
+@media (max-width: 900px), (hover: none){
   *, *::before, *::after{ cursor: auto !important; }
   .custom-cursor{ display: none; }
 }
@@ -916,7 +920,7 @@ button:focus-visible, a:focus-visible{
   .hero-grid{ grid-template-columns: 1fr !important; }
   .about-grid{ grid-template-columns: 1fr !important; }
 }
-@media (max-width: 768px){
+@media (max-width: 900px){
   .project-grid{ column-count: 1 !important; }
   .skills-grid{ grid-template-columns: repeat(2, 1fr) !important; }
   .chapter-num{ font-size: 3.8rem; }
@@ -925,7 +929,7 @@ button:focus-visible, a:focus-visible{
   .desktop-only{ display: none !important; }
   .cursor-spotlight{ display: none; } /* no cursor on touch devices */
 }
-@media (min-width: 769px){
+@media (min-width: 901px){
   .mobile-only{ display: none !important; }
 }
 /* Extra-small phones (≤ 420px): tighten grids and oversized type further */
