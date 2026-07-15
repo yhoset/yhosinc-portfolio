@@ -1,7 +1,46 @@
 {
+  "Nav": {
+    "home": "Home",
+    "projects": "Projects",
+    "skills": "Skills",
+    "roadmap": "Roadmap",
+    "tools": "Tools",
+    "about": "About",
+    "contact": "Contact"
+  },
+  "Footer": {
+    "tagline": "Ink & code — programming, design, and AI.",
+    "rights": "All rights reserved."
+  },
   "HomePage": {
     "title": "YHOSINC",
     "subtitle": "Frontend architect & creative director",
     "body": "Portfolio v2 under construction — Next.js 16 on Cloudflare."
+  },
+  "ComingSoon": {
+    "projects": {
+      "title": "Projects",
+      "body": "This section lands in an upcoming build phase. For now, the project roadmap lives at internal/v2-next/arquitectura.md."
+    },
+    "skills": {
+      "title": "Skills",
+      "body": "Skills filterable by discipline — under construction."
+    },
+    "roadmap": {
+      "title": "Roadmap",
+      "body": "The learning-path canvas (junior → mid → senior) is coming soon."
+    },
+    "tools": {
+      "title": "Tools",
+      "body": "Mini-tools for people on the same path — under construction."
+    },
+    "about": {
+      "title": "About",
+      "body": "Page under construction."
+    },
+    "contact": {
+      "title": "Contact",
+      "body": "The contact form lands in the backend phase."
+    }
   }
 }

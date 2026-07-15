@@ -197,11 +197,19 @@ real y abierta (no resuelta aún por Cloudflare/OpenNext): ver
 **Workaround actual**: usar la convención legacy `middleware.ts` (export
 `middleware`, no `proxy`) en vez de `proxy.ts` — sigue soportada en Next 16
 (deprecada, con codemod oficial en la otra dirección) y corre en Edge
-runtime, que sí es compatible con Workers/OpenNext. Es el único archivo del
-proyecto que se queda en la convención vieja; todo lo demás usa las APIs de
-Next 16. **Revertir a `proxy.ts` en cuanto OpenNext libere soporte para
-Node.js middleware** — revisar el issue de arriba antes de cada actualización
-de `@opennextjs/cloudflare`.
+runtime, que sí es compatible con Workers/OpenNext. **Revertir a `proxy.ts`
+en cuanto OpenNext libere soporte para Node.js middleware** — revisar el
+issue de arriba antes de cada actualización de `@opennextjs/cloudflare`.
+
+**Importante — esto solo aplica al build de Cloudflare, no al día a día**:
+como el build/deploy real quedó como Fase 10 (ver §9), durante el desarrollo
+local de las fases intermedias el proyecto usa `src/proxy.ts` (la convención
+nativa de Next 16) — `next dev` corre en Node.js normal, no en Workers, así
+que no pisa esta limitación y Turbopack en modo dev ni siquiera reconoce
+`middleware.ts` como un export válido (da error distinto:
+"Middleware is missing expected function export name"). El swap a
+`middleware.ts`/Edge runtime se hace **solo** justo antes de validar el
+build de OpenNext/Cloudflare (Fase 10), no antes.
 
 ### 8.2 Limitación conocida: Turbopack vs OpenNext (2026-07-15)
 

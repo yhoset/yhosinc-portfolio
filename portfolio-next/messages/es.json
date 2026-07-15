@@ -1,7 +1,46 @@
 {
+  "Nav": {
+    "home": "Inicio",
+    "projects": "Proyectos",
+    "skills": "Skills",
+    "roadmap": "Roadmap",
+    "tools": "Tools",
+    "about": "Sobre mí",
+    "contact": "Contacto"
+  },
+  "Footer": {
+    "tagline": "Ink & code — programación, diseño e inteligencia artificial.",
+    "rights": "Todos los derechos reservados."
+  },
   "HomePage": {
     "title": "YHOSINC",
     "subtitle": "Arquitecto frontend y director creativo",
     "body": "Portfolio v2 en construcción — Next.js 16 sobre Cloudflare."
+  },
+  "ComingSoon": {
+    "projects": {
+      "title": "Proyectos",
+      "body": "Esta sección llega en una fase próxima del build. Por ahora, el roadmap del proyecto vive en internal/v2-next/arquitectura.md."
+    },
+    "skills": {
+      "title": "Skills",
+      "body": "Skills filtrables por disciplina — en construcción."
+    },
+    "roadmap": {
+      "title": "Roadmap",
+      "body": "El canvas del camino de aprendizaje (junior → mid → senior) llega pronto."
+    },
+    "tools": {
+      "title": "Tools",
+      "body": "Mini-herramientas para gente en el mismo camino — en construcción."
+    },
+    "about": {
+      "title": "Sobre mí",
+      "body": "Página en construcción."
+    },
+    "contact": {
+      "title": "Contacto",
+      "body": "El formulario de contacto llega en la fase de backend."
+    }
   }
 }

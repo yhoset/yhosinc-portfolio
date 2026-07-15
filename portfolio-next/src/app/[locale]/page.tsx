@@ -21,11 +21,13 @@ function Home() {
   const t = useTranslations("HomePage");
 
   return (
-    <div className="flex flex-1 flex-col items-center justify-center gap-4 bg-[#0A0A0F] px-6 text-center text-white">
-      <h1 className="text-5xl font-bold tracking-tight text-[#00F5FF]">
+    <div className="flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center gap-4 px-6 text-center">
+      <h1 className="font-display text-6xl tracking-wide text-cyan sm:text-7xl">
         {t("title")}
       </h1>
-      <p className="text-xl text-white/80">{t("subtitle")}</p>
+      <p className="font-label text-xl tracking-wide text-white/80">
+        {t("subtitle")}
+      </p>
       <p className="max-w-md text-sm text-white/50">{t("body")}</p>
     </div>
   );
