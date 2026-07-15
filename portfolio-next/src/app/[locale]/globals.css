@@ -185,3 +185,55 @@
     display: none;
   }
 }
+
+/* Transiciones de página — "pasar de página" de manga entre rutas, no un
+   corte seco. Ver branding-y-filosofia.md §8 principio 6 y §10. Header y
+   footer quedan anclados (no se deslizan) siguiendo el patrón oficial de
+   Next 16 para elementos persistentes durante la transición. */
+::view-transition-group(root) {
+  animation-duration: 360ms;
+}
+::view-transition-old(root) {
+  animation: 200ms cubic-bezier(0.4, 0, 1, 1) both manga-page-out;
+}
+::view-transition-new(root) {
+  animation: 260ms cubic-bezier(0, 0, 0.2, 1) 80ms both manga-page-in;
+}
+@keyframes manga-page-out {
+  to {
+    transform: translateX(-4%);
+    opacity: 0;
+  }
+}
+@keyframes manga-page-in {
+  from {
+    transform: translateX(4%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+::view-transition-group(site-header),
+::view-transition-group(site-footer) {
+  animation: none;
+}
+::view-transition-old(site-header),
+::view-transition-old(site-footer) {
+  display: none;
+}
+::view-transition-new(site-header),
+::view-transition-new(site-footer) {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+  }
+}

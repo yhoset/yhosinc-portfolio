@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ViewTransition } from "react";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
@@ -65,7 +66,9 @@ export default async function LocaleLayout({
           <CommandPaletteProvider>
             <CustomCursor />
             <Header />
-            <main className="flex-1">{children}</main>
+            <main className="flex-1">
+              <ViewTransition>{children}</ViewTransition>
+            </main>
             <Footer />
             <CommandPalette />
           </CommandPaletteProvider>

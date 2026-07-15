@@ -46,7 +46,10 @@ export function Header() {
   );
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border/60 bg-ink/80 backdrop-blur-sm">
+    <header
+      className="sticky top-0 z-50 border-b border-border/60 bg-ink/80 backdrop-blur-sm"
+      style={{ viewTransitionName: "site-header" } as React.CSSProperties}
+    >
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-6 px-4 sm:px-6">
         <Link
           href="/"
