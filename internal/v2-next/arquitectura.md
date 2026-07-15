@@ -230,11 +230,20 @@ el Worker puede compilar y aun así fallar en runtime.
 
 ## 9. Fases de construcción (propuesta)
 
+> **Todo el trabajo es local hasta la fase final.** El usuario pidió
+> explícitamente (2026-07-15) construir todo en local y dejar el deploy real a
+> Cloudflare como la **última** fase — no tocar `wrangler login`/deploy ni
+> apuntar dominios antes de eso. El gate E2E de cada fase intermedia se corre
+> localmente: `npm run dev` para lo interactivo y, cuando aplique, el build +
+> `wrangler dev` del adaptador OpenNext (sin `wrangler deploy`) para validar
+> que lo construido también sirve bien desde el Worker simulado.
+
 Cada fase cierra con el gate de calidad (sin bugs, optimizado, seguro, E2E +
 test de seguridad + responsive real):
 
 0. **Setup**: scaffold Next 16 + TS + Tailwind v4 + shadcn + i18n + OpenNext +
-   Drizzle apuntando a una DB de dev. Deploy "hola mundo" a Cloudflare.
+   Drizzle apuntando a una DB de dev. ~~Deploy "hola mundo" a Cloudflare~~ →
+   movido a la fase 10 (deploy real es lo último).
 1. **Layout base**: nav, footer, command palette, cursor, tema, i18n EN/ES,
    logo 3D del header, **transiciones de página** (View Transitions) y el HUD de
    **Power Level** (base).
@@ -248,8 +257,10 @@ test de seguridad + responsive real):
    Drizzle + Zod + rate limiting), panel `/admin`.
 7. **Página de tools** (mini-apps).
 8. **(Opcional) Módulo IA**: "preguntale a mi portafolio" / manga-fy.
-9. **Pulido, a11y, performance, SEO** y **corte**: apuntar el dominio a la v2 y
-   retirar la v1.
+9. **Pulido, a11y, performance, SEO**: todo verificado en local (Lighthouse
+   contra `next build` + `next start`, o el Worker simulado con `wrangler dev`).
+10. **Deploy y corte** (última fase, no antes): `wrangler login`, deploy real a
+    Cloudflare Workers, apuntar el dominio a la v2 y retirar la v1.
 
 > Nada de esto se instala ni se codea todavía: este documento es el plan. Antes
 > de instalar dependencias se confirma con el usuario.
