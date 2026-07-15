@@ -3184,6 +3184,7 @@ function AdminPage() {
   const [messages, setMessages] = useState([]);
   const [analytics, setAnalytics] = useState(null);
   const [comments, setComments] = useState([]);
+  const [commentsError, setCommentsError] = useState(false);
   const [dataError, setDataError] = useState("");
   const [loadingData, setLoadingData] = useState(false);
 
@@ -3226,18 +3227,26 @@ function AdminPage() {
     setLoadingData(true);
     setDataError("");
     const headers = { Authorization: `Bearer ${token}` };
-    Promise.all([
+    // Promise.allSettled en vez de Promise.all — cada sección del panel
+    // (mensajes, analíticas, comentarios) debe poder cargar de forma
+    // independiente. Antes, si comentarios fallaba (ej. tabla todavía sin
+    // migrar en producción), Promise.all rechazaba entero y tumbaba también
+    // mensajes y analíticas, que sí funcionan — regresión real detectada
+    // en el E2E de esta fase.
+    Promise.allSettled([
       fetch(`${API_BASE_URL}/api/admin/messages`, { headers }).then((r) => (r.ok ? r.json() : Promise.reject())),
       fetch(`${API_BASE_URL}/api/admin/analytics`, { headers }).then((r) => (r.ok ? r.json() : Promise.reject())),
       fetch(`${API_BASE_URL}/api/admin/comments`, { headers }).then((r) => (r.ok ? r.json() : Promise.reject())),
-    ])
-      .then(([msgs, an, cmts]) => {
-        setMessages(msgs);
-        setAnalytics(an);
-        setComments(cmts);
-      })
-      .catch(() => setDataError("No se pudo cargar la información. Probá recargar la página."))
-      .finally(() => setLoadingData(false));
+    ]).then(([msgs, an, cmts]) => {
+      if (msgs.status === "fulfilled") setMessages(msgs.value);
+      if (an.status === "fulfilled") setAnalytics(an.value);
+      if (cmts.status === "fulfilled") setComments(cmts.value);
+      setCommentsError(cmts.status === "rejected");
+      if (msgs.status === "rejected" && an.status === "rejected") {
+        setDataError("No se pudo cargar la información. Probá recargar la página.");
+      }
+      setLoadingData(false);
+    });
   }, [authed, token]);
 
   const moderateComment = async (id, status) => {
@@ -3437,7 +3446,9 @@ function AdminPage() {
           <h2 className="mono" style={{ color: THEME.red, fontSize: "0.85rem", letterSpacing: "0.15em", fontWeight: 700, marginBottom: "1rem" }}>
             // COMENTARIOS ({comments.filter((c) => c.status === "pending").length} pendientes de {comments.length})
           </h2>
-          {comments.length === 0 && !loadingData ? (
+          {commentsError && !loadingData ? (
+            <p style={{ color: THEME.red }}>No se pudieron cargar los comentarios.</p>
+          ) : comments.length === 0 && !loadingData ? (
             <p style={{ color: "rgba(255,255,255,0.6)" }}>Todavía no hay comentarios.</p>
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
