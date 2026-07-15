@@ -124,7 +124,41 @@ acompaña al visitante durante toda la visita.
 - Command palettes de producto (Vercel, Linear, Raycast) para la sensación pro.
 - Roadmaps visuales / skill trees de videojuegos para el canvas de aprendizaje.
 
-## 10. Qué NO hacer
+## 10. Elementos visuales heredados de v1 (obligatorios, no opcionales)
+
+**Contexto (2026-07-15)**: el usuario marcó explícitamente que, a mitad de la
+Fase 1, la v2 "no se parece en nada" al diseño original — con razón: la Fase
+1 solo entrega el esqueleto de navegación (header/nav/footer), no el pulido
+visual. Para que esto no se pierda de vista en fases futuras (ni en sesiones
+futuras), esta sección fija en concreto qué técnicas visuales de v1 **tienen
+que** portarse (evolucionadas, no calcadas 1:1) a v2. Fuente real:
+`portfolio-preview/src/App.jsx` (único archivo, ~3500 líneas, estilos en un
+`GLOBAL_CSS` inyectado en runtime + inline styles).
+
+| Elemento de v1 | Técnica concreta | Dónde va en v2 |
+|---|---|---|
+| Bordes gruesos de tinta | `3px solid` en tarjetas/botones/paneles (`.ink-stroke`, `.panel-3d`, `.btn-manga`) | Tokens de borde en Tailwind, reutilizados en todo componente "panel" |
+| Sombras "3D" de panel cómic | Offset duro `4px 4px 0 ink, 8px 8px 0 rgba(cyan,.35)`, que se acentúa en hover | Clase utilitaria reusable (`shadow-comic` o similar) para cards/botones |
+| Halftone (tramado de puntos) | `radial-gradient` en grid + SVG `<pattern>` de puntos en thumbnails | Fondos de sección y thumbnails de proyecto (Fase 3) |
+| Speed lines / speed burst | SVG de líneas radiales/paralelas detrás del hero y en hover de cards | Detrás del logo 3D del header y en el hero (Fase 2-3) |
+| Tipografía outline gigante | `-webkit-text-stroke` 4-5px en headlines de hero/splash, `clamp()` para tamaño responsivo | Hero real de Home (Fase 3) — el placeholder actual de la Fase 1 NO es el diseño final |
+| Cursor cómic personalizado | Reemplaza el cursor nativo, con squash/rebote animado al click | Tarea de Fase 1 ya en curso (ver abajo) |
+| Números de capítulo | Numerales gigantes en Bangers con stroke + text-shadow offset ("01 ALPHA") | Tarjetas de proyecto (Fase 3) |
+| Ticker/marquee | Texto scrolleando infinito con taglines estilo manga | Debajo del hero (Fase 3) |
+| Orbes de skill | Anillo de progreso SVG animado + tooltip tipo panel cómic | Skills filtrables (Fase 4) |
+| Placas de título de sección | Badge tipo panel, rotado -1.5deg, por sección | Cada sección de Home (Fase 3) |
+| Grid asimétrico/masonry | CSS columns con tarjetas de tamaños variados (`lg`/`md`/`sm`), leve rotación en hover | Grid de proyectos (Fase 3) |
+| Spotlight de cursor + parallax | Radial-gradient que sigue el cursor vía custom properties en rAF | Hero y fondo 3D "modo juego" (Fase 2-3) |
+
+**Regla**: cuando se construya la Fase 2 (fondo 3D) y la Fase 3 (Home +
+Proyectos), estos elementos son el punto de partida — se evolucionan con las
+nuevas capacidades (R3F real en vez del SVG "3D" simulado de v1, Power Level
+en vez de solo orbes de skill sueltos), pero **ninguno se abandona sin
+decisión explícita del usuario**. El header/nav/footer de la Fase 1 es
+intencionalmente minimalista (plumbing, no diseño final) — no es una señal de
+que se perdió la dirección visual.
+
+## 11. Qué NO hacer
 
 - Nada de 3D o animación que tape el contenido o baje el Lighthouse por debajo
   del objetivo.
