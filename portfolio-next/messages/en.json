@@ -19,6 +19,9 @@
     "tagline": "Ink & code — programming, design, and AI.",
     "rights": "All rights reserved."
   },
+  "PowerLevel": {
+    "label": "Power Level"
+  },
   "HomePage": {
     "title": "YHOSINC",
     "subtitle": "Frontend architect & creative director",

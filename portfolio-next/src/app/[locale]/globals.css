@@ -237,3 +237,25 @@
     animation-delay: 0s !important;
   }
 }
+
+/* Power Level — HUD narrativo, nunca bloquea contenido. Ver
+   branding-y-filosofia.md §7. El número sube siempre; el "power up"
+   animado (POW) solo si el usuario no pidió menos movimiento. */
+.power-up-toast {
+  animation: power-up-in 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+@keyframes power-up-in {
+  from {
+    transform: translateY(6px) scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .power-up-toast {
+    animation: none;
+  }
+}

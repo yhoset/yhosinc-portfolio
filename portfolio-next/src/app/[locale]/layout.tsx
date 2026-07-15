@@ -10,6 +10,9 @@ import { Footer } from "@/components/layout/footer";
 import { CustomCursor } from "@/components/interaction/custom-cursor";
 import { CommandPaletteProvider } from "@/components/interaction/command-palette-context";
 import { CommandPalette } from "@/components/interaction/command-palette";
+import { PowerLevelProvider } from "@/components/interaction/power-level-context";
+import { PowerLevelHUD } from "@/components/interaction/power-level-hud";
+import { getGithubPowerLevelBase } from "@/lib/github-power-level";
 import "./globals.css";
 
 // Trío tipográfico de marca — ver branding-y-filosofia.md §4.
@@ -56,6 +59,8 @@ export default async function LocaleLayout({
   // dinámicamente (patrón recomendado por next-intl para App Router).
   setRequestLocale(locale);
 
+  const { level: powerLevelBase } = await getGithubPowerLevelBase();
+
   return (
     <html
       lang={locale}
@@ -63,15 +68,18 @@ export default async function LocaleLayout({
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <NextIntlClientProvider>
-          <CommandPaletteProvider>
-            <CustomCursor />
-            <Header />
-            <main className="flex-1">
-              <ViewTransition>{children}</ViewTransition>
-            </main>
-            <Footer />
-            <CommandPalette />
-          </CommandPaletteProvider>
+          <PowerLevelProvider initialLevel={powerLevelBase}>
+            <CommandPaletteProvider>
+              <CustomCursor />
+              <Header />
+              <main className="flex-1">
+                <ViewTransition>{children}</ViewTransition>
+              </main>
+              <Footer />
+              <CommandPalette />
+              <PowerLevelHUD />
+            </CommandPaletteProvider>
+          </PowerLevelProvider>
         </NextIntlClientProvider>
       </body>
     </html>
