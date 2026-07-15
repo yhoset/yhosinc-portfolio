@@ -183,6 +183,51 @@ los datos que ya existen en producción.
 - Turso se conecta desde el Worker con `@libsql/client` (URL + auth token como
   secret).
 
+### 8.1 Limitación conocida: `proxy.ts` vs OpenNext (2026-07-15)
+
+Next 16 corre `proxy.ts` (antes `middleware.ts`) en **runtime Node.js por
+defecto** — y ya no permite forzar `runtime: "edge"` en ese archivo (tira
+error si se intenta). El adaptador `@opennextjs/cloudflare` v1.20.1 todavía
+**no soporta ese Node.js proxy** en Cloudflare Workers: el build falla con
+`Node.js middleware is not currently supported` porque el proxy compilado
+importa `async_hooks`, que Workers no expone. Confirmado como incompatibilidad
+real y abierta (no resuelta aún por Cloudflare/OpenNext): ver
+[cloudflare/workers-sdk#13755](https://github.com/cloudflare/workers-sdk/issues/13755).
+
+**Workaround actual**: usar la convención legacy `middleware.ts` (export
+`middleware`, no `proxy`) en vez de `proxy.ts` — sigue soportada en Next 16
+(deprecada, con codemod oficial en la otra dirección) y corre en Edge
+runtime, que sí es compatible con Workers/OpenNext. Es el único archivo del
+proyecto que se queda en la convención vieja; todo lo demás usa las APIs de
+Next 16. **Revertir a `proxy.ts` en cuanto OpenNext libere soporte para
+Node.js middleware** — revisar el issue de arriba antes de cada actualización
+de `@opennextjs/cloudflare`.
+
+### 8.2 Limitación conocida: Turbopack vs OpenNext (2026-07-15)
+
+Next 16 usa **Turbopack por defecto** (`next build` = Turbopack). El adaptador
+`@opennextjs/cloudflare` v1.20.1 (última disponible en npm a esta fecha) no
+empaqueta correctamente los chunks SSR que produce Turbopack: el Worker
+arranca pero cada request a una ruta con RSC devuelve 500 con
+`ChunkLoadError: Failed to load chunk server/chunks/ssr/[root-of-the-server]__*.js`.
+Confirmado reproduciendo el build/preview localmente y contrastado con la
+guía oficial de troubleshooting de OpenNext (opennext.js.org/cloudflare/troubleshooting),
+que recomienda actualizar el adaptador o usar Webpack.
+
+**Workaround actual**: el script `build` de `package.json` corre
+`next build --webpack` (fuerza Webpack solo para el build de producción/
+Cloudflare). `next dev` sigue usando Turbopack para iteración local rápida —
+no afecta al dev server, solo al build que consume OpenNext. **Volver a
+Turbopack para el build en cuanto `@opennextjs/cloudflare` publique soporte
+completo** (revisar github.com/opennextjs/opennextjs-cloudflare/issues/569
+antes de cada actualización del adaptador).
+
+**Cómo verificar que ambas limitaciones siguen resueltas tras actualizar
+dependencias**: `npm run preview` (o `build` + `wrangler dev`) y comprobar
+que `/`, `/es` y `/en` devuelven 200/307 (no 500) y que el HTML trae el
+contenido traducido esperado — no basta con que el build termine sin error,
+el Worker puede compilar y aun así fallar en runtime.
+
 ## 9. Fases de construcción (propuesta)
 
 Cada fase cierra con el gate de calidad (sin bugs, optimizado, seguro, E2E +
