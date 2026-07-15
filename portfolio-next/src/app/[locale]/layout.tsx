@@ -6,6 +6,7 @@ import { Bangers, Bebas_Neue, Rajdhani } from "next/font/google";
 import { routing } from "@/i18n/routing";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { CustomCursor } from "@/components/interaction/custom-cursor";
 import "./globals.css";
 
 // Trío tipográfico de marca — ver branding-y-filosofia.md §4.
@@ -59,6 +60,7 @@ export default async function LocaleLayout({
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <NextIntlClientProvider>
+          <CustomCursor />
           <Header />
           <main className="flex-1">{children}</main>
           <Footer />

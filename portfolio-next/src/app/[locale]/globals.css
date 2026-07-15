@@ -140,3 +140,48 @@
     @apply font-sans;
   }
 }
+
+/* Cursor cómic personalizado — portado de v1 (portfolio-preview/src/App.jsx),
+   ver branding-y-filosofia.md §10. Posición y "rebote" al click van en capas
+   transform separadas (GPU, will-change) para que no compitan entre sí ni
+   fuercen repintados en scroll. Desactivado en touch/sin hover y bajo
+   prefers-reduced-motion (v1 solo cubría touch; v2 respeta también RM). */
+.custom-cursor-active,
+.custom-cursor-active *,
+.custom-cursor-active *::before,
+.custom-cursor-active *::after {
+  cursor: none !important;
+}
+.custom-cursor {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+}
+.custom-cursor-pos {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translate3d(var(--cx, -100px), var(--cy, -100px), 0);
+  will-change: transform;
+}
+.custom-cursor-arrow {
+  display: block;
+  transform: scale(1) rotate(0deg);
+  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.custom-cursor-arrow.is-down {
+  transform: scale(0.88) rotate(-4deg);
+  transition: transform 0.08s cubic-bezier(0.4, 0, 0.2, 1);
+}
+@media (max-width: 900px), (hover: none), (prefers-reduced-motion: reduce) {
+  .custom-cursor-active,
+  .custom-cursor-active *,
+  .custom-cursor-active *::before,
+  .custom-cursor-active *::after {
+    cursor: auto !important;
+  }
+  .custom-cursor {
+    display: none;
+  }
+}
