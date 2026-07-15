@@ -6,6 +6,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { useCommandPalette } from "@/components/interaction/command-palette-context";
+import { HeaderLogo } from "@/components/interaction/header-logo";
 
 const navItems = [
   { key: "projects", href: "/proyectos" },
@@ -49,9 +50,10 @@ export function Header() {
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-6 px-4 sm:px-6">
         <Link
           href="/"
-          className="font-display text-2xl tracking-wide text-cyan transition-opacity hover:opacity-80"
+          className="flex items-center gap-2 font-display text-2xl tracking-wide text-cyan transition-opacity hover:opacity-80"
           onClick={() => setMenuOpen(false)}
         >
+          <HeaderLogo />
           YHOSINC
         </Link>
 
