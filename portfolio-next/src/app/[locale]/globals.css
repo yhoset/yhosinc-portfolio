@@ -8,7 +8,7 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-mono: "Courier New", monospace;
   --font-heading: var(--font-display);
   --font-label: var(--font-label);
 
@@ -257,5 +257,245 @@
 @media (prefers-reduced-motion: reduce) {
   .power-up-toast {
     animation: none;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Sistema visual heredado de v1 ("ink & code" cómic/manga) — portado
+   1:1 desde portfolio-preview/src/App.jsx (GLOBAL_CSS). Ver
+   branding-y-filosofia.md §10: estas clases son la base reusable para
+   el resto de las fases (Home, Proyectos, Skills), no solo esta página.
+   ═══════════════════════════════════════════════════════════════ */
+:root {
+  --radius-cartoon: 12px;
+  --shadow-3d: 4px 4px 0px var(--color-ink), 8px 8px 0px rgba(0, 245, 255, 0.35);
+  --shadow-3d-yellow: 4px 4px 0px var(--color-ink), 8px 8px 0px rgba(255, 224, 0, 0.35);
+  --shadow-3d-red: 4px 4px 0px var(--color-ink), 8px 8px 0px rgba(255, 45, 85, 0.35);
+}
+
+.ink-stroke {
+  border: 3px solid var(--color-ink);
+  border-radius: var(--radius-cartoon);
+}
+.panel-3d {
+  border: 3px solid var(--color-ink);
+  background: var(--color-panel-bg);
+  box-shadow: var(--shadow-3d);
+  border-radius: var(--radius-cartoon);
+  position: relative;
+}
+.panel-3d-yellow {
+  box-shadow: var(--shadow-3d-yellow);
+}
+.panel-3d-red {
+  box-shadow: var(--shadow-3d-red);
+}
+
+.btn-manga {
+  font-family: var(--font-label);
+  letter-spacing: 0.08em;
+  font-size: 1.05rem;
+  padding: 0.85rem 1.6rem;
+  border: 3px solid var(--color-ink);
+  border-radius: var(--radius-cartoon);
+  background: #ffffff;
+  color: var(--color-ink);
+  transition: transform 120ms ease, box-shadow 120ms ease, background 180ms;
+  box-shadow: var(--shadow-3d);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.btn-manga:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--color-ink), 10px 10px 0 rgba(0, 245, 255, 0.45);
+}
+.btn-manga:active {
+  transform: translate(3px, 3px);
+  box-shadow: 1px 1px 0 var(--color-ink), 2px 2px 0 rgba(0, 245, 255, 0.3);
+}
+.btn-manga.red {
+  background: var(--color-red);
+  color: #ffffff;
+}
+.btn-manga.cyan {
+  background: var(--color-cyan);
+  color: var(--color-ink);
+}
+.btn-manga.yellow {
+  background: var(--color-yellow);
+  color: var(--color-ink);
+}
+
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(3.5rem, 14vw, 10rem);
+  line-height: 0.86;
+  letter-spacing: 0.02em;
+  color: #ffffff;
+  -webkit-text-stroke: 4px var(--color-ink);
+  text-shadow: 6px 6px 0 var(--color-ink), 12px 12px 0 var(--color-cyan), 18px 18px 0 var(--color-red);
+}
+
+.section-title-panel {
+  display: inline-block;
+  background: #ffffff;
+  border: 3px solid var(--color-ink);
+  box-shadow: var(--shadow-3d);
+  padding: 0.6rem 1.6rem 0.35rem;
+  border-radius: var(--radius-cartoon);
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 5vw, 3.6rem);
+  letter-spacing: 0.03em;
+  color: var(--color-ink);
+  transform: rotate(-1.5deg);
+}
+
+.halftone-bg {
+  background-color: var(--color-ink);
+  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1.5px),
+    radial-gradient(rgba(0, 245, 255, 0.05) 1px, transparent 1.5px);
+  background-size: 18px 18px, 36px 36px;
+  background-position: 0 0, 9px 9px;
+}
+.halftone-panel {
+  background-color: var(--color-panel-bg);
+  background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1.5px);
+  background-size: 14px 14px;
+}
+
+.chapter-num {
+  font-family: var(--font-display);
+  font-size: 5.2rem;
+  line-height: 0.85;
+  color: #ffffff;
+  -webkit-text-stroke: 3px var(--color-ink);
+  text-shadow: 5px 5px 0 var(--color-ink);
+  letter-spacing: 0.04em;
+}
+
+.tag-pill {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border: 2px solid var(--color-ink);
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--color-ink);
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+/* Spotlight radial que sigue al cursor — reutiliza --cx/--cy, ya
+   actualizados por CustomCursor en el mismo loop rAF (cero costo extra).
+   Solo visible cuando el cursor personalizado está activo. */
+.cursor-spotlight {
+  display: none;
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: radial-gradient(600px circle at var(--cx, 50%) var(--cy, 50%), rgba(0, 245, 255, 0.16), transparent 55%);
+}
+:root.custom-cursor-active .cursor-spotlight {
+  display: block;
+}
+
+@keyframes anim-float-lg {
+  0%,
+  100% {
+    transform: translateY(-16px) rotate(-1deg);
+  }
+  50% {
+    transform: translateY(8px) rotate(1deg);
+  }
+}
+@keyframes anim-spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes anim-spin-reverse {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+@keyframes anim-pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 245, 255, 0.6), 0 0 0 0 rgba(255, 224, 0, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 18px rgba(0, 245, 255, 0), 0 0 0 32px rgba(255, 224, 0, 0);
+  }
+}
+@keyframes anim-sweep-in {
+  from {
+    transform: translateX(-80px) skewX(-8deg);
+    opacity: 0;
+    filter: blur(6px);
+  }
+  to {
+    transform: translateX(0) skewX(0deg);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+@keyframes anim-pop-in {
+  0% {
+    transform: scale(0) rotate(-25deg);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.1) rotate(6deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+.anim-float-lg {
+  animation: anim-float-lg 4.5s ease-in-out infinite;
+}
+.anim-spin-slow {
+  animation: anim-spin-slow 40s linear infinite;
+}
+.anim-spin-reverse {
+  animation: anim-spin-reverse 18s linear infinite;
+}
+.anim-pulse-glow {
+  animation: anim-pulse-glow 2s infinite;
+}
+.load-hero-text {
+  opacity: 0;
+  animation: anim-sweep-in 700ms cubic-bezier(0.22, 0.9, 0.26, 1) 400ms forwards;
+}
+.load-hero-vis {
+  opacity: 0;
+  animation: anim-pop-in 800ms cubic-bezier(0.34, 1.56, 0.64, 1) 600ms forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor-spotlight {
+    display: none !important;
+  }
+  .anim-float-lg,
+  .anim-spin-slow,
+  .anim-spin-reverse,
+  .anim-pulse-glow,
+  .load-hero-text,
+  .load-hero-vis {
+    animation: none !important;
+    opacity: 1 !important;
   }
 }

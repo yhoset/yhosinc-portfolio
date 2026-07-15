@@ -72,7 +72,9 @@ export default async function LocaleLayout({
             <CommandPaletteProvider>
               <CustomCursor />
               <Header />
-              <main className="flex-1">
+              {/* pb reserva espacio para que el HUD de Power Level (fixed,
+                  esquina inferior) nunca tape el contenido — branding-y-filosofia.md §7. */}
+              <main className="flex-1 pb-20">
                 <ViewTransition>{children}</ViewTransition>
               </main>
               <Footer />

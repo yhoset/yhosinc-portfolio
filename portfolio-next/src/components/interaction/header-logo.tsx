@@ -14,7 +14,7 @@ const HeaderLogoScene = dynamic(
 
 function StaticHeaderLogo() {
   return (
-    <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true">
+    <svg viewBox="0 0 34 34" aria-hidden="true" className="h-full w-full">
       <polygon
         points="17,2 30,10 27,25 17,32 7,25 4,10"
         fill="#16161f"
@@ -28,18 +28,18 @@ function StaticHeaderLogo() {
   );
 }
 
-export function HeaderLogo() {
+/**
+ * Cabeza low-poly 3D de marca — misma escena a cualquier escala (header
+ * pequeño, hero grande). Ver branding-y-filosofia.md §5 y §10.
+ */
+export function HeaderLogo({ size = 34 }: { size?: number }) {
   const canHover = useMediaQuery("(hover: hover) and (pointer: fine)");
   const reducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
   const use3d = canHover && !reducedMotion;
 
-  if (!use3d) {
-    return <StaticHeaderLogo />;
-  }
-
   return (
-    <div className="size-[34px]" aria-hidden="true">
-      <HeaderLogoScene />
+    <div style={{ width: size, height: size }} aria-hidden="true">
+      {use3d ? <HeaderLogoScene /> : <StaticHeaderLogo />}
     </div>
   );
 }

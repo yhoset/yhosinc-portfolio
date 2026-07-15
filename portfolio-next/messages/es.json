@@ -23,9 +23,19 @@
     "label": "Power Level"
   },
   "HomePage": {
-    "title": "YHOSINC",
-    "subtitle": "Arquitecto frontend y director creativo",
-    "body": "Portfolio v2 en construcción — Next.js 16 sobre Cloudflare."
+    "badge": "CAP. 01 — PORTFOLIO EN LÍNEA",
+    "subtitlePrefix": "Arquitecto frontend y director creativo. ",
+    "subtitleShipping": "Entregando",
+    "subtitleMid": " interfaces con ",
+    "subtitleInk": "tinta y código",
+    "subtitleEnd": ".",
+    "body": "Diseño sistemas que se sienten como la portada de un manga: fuertes donde importa, precisos donde cuenta. Seis años convirtiendo el caos de producto en velocidad de entrega.",
+    "seeWork": "VER EL TRABAJO",
+    "getInTouch": "ESCRIBIME",
+    "statProjects": "PROYECTOS ENTREGADOS",
+    "statYears": "AÑOS EN EL RUBRO",
+    "statCoffee": "NIVEL DE CAFÉ",
+    "codeInk": "TINTA + CÓDIGO"
   },
   "ComingSoon": {
     "projects": {
