@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, Search, X } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
+import { useCommandPalette } from "@/components/interaction/command-palette-context";
 
 const navItems = [
   { key: "projects", href: "/proyectos" },
@@ -17,9 +18,11 @@ const navItems = [
 
 export function Header() {
   const t = useTranslations("Nav");
+  const tPalette = useTranslations("CommandPalette");
   const locale = useLocale();
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const { setOpen: setPaletteOpen } = useCommandPalette();
 
   const localeSwitcher = (
     <div className="flex items-center gap-1 font-label text-xs tracking-widest">
@@ -64,7 +67,26 @@ export function Header() {
           ))}
         </nav>
 
+        <button
+          type="button"
+          onClick={() => setPaletteOpen(true)}
+          aria-label={tPalette("title")}
+          className="hidden items-center gap-2 rounded-sm border border-white/15 px-2.5 py-1.5 text-xs text-white/60 transition-colors hover:border-cyan/50 hover:text-cyan md:flex"
+        >
+          <Search size={14} />
+          <span className="font-label tracking-widest">⌘K</span>
+        </button>
+
         <div className="hidden md:block">{localeSwitcher}</div>
+
+        <button
+          type="button"
+          onClick={() => setPaletteOpen(true)}
+          aria-label={tPalette("title")}
+          className="text-white/80 hover:text-cyan md:hidden"
+        >
+          <Search size={20} />
+        </button>
 
         <button
           type="button"

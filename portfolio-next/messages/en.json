@@ -8,6 +8,13 @@
     "about": "About",
     "contact": "Contact"
   },
+  "CommandPalette": {
+    "title": "Command palette",
+    "placeholder": "Search a section or command...",
+    "empty": "No results found.",
+    "navigation": "Navigation",
+    "language": "Language"
+  },
   "Footer": {
     "tagline": "Ink & code — programming, design, and AI.",
     "rights": "All rights reserved."

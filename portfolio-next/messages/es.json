@@ -8,6 +8,13 @@
     "about": "Sobre mí",
     "contact": "Contacto"
   },
+  "CommandPalette": {
+    "title": "Paleta de comandos",
+    "placeholder": "Buscar una sección o comando...",
+    "empty": "Sin resultados.",
+    "navigation": "Navegación",
+    "language": "Idioma"
+  },
   "Footer": {
     "tagline": "Ink & code — programación, diseño e inteligencia artificial.",
     "rights": "Todos los derechos reservados."
