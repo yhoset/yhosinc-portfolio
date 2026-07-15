@@ -36,3 +36,30 @@ model AnalyticsEvent {
 
   @@map("analytics_events")
 }
+
+// Cuentas de visitantes (distintas de AdminUser) — para comentar en
+// proyectos y auto-completar el formulario de contacto. Función construida
+// pero mantenida oculta en el frontend hasta nuevo aviso (VISITOR_AUTH_ENABLED).
+model VisitorUser {
+  id           Int       @id @default(autoincrement())
+  name         String
+  email        String    @unique
+  passwordHash String
+  createdAt    DateTime  @default(now())
+  comments     Comment[]
+
+  @@map("visitor_users")
+}
+
+model Comment {
+  id          Int         @id @default(autoincrement())
+  projectSlug String
+  content     String
+  status      String      @default("pending") // pending | approved | rejected
+  createdAt   DateTime    @default(now())
+  visitor     VisitorUser @relation(fields: [visitorId], references: [id])
+  visitorId   Int
+
+  @@map("comments")
+  @@index([projectSlug, status])
+}

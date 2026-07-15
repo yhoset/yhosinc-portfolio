@@ -37,6 +37,12 @@ const THEME = {
 const API_BASE_URL = "https://yhosinc-portfolio.onrender.com";
 const CONTACT_EMAIL_DISPLAY = "yhosinc@gmail.com";
 
+// Registro/login de visitantes + comentarios en proyectos — construido a
+// pedido del usuario, pero sin ningún punto de entrada visible todavía
+// ("mantenlo hasta nuevo aviso"). El backend ya funciona; esto solo
+// habilita la UI pública cuando el usuario decida activarlo.
+const VISITOR_AUTH_ENABLED = false;
+
 /* ═══════════════════════════════════════════════════════════════
    DATA — Projects, Skills, Nav
    ═══════════════════════════════════════════════════════════════ */
@@ -421,6 +427,107 @@ function LanguageProvider({ children }) {
     <LanguageContext.Provider value={{ lang, setLang, t: TRANSLATIONS[lang] }}>
       {children}
     </LanguageContext.Provider>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   VISITOR AUTH — cuentas de visitantes (registro/login/comentarios).
+   Backend funcional, sin punto de entrada visible hasta activar
+   VISITOR_AUTH_ENABLED. El provider no llama a la API si el flag
+   está apagado, para no generar tráfico de red de una función dormida.
+   ═══════════════════════════════════════════════════════════════ */
+const VisitorAuthContext = React.createContext({
+  visitor: null,
+  token: "",
+  checking: false,
+  register: async () => {},
+  login: async () => {},
+  logout: () => {},
+});
+
+function useVisitorAuth() {
+  return React.useContext(VisitorAuthContext);
+}
+
+function VisitorAuthProvider({ children }) {
+  const [token, setToken] = useState(() => {
+    if (!VISITOR_AUTH_ENABLED) return "";
+    try {
+      return window.localStorage.getItem("yhosinc_visitor_token") || "";
+    } catch {
+      return "";
+    }
+  });
+  const [visitor, setVisitor] = useState(null);
+  const [checking, setChecking] = useState(VISITOR_AUTH_ENABLED);
+
+  useEffect(() => {
+    if (!VISITOR_AUTH_ENABLED || !token) {
+      setChecking(false);
+      return;
+    }
+    fetch(`${API_BASE_URL}/api/visitor/me`, { headers: { Authorization: `Bearer ${token}` } })
+      .then((res) => (res.ok ? res.json() : Promise.reject()))
+      .then((data) => setVisitor(data))
+      .catch(() => {
+        setToken("");
+        try {
+          window.localStorage.removeItem("yhosinc_visitor_token");
+        } catch {
+          // sin persistencia si localStorage falla
+        }
+      })
+      .finally(() => setChecking(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const persistToken = (next) => {
+    setToken(next);
+    try {
+      window.localStorage.setItem("yhosinc_visitor_token", next);
+    } catch {
+      // sin persistencia si localStorage falla — la sesión sigue viva en memoria
+    }
+  };
+
+  const register = async ({ name, email, password }) => {
+    const res = await fetch(`${API_BASE_URL}/api/visitor/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, password }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || "No se pudo crear la cuenta.");
+    persistToken(data.token);
+    setVisitor({ name: data.name, email: data.email });
+  };
+
+  const login = async ({ email, password }) => {
+    const res = await fetch(`${API_BASE_URL}/api/visitor/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || "No se pudo iniciar sesión.");
+    persistToken(data.token);
+    setVisitor({ name: data.name, email: data.email });
+  };
+
+  const logout = () => {
+    setVisitor(null);
+    setToken("");
+    try {
+      window.localStorage.removeItem("yhosinc_visitor_token");
+    } catch {
+      // nada que limpiar si localStorage no está disponible
+    }
+  };
+
+  return (
+    <VisitorAuthContext.Provider value={{ visitor, token, checking, register, login, logout }}>
+      {children}
+    </VisitorAuthContext.Provider>
   );
 }
 
@@ -1248,6 +1355,118 @@ function LanguageToggle({ compact }) {
 }
 
 /* ═══════════════════════════════════════════════════════════════
+   COMPONENT: Visitor account widget (registro/login + comentarios)
+   Solo se renderiza si VISITOR_AUTH_ENABLED está prendido.
+   ═══════════════════════════════════════════════════════════════ */
+function VisitorAuthWidget() {
+  const { visitor, checking, register, login, logout } = useVisitorAuth();
+  const [open, setOpen] = useState(false);
+  const [mode, setMode] = useState("login");
+  const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
+  if (checking) return null;
+
+  const handleChange = (field) => (e) => setForm((f) => ({ ...f, [field]: e.target.value }));
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setSubmitting(true);
+    try {
+      if (mode === "register") {
+        await register(form);
+      } else {
+        await login({ email: form.email, password: form.password });
+      }
+      setOpen(false);
+      setForm({ name: "", email: "", password: "" });
+    } catch (err) {
+      setError(err.message || "Algo salió mal.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (visitor) {
+    return (
+      <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem" }}>
+        <span className="mono" style={{ fontSize: "0.75rem", color: THEME.white }}>{visitor.name}</span>
+        <button type="button" onClick={logout} className="pill-nav" style={{ fontSize: "0.7rem" }}>
+          SALIR
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ position: "relative" }}>
+      <button type="button" onClick={() => setOpen((o) => !o)} className="pill-nav" aria-expanded={open}>
+        CUENTA
+      </button>
+      {open && (
+        <div
+          className="panel-3d"
+          style={{ position: "absolute", top: "110%", right: 0, width: 260, padding: "1rem", zIndex: 50, textAlign: "left" }}
+        >
+          <div style={{ display: "flex", gap: "0.5rem", marginBottom: "0.9rem" }}>
+            <button
+              type="button"
+              onClick={() => setMode("login")}
+              className="btn-manga"
+              style={{ flex: 1, justifyContent: "center", padding: "0.5rem", fontSize: "0.8rem", background: mode === "login" ? THEME.cyan : THEME.white }}
+            >
+              ENTRAR
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode("register")}
+              className="btn-manga"
+              style={{ flex: 1, justifyContent: "center", padding: "0.5rem", fontSize: "0.8rem", background: mode === "register" ? THEME.cyan : THEME.white }}
+            >
+              REGISTRARME
+            </button>
+          </div>
+          <form onSubmit={handleSubmit} noValidate>
+            {mode === "register" && (
+              <input
+                type="text"
+                required
+                placeholder="Nombre"
+                value={form.name}
+                onChange={handleChange("name")}
+                style={{ width: "100%", padding: "0.6rem 0.8rem", marginBottom: "0.6rem", borderRadius: 10, border: `2px solid ${THEME.ink}`, background: THEME.panelBgAlt, color: THEME.white, fontFamily: "var(--font-body)", fontSize: "0.9rem" }}
+              />
+            )}
+            <input
+              type="email"
+              required
+              placeholder="Email"
+              value={form.email}
+              onChange={handleChange("email")}
+              style={{ width: "100%", padding: "0.6rem 0.8rem", marginBottom: "0.6rem", borderRadius: 10, border: `2px solid ${THEME.ink}`, background: THEME.panelBgAlt, color: THEME.white, fontFamily: "var(--font-body)", fontSize: "0.9rem" }}
+            />
+            <input
+              type="password"
+              required
+              placeholder="Contraseña"
+              value={form.password}
+              onChange={handleChange("password")}
+              style={{ width: "100%", padding: "0.6rem 0.8rem", marginBottom: "0.6rem", borderRadius: 10, border: `2px solid ${THEME.ink}`, background: THEME.panelBgAlt, color: THEME.white, fontFamily: "var(--font-body)", fontSize: "0.9rem" }}
+            />
+            {error && <p style={{ color: THEME.red, fontSize: "0.78rem", marginBottom: "0.6rem" }}>{error}</p>}
+            <button type="submit" disabled={submitting} className="btn-manga red" style={{ width: "100%", justifyContent: "center", opacity: submitting ? 0.7 : 1 }}>
+              {submitting ? "..." : mode === "register" ? "CREAR CUENTA" : "ENTRAR"}
+            </button>
+          </form>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
    COMPONENT: Navigation Bar
    ═══════════════════════════════════════════════════════════════ */
 function NavigationBar({ menuOpen, setMenuOpen }) {
@@ -1320,6 +1539,11 @@ function NavigationBar({ menuOpen, setMenuOpen }) {
           <li>
             <LanguageToggle />
           </li>
+          {VISITOR_AUTH_ENABLED && (
+            <li>
+              <VisitorAuthWidget />
+            </li>
+          )}
           <li>
             <a href="#contact" className="btn-manga red" aria-label={t.nav.hireMe}>
               {t.nav.hireMe} <ArrowRight size={18} strokeWidth={3} />
@@ -1398,6 +1622,11 @@ function NavigationBar({ menuOpen, setMenuOpen }) {
           <div style={{ marginTop: "1.5rem" }}>
             <LanguageToggle compact />
           </div>
+          {VISITOR_AUTH_ENABLED && (
+            <div style={{ marginTop: "1.5rem" }}>
+              <VisitorAuthWidget />
+            </div>
+          )}
           <div style={{ marginTop: "1.5rem" }}>
             <a href="#contact" className="btn-manga red" tabIndex={menuOpen ? 0 : -1} onClick={() => setMenuOpen(false)}>
               {t.nav.hireMe} <ArrowRight size={18} strokeWidth={3} />
@@ -1704,7 +1933,10 @@ function ProjectDetailPage() {
           >
             YHOSINC
           </Link>
-          <LanguageToggle />
+          <div style={{ display: "flex", alignItems: "center", gap: "0.7rem" }}>
+            <LanguageToggle />
+            {VISITOR_AUTH_ENABLED && <VisitorAuthWidget />}
+          </div>
         </div>
       </nav>
 
@@ -1772,10 +2004,98 @@ function ProjectDetailPage() {
               </Link>
             </div>
           </div>
+
+          {VISITOR_AUTH_ENABLED && <CommentSection slug={project.slug} />}
         </div>
       </section>
 
       <Footer />
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   COMPONENT: Comment section (por proyecto) — solo activo si
+   VISITOR_AUTH_ENABLED. Comentarios quedan pendientes de aprobación
+   del admin antes de mostrarse públicamente.
+   ═══════════════════════════════════════════════════════════════ */
+function CommentSection({ slug }) {
+  const { visitor, token } = useVisitorAuth();
+  const [comments, setComments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [content, setContent] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [feedback, setFeedback] = useState("");
+
+  useEffect(() => {
+    setLoading(true);
+    fetch(`${API_BASE_URL}/api/projects/${slug}/comments`)
+      .then((res) => (res.ok ? res.json() : []))
+      .then(setComments)
+      .catch(() => setComments([]))
+      .finally(() => setLoading(false));
+  }, [slug]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!visitor) return;
+    setFeedback("");
+    setSubmitting(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/projects/${slug}/comments`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ content }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || "No se pudo enviar el comentario.");
+      setContent("");
+      setFeedback("Comentario enviado — se publica apenas se apruebe.");
+    } catch (err) {
+      setFeedback(err.message || "No se pudo enviar el comentario.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div style={{ marginTop: "2.5rem" }}>
+      <h3 className="mono" style={{ color: THEME.cyan, fontSize: "0.85rem", letterSpacing: "0.15em", fontWeight: 700, marginBottom: "1rem" }}>
+        // COMENTARIOS
+      </h3>
+
+      {!loading && comments.length === 0 && (
+        <p style={{ color: "rgba(255,255,255,0.6)", marginBottom: "1.2rem" }}>Todavía no hay comentarios.</p>
+      )}
+
+      <div style={{ display: "flex", flexDirection: "column", gap: "0.8rem", marginBottom: "1.5rem" }}>
+        {comments.map((c) => (
+          <div key={c.id} className="panel-3d" style={{ padding: "1rem" }}>
+            <span className="t-title" style={{ color: THEME.white, fontSize: "0.9rem" }}>{c.name}</span>
+            <p style={{ color: "rgba(255,255,255,0.8)", marginTop: "0.4rem" }}>{c.content}</p>
+          </div>
+        ))}
+      </div>
+
+      {visitor ? (
+        <form onSubmit={handleSubmit}>
+          <textarea
+            required
+            maxLength={1000}
+            rows={3}
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder="Dejá tu comentario..."
+            style={{ width: "100%", padding: "0.7rem 0.9rem", marginBottom: "0.6rem", borderRadius: 10, border: `2px solid ${THEME.ink}`, background: THEME.panelBgAlt, color: THEME.white, fontFamily: "var(--font-body)", fontSize: "1rem", resize: "vertical" }}
+          />
+          {feedback && <p style={{ color: THEME.cyan, fontSize: "0.85rem", marginBottom: "0.6rem" }}>{feedback}</p>}
+          <button type="submit" disabled={submitting} className="btn-manga" style={{ opacity: submitting ? 0.7 : 1 }}>
+            {submitting ? "..." : "COMENTAR"}
+          </button>
+        </form>
+      ) : (
+        <p style={{ color: "rgba(255,255,255,0.6)" }}>Iniciá sesión para dejar un comentario.</p>
+      )}
     </div>
   );
 }
@@ -2194,6 +2514,7 @@ function AboutSection() {
    ═══════════════════════════════════════════════════════════════ */
 function ContactSection() {
   const { t } = useLanguage();
+  const { visitor } = useVisitorAuth();
   const [composeOpen, setComposeOpen] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [submitState, setSubmitState] = useState({ status: "idle", error: "" });
@@ -2286,6 +2607,12 @@ function ContactSection() {
                 onClick={() => {
                   setComposeOpen(true);
                   setSubmitState({ status: "idle", error: "" });
+                  // Auto-completa nombre/email si el visitante ya tiene una
+                  // cuenta creada — función construida pero recién tiene
+                  // efecto una vez que VISITOR_AUTH_ENABLED esté prendido.
+                  if (VISITOR_AUTH_ENABLED && visitor) {
+                    setForm((f) => ({ ...f, name: visitor.name, email: visitor.email }));
+                  }
                 }}
                 className="btn-manga red"
                 style={{
@@ -2856,6 +3183,7 @@ function AdminPage() {
   const [loggingIn, setLoggingIn] = useState(false);
   const [messages, setMessages] = useState([]);
   const [analytics, setAnalytics] = useState(null);
+  const [comments, setComments] = useState([]);
   const [dataError, setDataError] = useState("");
   const [loadingData, setLoadingData] = useState(false);
 
@@ -2901,14 +3229,31 @@ function AdminPage() {
     Promise.all([
       fetch(`${API_BASE_URL}/api/admin/messages`, { headers }).then((r) => (r.ok ? r.json() : Promise.reject())),
       fetch(`${API_BASE_URL}/api/admin/analytics`, { headers }).then((r) => (r.ok ? r.json() : Promise.reject())),
+      fetch(`${API_BASE_URL}/api/admin/comments`, { headers }).then((r) => (r.ok ? r.json() : Promise.reject())),
     ])
-      .then(([msgs, an]) => {
+      .then(([msgs, an, cmts]) => {
         setMessages(msgs);
         setAnalytics(an);
+        setComments(cmts);
       })
       .catch(() => setDataError("No se pudo cargar la información. Probá recargar la página."))
       .finally(() => setLoadingData(false));
   }, [authed, token]);
+
+  const moderateComment = async (id, status) => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/admin/comments/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ status }),
+      });
+      if (!res.ok) return;
+      const updated = await res.json();
+      setComments((cs) => cs.map((c) => (c.id === id ? updated : c)));
+    } catch {
+      // silencioso — el estado de la lista simplemente no se actualiza si falla
+    }
+  };
 
   const handleLoginChange = (field) => (e) => {
     setLoginForm((f) => ({ ...f, [field]: e.target.value }));
@@ -3087,6 +3432,48 @@ function AdminPage() {
             </div>
           )}
         </div>
+
+        <div style={{ marginTop: "2.5rem" }}>
+          <h2 className="mono" style={{ color: THEME.red, fontSize: "0.85rem", letterSpacing: "0.15em", fontWeight: 700, marginBottom: "1rem" }}>
+            // COMENTARIOS ({comments.filter((c) => c.status === "pending").length} pendientes de {comments.length})
+          </h2>
+          {comments.length === 0 && !loadingData ? (
+            <p style={{ color: "rgba(255,255,255,0.6)" }}>Todavía no hay comentarios.</p>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+              {comments.map((c) => (
+                <div key={c.id} className="panel-3d" style={{ padding: "1.2rem" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "0.5rem", marginBottom: "0.6rem" }}>
+                    <span className="t-title" style={{ color: THEME.white, fontSize: "1rem" }}>
+                      {c.visitor?.name || "—"} <span className="mono" style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.5)" }}>· {c.projectSlug}</span>
+                    </span>
+                    <span
+                      className="mono"
+                      style={{
+                        fontSize: "0.72rem",
+                        letterSpacing: "0.08em",
+                        color: c.status === "approved" ? THEME.cyan : c.status === "rejected" ? THEME.red : THEME.yellow,
+                      }}
+                    >
+                      {c.status.toUpperCase()}
+                    </span>
+                  </div>
+                  <p style={{ color: "rgba(255,255,255,0.85)", marginBottom: "0.8rem", lineHeight: 1.5 }}>{c.content}</p>
+                  {c.status === "pending" && (
+                    <div style={{ display: "flex", gap: "0.6rem" }}>
+                      <button type="button" onClick={() => moderateComment(c.id, "approved")} className="btn-manga cyan" style={{ padding: "0.4rem 0.9rem", fontSize: "0.8rem" }}>
+                        APROBAR
+                      </button>
+                      <button type="button" onClick={() => moderateComment(c.id, "rejected")} className="btn-manga" style={{ padding: "0.4rem 0.9rem", fontSize: "0.8rem" }}>
+                        RECHAZAR
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -3095,14 +3482,16 @@ function AdminPage() {
 function App() {
   return (
     <LanguageProvider>
-      <BrowserRouter>
-        <CustomCursor />
-        <Routes>
-          <Route path="/" element={<YhosincPortfolio />} />
-          <Route path="/proyectos/:slug" element={<ProjectDetailPage />} />
-          <Route path="/admin" element={<AdminPage />} />
-        </Routes>
-      </BrowserRouter>
+      <VisitorAuthProvider>
+        <BrowserRouter>
+          <CustomCursor />
+          <Routes>
+            <Route path="/" element={<YhosincPortfolio />} />
+            <Route path="/proyectos/:slug" element={<ProjectDetailPage />} />
+            <Route path="/admin" element={<AdminPage />} />
+          </Routes>
+        </BrowserRouter>
+      </VisitorAuthProvider>
     </LanguageProvider>
   );
 }

@@ -7,6 +7,8 @@ import { contactRouter } from "./routes/contact.js";
 import { authRouter } from "./routes/auth.js";
 import { analyticsRouter } from "./routes/analytics.js";
 import { adminRouter } from "./routes/admin.js";
+import { visitorRouter } from "./routes/visitor.js";
+import { commentsRouter } from "./routes/comments.js";
 import { captureError } from "./lib/sentry.js";
 
 export const app = express();
@@ -40,6 +42,8 @@ app.use("/api/contact", contactRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/analytics", analyticsRouter);
 app.use("/api/admin", adminRouter);
+app.use("/api/visitor", visitorRouter);
+app.use("/api/projects", commentsRouter);
 
 // Manejador de errores centralizado: nunca se filtra el detalle interno al cliente.
 app.use((err, req, res, next) => {
