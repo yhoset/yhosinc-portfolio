@@ -8,6 +8,7 @@ import { routing } from "@/i18n/routing";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { CustomCursor } from "@/components/interaction/custom-cursor";
+import { GameBackground } from "@/components/interaction/game-background";
 import { CommandPaletteProvider } from "@/components/interaction/command-palette-context";
 import { CommandPalette } from "@/components/interaction/command-palette";
 import { PowerLevelProvider } from "@/components/interaction/power-level-context";
@@ -70,6 +71,7 @@ export default async function LocaleLayout({
         <NextIntlClientProvider>
           <PowerLevelProvider initialLevel={powerLevelBase}>
             <CommandPaletteProvider>
+              <GameBackground />
               <CustomCursor />
               <Header />
               {/* pb reserva espacio para que el HUD de Power Level (fixed,
