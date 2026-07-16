@@ -37,11 +37,12 @@
     "statCoffee": "COFFEE LEVEL",
     "codeInk": "CODE + INK"
   },
+  "Projects": {
+    "title": "Projects",
+    "emptyTitle": "No chapters published yet",
+    "emptyBody": "Case studies are coming soon — in the meantime, you can check the project roadmap at internal/v2-next/arquitectura.md."
+  },
   "ComingSoon": {
-    "projects": {
-      "title": "Projects",
-      "body": "This section lands in an upcoming build phase. For now, the project roadmap lives at internal/v2-next/arquitectura.md."
-    },
     "skills": {
       "title": "Skills",
       "body": "Skills filterable by discipline — under construction."

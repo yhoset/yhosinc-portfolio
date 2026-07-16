@@ -1,6 +1,9 @@
+import { useTranslations, hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
+import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
-import { ComingSoon } from "@/components/layout/coming-soon";
+import { getAllProjectsMetadata } from "@/lib/projects";
+import { ProjectCard } from "@/components/projects/project-card";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -12,6 +15,48 @@ export default async function ProjectsPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) {
+    notFound();
+  }
   setRequestLocale(locale);
-  return <ComingSoon messageKey="projects" />;
+  const projects = await getAllProjectsMetadata(locale);
+
+  return <ProjectsList projects={projects} />;
+}
+
+function ProjectsList({
+  projects,
+}: {
+  projects: Awaited<ReturnType<typeof getAllProjectsMetadata>>;
+}) {
+  const t = useTranslations("Projects");
+
+  if (projects.length === 0) {
+    return (
+      <div className="halftone-bg flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center px-6 text-center">
+        <span className="chapter-num text-cyan">?</span>
+        <h1 className="font-display mt-4 text-4xl text-white sm:text-5xl">
+          {t("emptyTitle")}
+        </h1>
+        <p className="mt-3 max-w-md text-white/60">{t("emptyBody")}</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="halftone-bg min-h-[calc(100vh-4rem)] px-4 py-16 sm:px-6">
+      <div className="mx-auto max-w-6xl">
+        <h1 className="section-title-panel mb-10">{t("title")}</h1>
+        <div className="columns-1 gap-6 sm:columns-2 lg:columns-3">
+          {projects.map((project, i) => (
+            <ProjectCard
+              key={project.slug}
+              project={project}
+              chapter={String(i + 1).padStart(2, "0")}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }
