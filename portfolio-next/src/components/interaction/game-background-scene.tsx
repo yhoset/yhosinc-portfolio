@@ -125,8 +125,8 @@ export function GameBackgroundScene() {
   return (
     <Canvas
       frameloop="always"
-      dpr={[1, 1.5]}
-      gl={{ antialias: false, alpha: false, powerPreference: "low-power" }}
+      dpr={[1, 2]}
+      gl={{ antialias: true, alpha: false, powerPreference: "low-power" }}
       camera={{ position: [0, 0, 5], fov: 50 }}
       style={{ background: INK }}
     >

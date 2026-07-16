@@ -48,7 +48,7 @@ export function HeaderLogoScene() {
   return (
     <Canvas
       frameloop="always"
-      dpr={[1, 1.5]}
+      dpr={[1, 2]}
       gl={{ antialias: true, alpha: true, powerPreference: "low-power" }}
       camera={{ position: [0, 0, 3], fov: 35 }}
       style={{ background: "transparent" }}

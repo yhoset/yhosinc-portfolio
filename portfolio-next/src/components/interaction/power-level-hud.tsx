@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import NumberFlow from "@number-flow/react";
 import { usePowerLevel } from "@/components/interaction/power-level-context";
 
 export function PowerLevelHUD() {
@@ -27,9 +28,12 @@ export function PowerLevelHUD() {
         <p className="font-label text-[10px] tracking-[0.2em] text-white/50">
           {t("label")}
         </p>
-        <p className="font-display text-xl leading-none text-cyan">
-          {level.toLocaleString()}
-        </p>
+        <NumberFlow
+          value={level}
+          className="font-display text-xl leading-none text-cyan"
+          transformTiming={{ duration: 650, easing: "cubic-bezier(0.22, 1, 0.36, 1)" }}
+          spinTiming={{ duration: 650, easing: "cubic-bezier(0.22, 1, 0.36, 1)" }}
+        />
       </div>
     </div>
   );
