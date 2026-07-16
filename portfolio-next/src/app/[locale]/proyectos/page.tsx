@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { getAllProjectsMetadata } from "@/lib/projects";
 import { ProjectCard } from "@/components/projects/project-card";
+import { FloatingGlyph } from "@/components/decor/floating-glyph";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -34,7 +35,7 @@ function ProjectsList({
   if (projects.length === 0) {
     return (
       <div className="halftone-bg flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center px-6 text-center">
-        <span className="chapter-num text-cyan">?</span>
+        <FloatingGlyph className="chapter-num text-cyan">?</FloatingGlyph>
         <h1 className="font-display mt-4 text-4xl text-white sm:text-5xl">
           {t("emptyTitle")}
         </h1>

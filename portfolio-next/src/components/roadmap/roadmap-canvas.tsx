@@ -26,6 +26,7 @@ import {
   type RoadmapNodeData,
 } from "@/lib/roadmap";
 import { RoadmapNode, type RoadmapFlowNode } from "@/components/roadmap/roadmap-node";
+import { FloatingGlyph } from "@/components/decor/floating-glyph";
 
 const NODE_TYPES = { roadmapNode: RoadmapNode };
 const COLUMN_WIDTH = 260;
@@ -73,7 +74,7 @@ export function RoadmapCanvas() {
   if (ROADMAP_NODES.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center gap-4 px-6 py-32 text-center">
-        <span className="chapter-num text-cyan">?</span>
+        <FloatingGlyph className="chapter-num text-cyan">?</FloatingGlyph>
         <h1 className="font-display text-4xl text-white sm:text-5xl">{t("emptyTitle")}</h1>
         <p className="max-w-md text-white/60">{t("emptyBody")}</p>
       </div>
