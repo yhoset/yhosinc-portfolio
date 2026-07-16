@@ -42,11 +42,28 @@
     "emptyTitle": "Todavía no hay capítulos publicados",
     "emptyBody": "Los case studies llegan pronto — mientras tanto, podés ver el roadmap del proyecto en internal/v2-next/arquitectura.md."
   },
-  "ComingSoon": {
-    "skills": {
-      "title": "Skills",
-      "body": "Skills filtrables por disciplina — en construcción."
+  "Skills": {
+    "eyebrow": "STACK & SKILLS",
+    "title": "Skills",
+    "filterLabel": "Filtrar por disciplina",
+    "filters": {
+      "all": "TODAS",
+      "programming": "PROGRAMACIÓN",
+      "design": "DISEÑO",
+      "ai": "IA"
     },
+    "names": {
+      "frontend": "FRONTEND",
+      "designSystems": "DESIGN SYS",
+      "motion": "MOTION",
+      "webgl": "3D / WEBGL",
+      "backend": "BACKEND",
+      "research": "INVESTIGACIÓN",
+      "prototyping": "PROTOTIPADO",
+      "shipping": "ENTREGAS"
+    }
+  },
+  "ComingSoon": {
     "roadmap": {
       "title": "Roadmap",
       "body": "El canvas del camino de aprendizaje (junior → mid → senior) llega pronto."
