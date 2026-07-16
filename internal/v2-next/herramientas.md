@@ -57,6 +57,7 @@ respeto por `prefers-reduced-motion`.
 |---|---|---|---|
 | **View Transitions API** | Transiciones animadas entre rutas. **Nativas** en Next 16 / React 19.2 — no es un paquete extra. | — (nativa) | https://nextjs.org/blog/next-16 |
 | **Motion v12** (ex Framer Motion, `motion/react`) | Layout animations, micro-interacciones, el meter de Power Level. Independiente desde 2025, compatible con React 19. | MIT | https://motion.dev/docs/react |
+| **@number-flow/react** | Contador animado con flip de dígitos para el número de Power Level (animación de "ganaste puntos"). Se evaluó `AnimateNumber` de Motion pero requiere membresía paga de Motion+; este paquete es gratis y sin dependencias. | MIT | https://number-flow.barvian.me |
 | **GSAP** + **ScrollTrigger** | Narrativa por scroll (revelado tipo "capítulos de manga"). | Licencia estándar de GSAP (gratis para este uso) | https://gsap.com |
 | **Lenis** | Scroll suave (~3 kB), se integra limpio con GSAP ScrollTrigger. De Darkroom Engineering. | MIT | https://github.com/darkroomengineering/lenis |
 
