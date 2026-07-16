@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import { Menu, Search, X } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
@@ -51,13 +52,16 @@ export function Header() {
       style={{ viewTransitionName: "site-header" } as React.CSSProperties}
     >
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-6 px-4 sm:px-6">
-        <Link
-          href="/"
-          className="flex items-center gap-2 font-display text-2xl tracking-wide text-cyan transition-opacity hover:opacity-80"
-          onClick={() => setMenuOpen(false)}
-        >
-          <HeaderLogo />
-          YHOSINC
+        <Link href="/" className="flex items-center gap-2" onClick={() => setMenuOpen(false)}>
+          <motion.span
+            whileHover={{ scale: 1.08, rotate: -4 }}
+            whileTap={{ scale: 0.94 }}
+            transition={{ type: "spring", stiffness: 380, damping: 18 }}
+            className="flex"
+          >
+            <HeaderLogo />
+          </motion.span>
+          <span className="font-display text-2xl tracking-wide text-cyan">YHOSINC</span>
         </Link>
 
         <nav className="hidden items-center gap-6 md:flex">
@@ -65,9 +69,13 @@ export function Header() {
             <Link
               key={item.key}
               href={item.href}
-              className="font-label text-sm tracking-wider text-white/70 transition-colors hover:text-cyan"
+              className="group relative py-1 font-label text-sm tracking-wider text-white/70 transition-colors hover:text-cyan"
             >
               {t(item.key)}
+              <span
+                aria-hidden="true"
+                className="absolute inset-x-0 -bottom-0.5 h-[2px] origin-left scale-x-0 bg-cyan transition-transform duration-300 ease-out group-hover:scale-x-100"
+              />
             </Link>
           ))}
         </nav>
@@ -105,24 +113,39 @@ export function Header() {
         </button>
       </div>
 
-      {menuOpen && (
-        <nav
-          id="mobile-nav"
-          className="flex flex-col gap-1 border-t border-border/60 bg-ink px-4 py-4 md:hidden"
-        >
-          {navItems.map((item) => (
-            <Link
-              key={item.key}
-              href={item.href}
-              onClick={() => setMenuOpen(false)}
-              className="font-label py-2 text-sm tracking-wider text-white/70 transition-colors hover:text-cyan"
-            >
-              {t(item.key)}
-            </Link>
-          ))}
-          <div className="pt-2">{localeSwitcher}</div>
-        </nav>
-      )}
+      <AnimatePresence initial={false}>
+        {menuOpen && (
+          <motion.nav
+            id="mobile-nav"
+            key="mobile-nav"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            className="flex flex-col gap-1 overflow-hidden border-t border-border/60 bg-ink px-4 md:hidden"
+          >
+            <div className="flex flex-col gap-1 py-4">
+              {navItems.map((item, i) => (
+                <motion.div
+                  key={item.key}
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.03, duration: 0.2, ease: "easeOut" }}
+                >
+                  <Link
+                    href={item.href}
+                    onClick={() => setMenuOpen(false)}
+                    className="font-label block py-2 text-sm tracking-wider text-white/70 transition-colors hover:text-cyan"
+                  >
+                    {t(item.key)}
+                  </Link>
+                </motion.div>
+              ))}
+              <div className="pt-2">{localeSwitcher}</div>
+            </div>
+          </motion.nav>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

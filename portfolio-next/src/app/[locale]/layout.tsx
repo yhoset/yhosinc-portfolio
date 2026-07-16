@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ViewTransition } from "react";
 import { notFound } from "next/navigation";
+import { MotionConfig } from "motion/react";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { Bangers, Bebas_Neue, Rajdhani } from "next/font/google";
@@ -68,23 +69,28 @@ export default async function LocaleLayout({
       className={`${bangers.variable} ${bebasNeue.variable} ${rajdhani.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
-        <NextIntlClientProvider>
-          <PowerLevelProvider initialLevel={powerLevelBase}>
-            <CommandPaletteProvider>
-              <GameBackground />
-              <CustomCursor />
-              <Header />
-              {/* pb reserva espacio para que el HUD de Power Level (fixed,
-                  esquina inferior) nunca tape el contenido — branding-y-filosofia.md §7. */}
-              <main className="flex-1 pb-20">
-                <ViewTransition>{children}</ViewTransition>
-              </main>
-              <Footer />
-              <CommandPalette />
-              <PowerLevelHUD />
-            </CommandPaletteProvider>
-          </PowerLevelProvider>
-        </NextIntlClientProvider>
+        {/* reducedMotion="user" hace que TODAS las animaciones de Motion en
+            el árbol respeten prefers-reduced-motion automáticamente, igual
+            que ya hacen los @keyframes CSS en globals.css. */}
+        <MotionConfig reducedMotion="user">
+          <NextIntlClientProvider>
+            <PowerLevelProvider initialLevel={powerLevelBase}>
+              <CommandPaletteProvider>
+                <GameBackground />
+                <CustomCursor />
+                <Header />
+                {/* pb reserva espacio para que el HUD de Power Level (fixed,
+                    esquina inferior) nunca tape el contenido — branding-y-filosofia.md §7. */}
+                <main className="flex-1 pb-20">
+                  <ViewTransition>{children}</ViewTransition>
+                </main>
+                <Footer />
+                <CommandPalette />
+                <PowerLevelHUD />
+              </CommandPaletteProvider>
+            </PowerLevelProvider>
+          </NextIntlClientProvider>
+        </MotionConfig>
       </body>
     </html>
   );
