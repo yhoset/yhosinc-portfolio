@@ -63,11 +63,12 @@
       "shipping": "SHIPPING"
     }
   },
+  "Roadmap": {
+    "emptyTitle": "The canvas has no milestones yet",
+    "emptyBody": "The learning path (junior → mid → senior, across programming, design, and AI) is coming soon.",
+    "unlocked": "Unlocked"
+  },
   "ComingSoon": {
-    "roadmap": {
-      "title": "Roadmap",
-      "body": "The learning-path canvas (junior → mid → senior) is coming soon."
-    },
     "tools": {
       "title": "Tools",
       "body": "Mini-tools for people on the same path — under construction."

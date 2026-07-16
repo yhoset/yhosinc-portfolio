@@ -63,11 +63,12 @@
       "shipping": "ENTREGAS"
     }
   },
+  "Roadmap": {
+    "emptyTitle": "El canvas todavía no tiene hitos",
+    "emptyBody": "El camino de aprendizaje (junior → mid → senior, en programación, diseño e IA) llega pronto.",
+    "unlocked": "Desbloqueado"
+  },
   "ComingSoon": {
-    "roadmap": {
-      "title": "Roadmap",
-      "body": "El canvas del camino de aprendizaje (junior → mid → senior) llega pronto."
-    },
     "tools": {
       "title": "Tools",
       "body": "Mini-herramientas para gente en el mismo camino — en construcción."
