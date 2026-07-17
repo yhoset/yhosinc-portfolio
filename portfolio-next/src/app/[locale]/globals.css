@@ -478,10 +478,20 @@
 }
 .load-hero-text {
   opacity: 0;
+  /* anim-sweep-in anima filter (blur) sobre el hero-title, que tiene
+     text-shadow triple + text-stroke de 4px — el filter blur en un
+     elemento tan decorado es una de las propiedades más caras de pintar,
+     así que se promueve a su propia capa por adelantado. (El frame drop
+     medido al navegar a Home no viene de esta animación — ocurre antes de
+     que el delay de 400ms termine; es el costo nativo del snapshot de
+     View Transitions sobre un hero visualmente pesado, no algo que este
+     hint resuelva.) */
+  will-change: transform, opacity, filter;
   animation: anim-sweep-in 700ms cubic-bezier(0.22, 0.9, 0.26, 1) 400ms forwards;
 }
 .load-hero-vis {
   opacity: 0;
+  will-change: transform, opacity;
   animation: anim-pop-in 800ms cubic-bezier(0.34, 1.56, 0.64, 1) 600ms forwards;
 }
 

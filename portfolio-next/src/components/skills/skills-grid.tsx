@@ -55,8 +55,8 @@ export function SkillsGrid() {
             aria-pressed={active === f.key}
             className={
               active === f.key
-                ? "font-label rounded-full border-2 border-cyan bg-cyan px-4 py-1.5 text-sm tracking-wider text-ink"
-                : "font-label rounded-full border-2 border-white/30 px-4 py-1.5 text-sm tracking-wider text-white/70 transition-colors hover:border-cyan hover:text-cyan"
+                ? "font-label rounded-full border-2 border-cyan bg-cyan px-4 py-1.5 text-sm tracking-wider text-ink transition-colors duration-150"
+                : "font-label rounded-full border-2 border-white/30 px-4 py-1.5 text-sm tracking-wider text-white/70 transition-colors duration-150 hover:border-cyan hover:text-cyan"
             }
           >
             {t(`filters.${f.key}`)}
