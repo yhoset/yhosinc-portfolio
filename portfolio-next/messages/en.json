@@ -76,10 +76,26 @@
     "about": {
       "title": "About",
       "body": "Page under construction."
-    },
-    "contact": {
-      "title": "Contact",
-      "body": "The contact form lands in the backend phase."
+    }
+  },
+  "Contact": {
+    "eyebrow": "LET'S TALK",
+    "title": "Contact",
+    "body": "Got a project in mind, or just want to say hi? Write me.",
+    "nameLabel": "Name",
+    "emailLabel": "Email",
+    "messageLabel": "Message",
+    "submit": "SEND MESSAGE",
+    "submitting": "SENDING...",
+    "successTitle": "Message sent!",
+    "successBody": "Thanks for writing — I'll get back to you at the same address soon.",
+    "errors": {
+      "rateLimited": "You've sent too many messages. Please try again later.",
+      "validation": "Please check the form fields.",
+      "serverError": "We couldn't save your message. Please try again in a few minutes.",
+      "required": "This field is required.",
+      "tooLong": "This is too long.",
+      "invalidEmail": "Invalid email address."
     }
   }
 }

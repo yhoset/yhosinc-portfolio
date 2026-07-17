@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 export function ComingSoon({
   messageKey,
 }: {
-  messageKey: "projects" | "skills" | "roadmap" | "tools" | "about" | "contact";
+  messageKey: "tools" | "about";
 }) {
   const t = useTranslations("ComingSoon");
 

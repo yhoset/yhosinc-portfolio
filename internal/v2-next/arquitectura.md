@@ -236,6 +236,34 @@ que `/`, `/es` y `/en` devuelven 200/307 (no 500) y que el HTML trae el
 contenido traducido esperado — no basta con que el build termine sin error,
 el Worker puede compilar y aun así fallar en runtime.
 
+### 8.3 `process.env` NO expone `.dev.vars`/secrets — usar `getCloudflareContext()` (Fase 6, 2026-07-17)
+
+Con `@opennextjs/cloudflare`, las variables definidas en `.dev.vars` (local)
+y los secrets de Cloudflare (producción) **no llegan a `process.env`** —
+Cloudflare Workers no tiene ese global nativamente; `initOpenNextCloudflareForDev()`
+(en `next.config.ts`) simula bindings, no un `process.env` completo. Se
+confirmó con una ruta de diagnóstico temporal en la Fase 6: `process.env.*`
+volvía `undefined` para **todo**, incluidas `DATABASE_URL`/`NEXTJS_ENV`, que
+"funcionaban" solo porque `server/db/client.ts` tiene un valor de fallback
+hardcodeado que coincidía por casualidad con el de `.dev.vars`. El síntoma
+fue sutil: el login de admin fallaba con "Falta JWT_SECRET en el entorno" y
+el envío de contacto fallaba con "API key is invalid" en Resend — ambos
+errores parecían apuntar a *credenciales* mal copiadas, cuando en realidad
+las credenciales eran correctas y el problema era que nunca llegaban a
+`process.env`.
+
+**Forma correcta**: `getCloudflareContext({ async: true }).env.VARNAME` (ver
+`src/server/lib/env.ts`, usado en `server/auth/jwt.ts` y `server/lib/mailer.ts`).
+Pendiente antes de la Fase 10: migrar `server/db/client.ts` al mismo patrón
+(hoy usa `process.env` con fallback porque el cliente se crea a nivel de
+módulo, no dentro de un request — ver el comentario en ese archivo).
+
+**Cómo verificar que sigue resuelto**: pegarle a cualquier Server Action que
+dependa de un secret (ej. login de admin en `/admin`, o el formulario de
+`/contacto`) contra `next dev` — si tira "Falta X en el entorno" o un 401 de
+un proveedor externo con una key que se sabe válida, es señal de que algo
+volvió a leer `process.env` directo en vez de `getEnv()`.
+
 ## 9. Fases de construcción (propuesta)
 
 > **Todo el trabajo es local hasta la fase final.** El usuario pidió

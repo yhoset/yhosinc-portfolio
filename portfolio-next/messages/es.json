@@ -76,10 +76,26 @@
     "about": {
       "title": "Sobre mí",
       "body": "Página en construcción."
-    },
-    "contact": {
-      "title": "Contacto",
-      "body": "El formulario de contacto llega en la fase de backend."
+    }
+  },
+  "Contact": {
+    "eyebrow": "HABLEMOS",
+    "title": "Contacto",
+    "body": "¿Tenés un proyecto en mente o solo querés saludar? Escribime.",
+    "nameLabel": "Nombre",
+    "emailLabel": "Email",
+    "messageLabel": "Mensaje",
+    "submit": "ENVIAR MENSAJE",
+    "submitting": "ENVIANDO...",
+    "successTitle": "¡Mensaje enviado!",
+    "successBody": "Gracias por escribir — te respondo apenas pueda a la misma dirección.",
+    "errors": {
+      "rateLimited": "Enviaste demasiados mensajes. Probá de nuevo más tarde.",
+      "validation": "Revisá los datos del formulario.",
+      "serverError": "No pudimos guardar tu mensaje. Probá de nuevo en unos minutos.",
+      "required": "Este campo es obligatorio.",
+      "tooLong": "Es demasiado largo.",
+      "invalidEmail": "Email inválido."
     }
   }
 }

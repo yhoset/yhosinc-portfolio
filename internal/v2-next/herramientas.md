@@ -29,6 +29,8 @@ disco más allá de dependencias de desarrollo estándar.
 | **Drizzle ORM** | ORM tipado, liviano y pensado para edge; soporte first-class de libSQL. Más chico que Prisma y corre en Workers. | Apache-2.0 | https://orm.drizzle.team/docs/sqlite/connect-turso |
 | **`@libsql/client`** | Cliente libSQL para conectarse a Turso desde el Worker. | MIT | https://github.com/tursodatabase/libsql-client-ts |
 | **Zod** | Validación de esquemas de entrada (Server Actions, Route Handlers). Ya usado en v1. | MIT | https://zod.dev |
+| **jose** | Firma/verificación de JWT (admin + visitante). Se eligió sobre `jsonwebtoken` (que usaba v1) por ser compatible con runtimes edge/Workers de forma nativa, sin depender del módulo `crypto` de Node. | MIT | https://github.com/panva/jose |
+| **bcryptjs** | Hash de contraseñas (admin + visitante). Implementación pura en JS de bcrypt — corre en cualquier runtime (incluido Workers), a diferencia de `bcrypt` nativo que requiere compilación. Mismo algoritmo/costo (12 rounds) que usaba v1. | MIT | https://github.com/dcodeIO/bcrypt.js |
 
 ## Estilos y UI
 

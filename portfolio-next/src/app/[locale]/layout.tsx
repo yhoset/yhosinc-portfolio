@@ -14,6 +14,7 @@ import { CommandPaletteProvider } from "@/components/interaction/command-palette
 import { CommandPalette } from "@/components/interaction/command-palette";
 import { PowerLevelProvider } from "@/components/interaction/power-level-context";
 import { PowerLevelHUD } from "@/components/interaction/power-level-hud";
+import { AnalyticsBeacon } from "@/components/analytics/analytics-beacon";
 import { getGithubPowerLevelBase } from "@/lib/github-power-level";
 import "./globals.css";
 
@@ -78,6 +79,7 @@ export default async function LocaleLayout({
               <CommandPaletteProvider>
                 <GameBackground />
                 <CustomCursor />
+                <AnalyticsBeacon />
                 <Header />
                 {/* pb reserva espacio para que el HUD de Power Level (fixed,
                     esquina inferior) nunca tape el contenido — branding-y-filosofia.md §7. */}
