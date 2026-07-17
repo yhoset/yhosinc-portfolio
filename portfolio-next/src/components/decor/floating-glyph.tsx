@@ -7,13 +7,16 @@ import { motion } from "motion/react";
 export function FloatingGlyph({
   children,
   className,
+  style,
 }: {
   children: React.ReactNode;
   className?: string;
+  style?: React.CSSProperties;
 }) {
   return (
     <motion.span
       className={className}
+      style={style}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1, y: [0, -8, 0] }}
       transition={{

@@ -35,7 +35,9 @@ function ProjectsList({
   if (projects.length === 0) {
     return (
       <div className="halftone-bg flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center px-6 text-center">
-        <FloatingGlyph className="chapter-num text-cyan">?</FloatingGlyph>
+        <FloatingGlyph className="chapter-num" style={{ color: "var(--color-cyan)" }}>
+          ?
+        </FloatingGlyph>
         <h1 className="font-display mt-4 text-4xl text-white sm:text-5xl">
           {t("emptyTitle")}
         </h1>
