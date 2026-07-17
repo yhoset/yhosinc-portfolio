@@ -69,13 +69,38 @@
     "unlocked": "Unlocked"
   },
   "ComingSoon": {
-    "tools": {
-      "title": "Tools",
-      "body": "Mini-tools for people on the same path — under construction."
-    },
     "about": {
       "title": "About",
       "body": "Page under construction."
+    }
+  },
+  "Tools": {
+    "eyebrow": "MINI-TOOLS",
+    "title": "Tools",
+    "body": "Small utilities for people on the same path — code and design.",
+    "backToIndex": "Back to Tools",
+    "items": {
+      "paleta": {
+        "title": "Palette extractor",
+        "description": "Upload an image and pull out its dominant colors as hex, ready to copy."
+      },
+      "gradientes": {
+        "title": "Gradient generator",
+        "description": "Build a linear or radial CSS gradient with multiple color stops and copy the declaration."
+      }
+    },
+    "paletteTool": {
+      "dropzone": "Drag an image here, or click to choose a file",
+      "error": "Couldn't read that image. Try a different file.",
+      "previewAlt": "Preview of the uploaded image"
+    },
+    "gradientTool": {
+      "linear": "LINEAR",
+      "radial": "RADIAL",
+      "angle": "Angle",
+      "addStop": "ADD COLOR",
+      "removeStop": "Remove this color",
+      "colorStop": "Gradient color"
     }
   },
   "Contact": {
