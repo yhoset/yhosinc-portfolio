@@ -1,4 +1,10 @@
-export type ToolId = "paleta" | "gradientes" | "escala-tipografica" | "sombra-comic" | "editor-de-easing";
+export type ToolId =
+  | "paleta"
+  | "gradientes"
+  | "escala-tipografica"
+  | "sombra-comic"
+  | "editor-de-easing"
+  | "mangafy";
 
 export type ToolMeta = {
   id: ToolId;
@@ -14,4 +20,5 @@ export const TOOLS: ToolMeta[] = [
   { id: "escala-tipografica", color: "#ff2d55" },
   { id: "sombra-comic", color: "#00f5ff" },
   { id: "editor-de-easing", color: "#ffe000" },
+  { id: "mangafy", color: "#ff2d55" },
 ];

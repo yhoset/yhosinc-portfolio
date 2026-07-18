@@ -99,6 +99,10 @@
       "editor-de-easing": {
         "title": "Editor de easing",
         "description": "Armá una curva cubic-bezier arrastrando los puntos de control, con preview animada real."
+      },
+      "mangafy": {
+        "title": "Manga-fy",
+        "description": "Convertí una foto en contornos de tinta + tramado halftone, estilo página de manga. Filtro de procesamiento de imagen 100% en tu navegador — no es un modelo de IA."
       }
     },
     "paletteTool": {
@@ -127,6 +131,14 @@
     },
     "easingTool": {
       "replay": "REPETIR"
+    },
+    "mangafyTool": {
+      "dropzone": "Arrastrá una foto o hacé clic para elegir un archivo",
+      "error": "No se pudo leer esa imagen. Probá con otro archivo.",
+      "dotIntensity": "Intensidad del tramado",
+      "edgeSensitivity": "Sensibilidad de contornos",
+      "inkColor": "Color de tinta",
+      "download": "DESCARGAR PNG"
     }
   },
   "Contact": {

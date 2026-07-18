@@ -99,6 +99,10 @@
       "editor-de-easing": {
         "title": "Easing editor",
         "description": "Build a cubic-bezier curve by dragging control points, with a real animated preview."
+      },
+      "mangafy": {
+        "title": "Manga-fy",
+        "description": "Turn a photo into ink outlines + halftone screentone, manga-page style. A 100% in-browser image-processing filter — not an AI model."
       }
     },
     "paletteTool": {
@@ -127,6 +131,14 @@
     },
     "easingTool": {
       "replay": "REPLAY"
+    },
+    "mangafyTool": {
+      "dropzone": "Drag a photo here, or click to choose a file",
+      "error": "Couldn't read that image. Try a different file.",
+      "dotIntensity": "Screentone intensity",
+      "edgeSensitivity": "Edge sensitivity",
+      "inkColor": "Ink color",
+      "download": "DOWNLOAD PNG"
     }
   },
   "Contact": {

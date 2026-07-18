@@ -264,6 +264,25 @@ dependa de un secret (ej. login de admin en `/admin`, o el formulario de
 un proveedor externo con una key que se sabe válida, es señal de que algo
 volvió a leer `process.env` directo en vez de `getEnv()`.
 
+### 8.4 No correr `next build` (webpack) y `next dev` (Turbopack) sobre el mismo `.next` en la misma sesión (Fase 8, 2026-07-18)
+
+Confirmado: parar el dev server, correr `rm -rf .next && npm run build`
+(genera artefactos con Webpack) y arrancar `next dev` (Turbopack) justo
+después **sobre la misma carpeta `.next`** deja el server en un estado roto
+— **todas** las rutas (no solo las tocadas) devuelven 500 con
+`SyntaxError: Unexpected non-whitespace character after JSON at position
+746` al generar static params, incluida la home. No es un bug de ningún
+componente: Turbopack y Webpack no comparten el mismo formato de manifiestos
+internos, y arrancar el dev server justo después de un build de producción
+deja manifiestos mezclados de ambos bundlers en `.next`.
+
+**Fix**: `rm -rf .next` de nuevo (con el dev server parado) **antes** de
+volver a levantar `next dev` — no reusar la carpeta que dejó el build de
+producción. En la práctica: el gate de verificación de cada fase corre
+`build` y el chequeo con navegador por separado, cada uno con su propio
+`.next` limpio — nunca "build para verificar" seguido de "dev para
+probar en el navegador" sin borrar `.next` en el medio.
+
 ## 9. Fases de construcción (propuesta)
 
 > **Todo el trabajo es local hasta la fase final.** El usuario pidió
