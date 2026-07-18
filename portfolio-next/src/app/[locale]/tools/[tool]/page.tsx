@@ -8,6 +8,9 @@ import { Link } from "@/i18n/navigation";
 import { TOOLS, type ToolId } from "@/lib/tools";
 import { PaletteExtractor } from "@/components/tools/palette-extractor";
 import { GradientGenerator } from "@/components/tools/gradient-generator";
+import { TypeScaleGenerator } from "@/components/tools/type-scale-generator";
+import { ComicShadowGenerator } from "@/components/tools/comic-shadow-generator";
+import { EasingEditor } from "@/components/tools/easing-editor";
 
 // Lista cerrada: solo los slugs de TOOLS generan una ruta válida — cualquier
 // otro valor de [tool] cae en notFound() sin intentar resolver nada
@@ -21,6 +24,9 @@ export function generateStaticParams() {
 const TOOL_COMPONENTS: Record<ToolId, ComponentType> = {
   paleta: PaletteExtractor,
   gradientes: GradientGenerator,
+  "escala-tipografica": TypeScaleGenerator,
+  "sombra-comic": ComicShadowGenerator,
+  "editor-de-easing": EasingEditor,
 };
 
 export default async function ToolPage({

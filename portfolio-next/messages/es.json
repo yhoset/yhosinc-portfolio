@@ -87,6 +87,18 @@
       "gradientes": {
         "title": "Generador de gradientes",
         "description": "Armá un gradiente CSS lineal o radial con varios colores y copiá la declaración."
+      },
+      "escala-tipografica": {
+        "title": "Escala tipográfica",
+        "description": "Generá una escala modular completa (ratios musicales) con preview real y variables CSS."
+      },
+      "sombra-comic": {
+        "title": "Sombra cómic",
+        "description": "La técnica de sombra dura de este mismo sitio, ajustable — para paneles con onda de historieta."
+      },
+      "editor-de-easing": {
+        "title": "Editor de easing",
+        "description": "Armá una curva cubic-bezier arrastrando los puntos de control, con preview animada real."
       }
     },
     "paletteTool": {
@@ -101,6 +113,20 @@
       "addStop": "AGREGAR COLOR",
       "removeStop": "Quitar este color",
       "colorStop": "Color del gradiente"
+    },
+    "typeScaleTool": {
+      "baseSize": "Tamaño base",
+      "ratio": "Ratio"
+    },
+    "comicShadowTool": {
+      "offset": "Desplazamiento",
+      "borderWidth": "Grosor del borde",
+      "borderColor": "Color del borde",
+      "shadowColor": "Color de la sombra",
+      "panelColor": "Color del panel"
+    },
+    "easingTool": {
+      "replay": "REPETIR"
     }
   },
   "Contact": {

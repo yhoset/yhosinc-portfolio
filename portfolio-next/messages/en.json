@@ -87,6 +87,18 @@
       "gradientes": {
         "title": "Gradient generator",
         "description": "Build a linear or radial CSS gradient with multiple color stops and copy the declaration."
+      },
+      "escala-tipografica": {
+        "title": "Type scale",
+        "description": "Generate a full modular scale (musical ratios) with a real preview and CSS variables."
+      },
+      "sombra-comic": {
+        "title": "Comic shadow",
+        "description": "This very site's hard-shadow technique, adjustable — for panels with a comic-book edge."
+      },
+      "editor-de-easing": {
+        "title": "Easing editor",
+        "description": "Build a cubic-bezier curve by dragging control points, with a real animated preview."
       }
     },
     "paletteTool": {
@@ -101,6 +113,20 @@
       "addStop": "ADD COLOR",
       "removeStop": "Remove this color",
       "colorStop": "Gradient color"
+    },
+    "typeScaleTool": {
+      "baseSize": "Base size",
+      "ratio": "Ratio"
+    },
+    "comicShadowTool": {
+      "offset": "Offset",
+      "borderWidth": "Border width",
+      "borderColor": "Border color",
+      "shadowColor": "Shadow color",
+      "panelColor": "Panel color"
+    },
+    "easingTool": {
+      "replay": "REPLAY"
     }
   },
   "Contact": {
