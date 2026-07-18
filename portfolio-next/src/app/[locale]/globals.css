@@ -141,6 +141,44 @@
   }
 }
 
+/* Skip-to-content: oculto visualmente hasta recibir foco por teclado. No se
+   usa `focus:not-sr-only` de Tailwind porque `not-sr-only` bajo el variant
+   `focus:` no revierte de forma fiable el clip de `sr-only` (queda 1×1 aun
+   enfocado — verificado con getComputedStyle). Esta clase explícita es
+   determinista: fuera de foco colapsa a 1×1 clippeado; al enfocar se
+   restaura a un botón visible fijo arriba a la izquierda. */
+.skip-link {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.skip-link:focus {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 100;
+  width: auto;
+  height: auto;
+  margin: 0;
+  clip: auto;
+  overflow: visible;
+  white-space: normal;
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--color-ink);
+  border-radius: var(--radius-sm);
+  background: var(--color-cyan);
+  color: var(--color-ink);
+  font-family: var(--font-label);
+  font-size: 0.875rem;
+  letter-spacing: 0.05em;
+}
+
 /* Cursor cómic personalizado — portado de v1 (portfolio-preview/src/App.jsx),
    ver branding-y-filosofia.md §10. Posición y "rebote" al click van en capas
    transform separadas (GPU, will-change) para que no compitan entre sí ni

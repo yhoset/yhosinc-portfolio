@@ -1,13 +1,25 @@
+import type { Metadata } from "next";
 import { useTranslations, hasLocale } from "next-intl";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { getAllProjectsMetadata } from "@/lib/projects";
 import { ProjectCard } from "@/components/projects/project-card";
 import { FloatingGlyph } from "@/components/decor/floating-glyph";
+import { pageMetadata } from "@/lib/metadata";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "Metadata.projects" });
+  return pageMetadata({ locale, path: "/proyectos", title: t("title"), description: t("description") });
 }
 
 export default async function ProjectsPage({

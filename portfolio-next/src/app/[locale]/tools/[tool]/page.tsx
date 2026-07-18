@@ -1,17 +1,36 @@
 import type { ComponentType } from "react";
+import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { useTranslations } from "next-intl";
 import { ArrowLeft } from "lucide-react";
 import { routing } from "@/i18n/routing";
 import { Link } from "@/i18n/navigation";
 import { TOOLS, type ToolId } from "@/lib/tools";
-import { PaletteExtractor } from "@/components/tools/palette-extractor";
-import { GradientGenerator } from "@/components/tools/gradient-generator";
-import { TypeScaleGenerator } from "@/components/tools/type-scale-generator";
-import { ComicShadowGenerator } from "@/components/tools/comic-shadow-generator";
-import { EasingEditor } from "@/components/tools/easing-editor";
-import { Mangafy } from "@/components/tools/mangafy";
+import { pageMetadata } from "@/lib/metadata";
+
+// Cada tool en su propio chunk: las seis viven en este único page.tsx (una
+// sola ruta dinámica /tools/[tool] para todos los slugs), así que importarlas
+// de forma directa las bundlea juntas — visitar /tools/paleta descargaría
+// también el Sobel+halftone de Manga-fy. Con next/dynamic, el navegador solo
+// pide el chunk del tool que realmente se renderiza.
+const PaletteExtractor = dynamic(() =>
+  import("@/components/tools/palette-extractor").then((m) => m.PaletteExtractor)
+);
+const GradientGenerator = dynamic(() =>
+  import("@/components/tools/gradient-generator").then((m) => m.GradientGenerator)
+);
+const TypeScaleGenerator = dynamic(() =>
+  import("@/components/tools/type-scale-generator").then((m) => m.TypeScaleGenerator)
+);
+const ComicShadowGenerator = dynamic(() =>
+  import("@/components/tools/comic-shadow-generator").then((m) => m.ComicShadowGenerator)
+);
+const EasingEditor = dynamic(() =>
+  import("@/components/tools/easing-editor").then((m) => m.EasingEditor)
+);
+const Mangafy = dynamic(() => import("@/components/tools/mangafy").then((m) => m.Mangafy));
 
 // Lista cerrada: solo los slugs de TOOLS generan una ruta válida — cualquier
 // otro valor de [tool] cae en notFound() sin intentar resolver nada
@@ -20,6 +39,24 @@ export const dynamicParams = false;
 
 export function generateStaticParams() {
   return routing.locales.flatMap((locale) => TOOLS.map((tool) => ({ locale, tool: tool.id })));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; tool: string }>;
+}): Promise<Metadata> {
+  const { locale, tool } = await params;
+  const meta = TOOLS.find((t) => t.id === tool);
+  if (!meta) notFound();
+
+  const t = await getTranslations({ locale, namespace: `Tools.items.${meta.id}` });
+  return pageMetadata({
+    locale,
+    path: `/tools/${meta.id}`,
+    title: t("title"),
+    description: t("description"),
+  });
 }
 
 const TOOL_COMPONENTS: Record<ToolId, ComponentType> = {

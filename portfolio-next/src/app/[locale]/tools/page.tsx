@@ -1,11 +1,23 @@
+import type { Metadata } from "next";
 import { useTranslations } from "next-intl";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { TOOLS } from "@/lib/tools";
 import { ToolCard } from "@/components/tools/tool-card";
+import { pageMetadata } from "@/lib/metadata";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "Tools" });
+  return pageMetadata({ locale, path: "/tools", title: t("title"), description: t("body") });
 }
 
 export default async function ToolsPage({

@@ -14,6 +14,7 @@ const MIN_STOPS = 2;
 
 export function GradientGenerator() {
   const t = useTranslations("Tools.gradientTool");
+  const tCommon = useTranslations("Tools");
   const nextId = useRef(2);
   const [type, setType] = useState<GradientType>("linear");
   const [angle, setAngle] = useState(135);
@@ -131,7 +132,12 @@ export function GradientGenerator() {
         <code className="flex-1 overflow-x-auto font-mono text-xs whitespace-nowrap text-white/80">
           {declaration}
         </code>
-        <button type="button" onClick={() => copyCss(declaration)} className="btn-manga cyan shrink-0 px-3 py-1.5 text-sm">
+        <button
+          type="button"
+          onClick={() => copyCss(declaration)}
+          aria-label={tCommon("copyValue")}
+          className="btn-manga cyan shrink-0 px-3 py-1.5 text-sm"
+        >
           {copied ? <Check size={16} /> : <Copy size={16} />}
         </button>
       </div>

@@ -7,6 +7,7 @@ import { useCopyToClipboard } from "@/lib/use-copy-to-clipboard";
 
 export function ComicShadowGenerator() {
   const t = useTranslations("Tools.comicShadowTool");
+  const tCommon = useTranslations("Tools");
   const [offset, setOffset] = useState(6);
   const [borderWidth, setBorderWidth] = useState(3);
   const [borderColor, setBorderColor] = useState("#0a0a0f");
@@ -96,7 +97,12 @@ export function ComicShadowGenerator() {
 
       <div className="flex items-start gap-3 rounded-[var(--radius-cartoon)] border-2 border-ink bg-panel-bg-alt px-3 py-2.5">
         <pre className="flex-1 overflow-x-auto font-mono text-xs whitespace-pre text-white/80">{css}</pre>
-        <button type="button" onClick={() => copy(css)} className="btn-manga cyan shrink-0 px-3 py-1.5 text-sm">
+        <button
+          type="button"
+          onClick={() => copy(css)}
+          aria-label={tCommon("copyValue")}
+          className="btn-manga cyan shrink-0 px-3 py-1.5 text-sm"
+        >
           {copiedValue === css ? <Check size={16} /> : <Copy size={16} />}
         </button>
       </div>

@@ -283,6 +283,29 @@ producción. En la práctica: el gate de verificación de cada fase corre
 `.next` limpio — nunca "build para verificar" seguido de "dev para
 probar en el navegador" sin borrar `.next` en el medio.
 
+### 8.5 `opengraph-image.tsx` debe vivir dentro de `[locale]/`, no en la raíz de `app/` (Fase 9, 2026-07-18)
+
+Confirmado: con `opengraph-image.tsx` en la raíz de `app/`, la imagen **no
+aparecía** como `og:image`/`twitter:image` en el `<head>` de las páginas de
+`[locale]`. Causa: `app/` no tiene un root layout propio — tanto `[locale]`
+como `admin` traen su **propio** `<html>/<body>` (patrón "multiple root
+layouts", ver §4 y `src/app/admin/layout.tsx`), así que un
+`opengraph-image` colgado de la raíz no queda asociado a ninguna cadena de
+layout y Next no lo inyecta. Además, servido desde la raíz su URL sería
+`/opengraph-image` (sin locale), y el middleware de next-intl la reescribe a
+`/es/opengraph-image` → 404 (confirmado en los logs de `next dev`).
+
+**Fix**: mover el archivo a `src/app/[locale]/opengraph-image.tsx`. Ahí
+queda colocado junto al root layout de `[locale]`, hereda el param `locale`
+(su URL pasa a ser `/es/opengraph-image`, una ruta localizada normal que el
+middleware ya maneja sin reescrituras raras) y Next inyecta solo el
+`og:image`/`twitter:image` automáticamente. No hace falta tocar el matcher
+de `proxy.ts`.
+
+**Cómo verificar que sigue resuelto**: en `next dev`, pegarle a `/es` y
+confirmar que el `<head>` trae `<meta property="og:image">` con una URL
+`.../es/opengraph-image?<hash>` (y el `twitter:image` equivalente).
+
 ## 9. Fases de construcción (propuesta)
 
 > **Todo el trabajo es local hasta la fase final.** El usuario pidió

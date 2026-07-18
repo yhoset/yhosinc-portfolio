@@ -1,13 +1,36 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
-import { getProjectSlugs } from "@/lib/projects";
+import { getProjectMetadata, getProjectSlugs } from "@/lib/projects";
+import { pageMetadata } from "@/lib/metadata";
 
 export function generateStaticParams() {
   return routing.locales.flatMap((locale) =>
     getProjectSlugs().map((slug) => ({ locale, slug }))
   );
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}): Promise<Metadata> {
+  const { locale, slug } = await params;
+  if (!hasLocale(routing.locales, locale) || !getProjectSlugs().includes(slug)) {
+    notFound();
+  }
+
+  const meta = await getProjectMetadata(slug, locale as (typeof routing.locales)[number]);
+  if (!meta) notFound();
+
+  return pageMetadata({
+    locale,
+    path: `/proyectos/${slug}`,
+    title: meta.title,
+    description: meta.blurb,
+  });
 }
 
 // Ninguna ruta fuera de generateStaticParams se renderiza on-demand — un

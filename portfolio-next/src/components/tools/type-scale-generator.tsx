@@ -21,6 +21,7 @@ const MAX_PREVIEW_PX = 46; // evita que un paso grande rompa el layout del previ
 
 export function TypeScaleGenerator() {
   const t = useTranslations("Tools.typeScaleTool");
+  const tCommon = useTranslations("Tools");
   const [base, setBase] = useState(16);
   const [ratio, setRatio] = useState(1.25);
   const { copiedValue, copy } = useCopyToClipboard();
@@ -102,7 +103,12 @@ export function TypeScaleGenerator() {
 
       <div className="flex items-start gap-3 rounded-[var(--radius-cartoon)] border-2 border-ink bg-panel-bg-alt px-3 py-2.5">
         <pre className="flex-1 overflow-x-auto font-mono text-xs whitespace-pre text-white/80">{fullCss}</pre>
-        <button type="button" onClick={() => copy(fullCss)} className="btn-manga cyan shrink-0 px-3 py-1.5 text-sm">
+        <button
+          type="button"
+          onClick={() => copy(fullCss)}
+          aria-label={tCommon("copyValue")}
+          className="btn-manga cyan shrink-0 px-3 py-1.5 text-sm"
+        >
           {copiedValue === fullCss ? <Check size={16} /> : <Copy size={16} />}
         </button>
       </div>

@@ -262,7 +262,12 @@ export function Mangafy() {
       <div
         className={`relative mt-6 mb-5 flex justify-center overflow-hidden rounded-[var(--radius-cartoon)] border-2 border-ink bg-white ${hasImage ? "" : "hidden"}`}
       >
-        <canvas ref={outputCanvasRef} className="h-auto max-w-full" />
+        <canvas
+          ref={outputCanvasRef}
+          role="img"
+          aria-label={t("resultAlt")}
+          className="h-auto max-w-full"
+        />
         {isProcessing && (
           <div className="absolute inset-0 flex items-center justify-center bg-ink/60">
             <Wand2 size={28} className="animate-pulse text-cyan" />

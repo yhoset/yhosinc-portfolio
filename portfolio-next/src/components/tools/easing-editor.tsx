@@ -39,6 +39,7 @@ function fromSvg(sx: number, sy: number): Point {
 
 export function EasingEditor() {
   const t = useTranslations("Tools.easingTool");
+  const tCommon = useTranslations("Tools");
   const svgRef = useRef<SVGSVGElement>(null);
   const [p1, setPoint1] = useState<Point>({ x: 0.22, y: 1 });
   const [p2, setPoint2] = useState<Point>({ x: 0.36, y: 1 });
@@ -181,6 +182,7 @@ export function EasingEditor() {
             <button
               type="button"
               onClick={() => copy(bezierString)}
+              aria-label={tCommon("copyValue")}
               className="btn-manga cyan shrink-0 px-3 py-1.5 text-sm"
             >
               {copiedValue === bezierString ? <Check size={16} /> : <Copy size={16} />}
