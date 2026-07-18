@@ -18,17 +18,16 @@ const CYAN = "#00f5ff";
 // nunca ocurre en la práctica).
 function LowPolyHead() {
   const tiltRef = useRef<THREE.Group>(null);
-  const target = useRef({ x: 0, y: 0 });
+  const target = useRef({ x: 0 });
 
   useFrame((state, delta) => {
     const pointer = state.pointer; // -1..1, normalizado a todo el viewport
+    // Solo inclinación vertical (arriba/abajo) — sin giro lateral izq/der.
     target.current.x = pointer.y * 0.3;
-    target.current.y = pointer.x * 0.45;
 
     if (!tiltRef.current) return;
     // Lerp suave hacia el objetivo — nunca un salto brusco al cambiar de foco.
     tiltRef.current.rotation.x = THREE.MathUtils.damp(tiltRef.current.rotation.x, target.current.x, 4, delta);
-    tiltRef.current.rotation.y = THREE.MathUtils.damp(tiltRef.current.rotation.y, target.current.y, 4, delta);
   });
 
   const eyeGeometry = useMemo(() => new THREE.SphereGeometry(0.09, 8, 8), []);
