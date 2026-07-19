@@ -2,7 +2,7 @@
 
 import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
-import { db } from "@/server/db/client";
+import { getDb } from "@/server/db/client";
 import { adminUsers } from "@/server/db/schema";
 import { adminLoginSchema } from "@/server/actions/schemas";
 import { createAdminSession, destroyAdminSession } from "@/server/auth/session";
@@ -28,6 +28,7 @@ export async function loginAdmin(_prev: AdminLoginState, formData: FormData): Pr
 
   const { email, password } = parsed.data;
 
+  const db = await getDb();
   const [admin] = await db.select().from(adminUsers).where(eq(adminUsers.email, email)).limit(1);
   if (!admin) {
     return { ok: false, error: "Credenciales incorrectas" };

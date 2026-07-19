@@ -1,7 +1,7 @@
 "use server";
 
 import { eq, desc, sql } from "drizzle-orm";
-import { db } from "@/server/db/client";
+import { getDb } from "@/server/db/client";
 import { contactMessages, analyticsEvents, comments, visitorUsers } from "@/server/db/schema";
 import { moderateCommentSchema } from "@/server/actions/schemas";
 import { getAdminSession } from "@/server/auth/session";
@@ -18,11 +18,13 @@ async function requireAdmin() {
 
 export async function getMessages() {
   await requireAdmin();
+  const db = await getDb();
   return db.select().from(contactMessages).orderBy(desc(contactMessages.createdAt));
 }
 
 export async function getAnalyticsSummary() {
   await requireAdmin();
+  const db = await getDb();
 
   const [[{ count: totalPageviews }], [{ count: totalProjectViews }], byProject] = await Promise.all([
     db
@@ -51,6 +53,7 @@ export async function getAnalyticsSummary() {
 
 export async function getAllComments() {
   await requireAdmin();
+  const db = await getDb();
   return db
     .select({
       id: comments.id,
@@ -74,6 +77,7 @@ export async function moderateComment(id: number, status: "approved" | "rejected
     throw new Error("Datos inválidos");
   }
 
+  const db = await getDb();
   const [updated] = await db
     .update(comments)
     .set({ status: parsed.data.status })

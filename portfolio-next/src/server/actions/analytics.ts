@@ -1,6 +1,6 @@
 "use server";
 
-import { db } from "@/server/db/client";
+import { getDb } from "@/server/db/client";
 import { analyticsEvents } from "@/server/db/schema";
 import { analyticsEventSchema } from "@/server/actions/schemas";
 import { rateLimit } from "@/server/lib/rate-limit";
@@ -15,6 +15,7 @@ export async function trackEvent(type: "pageview" | "project_view", projectSlug?
   if (!parsed.success) return;
 
   try {
+    const db = await getDb();
     await db.insert(analyticsEvents).values({
       type: parsed.data.type,
       projectSlug: parsed.data.projectSlug ?? null,

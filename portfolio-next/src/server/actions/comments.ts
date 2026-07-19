@@ -1,7 +1,7 @@
 "use server";
 
 import { and, eq, desc } from "drizzle-orm";
-import { db } from "@/server/db/client";
+import { getDb } from "@/server/db/client";
 import { comments, visitorUsers } from "@/server/db/schema";
 import { commentSchema } from "@/server/actions/schemas";
 import { getVisitorSession } from "@/server/auth/session";
@@ -11,6 +11,7 @@ import { getClientIp } from "@/server/lib/client-ip";
 export type CommentState = { ok: boolean; error?: string };
 
 export async function getApprovedComments(projectSlug: string) {
+  const db = await getDb();
   const rows = await db
     .select({
       id: comments.id,
@@ -45,6 +46,7 @@ export async function createComment(_prev: CommentState, formData: FormData): Pr
     return { ok: false, error: "Datos inválidos" };
   }
 
+  const db = await getDb();
   await db.insert(comments).values({
     projectSlug: parsed.data.projectSlug,
     content: parsed.data.content,

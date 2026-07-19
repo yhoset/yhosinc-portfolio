@@ -2,7 +2,7 @@
 
 import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
-import { db } from "@/server/db/client";
+import { getDb } from "@/server/db/client";
 import { visitorUsers } from "@/server/db/schema";
 import { visitorRegisterSchema, visitorLoginSchema } from "@/server/actions/schemas";
 import { createVisitorSession, destroyVisitorSession } from "@/server/auth/session";
@@ -34,6 +34,7 @@ export async function registerVisitor(_prev: VisitorAuthState, formData: FormDat
 
   const { name, email, password } = parsed.data;
 
+  const db = await getDb();
   const [existing] = await db.select().from(visitorUsers).where(eq(visitorUsers.email, email)).limit(1);
   if (existing) {
     return { ok: false, error: "Ya existe una cuenta con ese email" };
@@ -63,6 +64,7 @@ export async function loginVisitor(_prev: VisitorAuthState, formData: FormData):
 
   const { email, password } = parsed.data;
 
+  const db = await getDb();
   const [visitor] = await db.select().from(visitorUsers).where(eq(visitorUsers.email, email)).limit(1);
   if (!visitor) {
     return { ok: false, error: "Credenciales incorrectas" };

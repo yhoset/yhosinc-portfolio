@@ -1,25 +1,30 @@
 import { drizzle } from "drizzle-orm/libsql";
+import type { LibSQLDatabase } from "drizzle-orm/libsql";
 import { createClient } from "@libsql/client";
+import { getEnv } from "@/server/lib/env";
 import * as schema from "./schema";
 
-// En local, DATABASE_URL es un archivo sqlite (file:./dev.db) — no se toca
-// Turso hasta que el proyecto lo requiera explícitamente. TURSO_AUTH_TOKEN
-// solo aplica contra una URL libsql:// remota, no contra un archivo local.
-//
-// Nota (Fase 6, confirmado con una ruta de diagnóstico temporal): en este
-// adaptador (@opennextjs/cloudflare) las vars de .dev.vars / secrets de
-// Cloudflare NO llegan a process.env — se leen vía getCloudflareContext().env
-// (ver server/lib/env.ts, ya usado en auth/jwt.ts y lib/mailer.ts). Acá se
-// deja process.env con fallback a propósito porque este archivo crea el
-// client al cargar el módulo (top-level), no dentro de un request, y
-// mientras la Fase 6 trabaja 100% contra el archivo local (nunca Turso real)
-// el fallback ya resuelve al valor correcto. Pendiente antes de la Fase 10
-// (cuando esto sí tenga que apuntar a la Turso de producción): convertir
-// `db` en un singleton lazy que lea DATABASE_URL/TURSO_AUTH_TOKEN vía
-// getEnv() en el primer uso real.
-const client = createClient({
-  url: process.env.DATABASE_URL ?? "file:./dev.db",
-  authToken: process.env.TURSO_AUTH_TOKEN,
-});
+// Fase 10: `db` pasó de ser un cliente creado a nivel de módulo (con
+// fallback a process.env) a un singleton lazy — DATABASE_URL/TURSO_AUTH_TOKEN
+// ahora se leen vía getEnv() (ver server/lib/env.ts), que en Cloudflare
+// Workers lee el binding real de wrangler y en local cae a process.env. No
+// se puede crear el cliente a nivel de módulo porque getEnv() es async
+// (depende de getCloudflareContext()), así que cada Server Action pide el
+// cliente con `const db = await getDb()` en vez de importar `db` directo.
+// La promesa se cachea: la primera llamada crea el cliente, las siguientes
+// reusan la misma instancia dentro del mismo Worker.
+let dbPromise: Promise<LibSQLDatabase<typeof schema>> | null = null;
 
-export const db = drizzle(client, { schema });
+async function createDb() {
+  const url = (await getEnv("DATABASE_URL")) ?? "file:./dev.db";
+  const authToken = await getEnv("TURSO_AUTH_TOKEN");
+  const client = createClient({ url, authToken });
+  return drizzle(client, { schema });
+}
+
+export function getDb() {
+  if (!dbPromise) {
+    dbPromise = createDb();
+  }
+  return dbPromise;
+}

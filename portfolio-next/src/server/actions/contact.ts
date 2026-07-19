@@ -1,6 +1,6 @@
 "use server";
 
-import { db } from "@/server/db/client";
+import { getDb } from "@/server/db/client";
 import { contactMessages } from "@/server/db/schema";
 import { contactSchema } from "@/server/actions/schemas";
 import { sendContactEmail, sendVisitorConfirmationEmail } from "@/server/lib/mailer";
@@ -55,6 +55,7 @@ export async function submitContactMessage(
   const { name, email, message } = parsed.data;
 
   try {
+    const db = await getDb();
     await db.insert(contactMessages).values({ name, email, message });
   } catch (err) {
     console.error("No se pudo guardar el mensaje de contacto:", err);
