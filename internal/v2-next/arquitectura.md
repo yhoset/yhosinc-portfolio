@@ -201,15 +201,23 @@ runtime, que sí es compatible con Workers/OpenNext. **Revertir a `proxy.ts`
 en cuanto OpenNext libere soporte para Node.js middleware** — revisar el
 issue de arriba antes de cada actualización de `@opennextjs/cloudflare`.
 
-**Importante — esto solo aplica al build de Cloudflare, no al día a día**:
-como el build/deploy real quedó como Fase 10 (ver §9), durante el desarrollo
-local de las fases intermedias el proyecto usa `src/proxy.ts` (la convención
-nativa de Next 16) — `next dev` corre en Node.js normal, no en Workers, así
-que no pisa esta limitación y Turbopack en modo dev ni siquiera reconoce
-`middleware.ts` como un export válido (da error distinto:
-"Middleware is missing expected function export name"). El swap a
-`middleware.ts`/Edge runtime se hace **solo** justo antes de validar el
-build de OpenNext/Cloudflare (Fase 10), no antes.
+**Actualización (Fase 10, 2026-07-18) — el swap ya no hace falta revertirlo**:
+durante las Fases 1-9 el proyecto usó `src/proxy.ts` (convención nativa de
+Next 16) para desarrollo local, con la idea de que `middleware.ts` rompía
+`next dev`/Turbopack. Al hacer el swap real para la Fase 10 se confirmó que
+eso dependía de la forma del export: `export default createMiddleware(...)`
+(la forma de `proxy.ts`) sí falla bajo `middleware.ts` con "Middleware is
+missing expected function export name", pero la forma correcta de
+`middleware.ts` — `export const middleware = createMiddleware(...)` — corre
+bien bajo `next dev`/Turbopack, solo con un warning de deprecación ("The
+'middleware' file convention is deprecated. Please use 'proxy' instead"),
+sin errores. Verificado: `/es`, `/es/tools/mangafy` y el redirect de locale
+(`/fr` → 307 → `/es/fr` → 404) funcionan igual que antes con
+`src/middleware.ts` en su lugar. **Conclusión**: el archivo puede quedarse
+como `middleware.ts` de forma permanente (no hace falta revertir a
+`proxy.ts` después de cada build de Cloudflare) — volver a `proxy.ts` recién
+cuando OpenNext libere soporte real para el proxy Node.js (issue de arriba),
+momento en el que el warning de deprecación deja de tener sentido ignorar.
 
 ### 8.2 Limitación conocida: Turbopack vs OpenNext (2026-07-15)
 
@@ -305,6 +313,77 @@ de `proxy.ts`.
 **Cómo verificar que sigue resuelto**: en `next dev`, pegarle a `/es` y
 confirmar que el `<head>` trae `<meta property="og:image">` con una URL
 `.../es/opengraph-image?<hash>` (y el `twitter:image` equivalente).
+
+### 8.6 `outputFileTracingIncludes` necesario para `@libsql/client` en el build de OpenNext (Fase 10, 2026-07-18)
+
+Confirmado: el primer build real de `opennextjs-cloudflare build` (tras
+convertir `getDb()` en singleton lazy, Fase 10) falló con
+`Could not resolve "@libsql/client"` en **toda** página que usa Server
+Actions con DB (home, contacto, proyectos, roadmap, admin, sobre-mi).
+Causa: `@libsql/client` resuelve su entrypoint según la condición de
+export activa (`package.json` → `exports["."].import`) — para el runtime
+`workerd` (el que usa Cloudflare Workers) apunta a `lib-esm/web.js`, un
+archivo que **sí existe** en el `node_modules` real del proyecto. Pero el
+[output file tracing](https://nextjs.org/docs/app/api-reference/config/next-config-js/output#automatically-copying-traced-files)
+de Next (`@vercel/nft`) solo sigue estáticamente la rama `node`/`require`
+por defecto al decidir qué copiar a `.open-next/server-functions/.../node_modules/`
+— nunca ve la rama `workerd`, así que `lib-esm/web.js` queda afuera de la
+copia trazada aunque exista en el original. Al arreglar eso, el mismo
+problema reapareció un nivel más adentro: `@libsql/client` →
+`@libsql/hrana-client` → `@libsql/isomorphic-ws`, que tiene el mismo patrón
+(`"workerd": "./web.mjs"` no trazado).
+
+**Fix**: `outputFileTracingIncludes` en `next.config.ts` forzando la copia
+de todo `node_modules/@libsql/**/*` para todas las rutas (`"/*"`) — más
+simple y a prueba de futuros eslabones de la cadena que ir agregando
+archivo por archivo cada vez que aparece un nuevo "Could not resolve".
+
+**Cómo verificar que sigue resuelto**: `rm -rf .next .open-next && npx opennextjs-cloudflare build`
+debe terminar en "OpenNext build complete." sin errores de esbuild
+mencionando `@libsql`. Si una futura actualización de `@libsql/client`
+agrega otra dependencia con el mismo patrón de exports condicionales, va a
+volver a fallar con "Could not resolve" — ampliar el glob de
+`outputFileTracingIncludes` en ese momento, no volver a diagnosticar desde
+cero.
+
+### 8.7 `dynamicParams = false` produce 404 (`NoFallbackError`) en rutas anidadas bajo Cloudflare Workers (Fase 10, 2026-07-18)
+
+Confirmado con `wrangler dev` real (no `next dev`, no `next start` — solo
+aparece bajo el runtime real de Workers): `/tools/[tool]` y
+`/proyectos/[slug]` — las dos rutas de "lista cerrada" del proyecto, ambas
+con `export const dynamicParams = false` — devolvían **404 incluso para
+slugs válidos** listados en `generateStaticParams` (ej. `/es/tools/mangafy`,
+un tool real). Los logs del Worker mostraban
+`Uncaught Error: Internal: NoFallbackError` (clase interna de Next,
+`next/dist/.../no-fallback-error.external.js`), lanzada desde
+`app-page.js` cuando el runtime concluye que un path no fue pre-renderado
+(`!isPrerendered`) y `dynamicParams` no permite fallback dinámico. Rutas con
+un solo segmento dinámico (`/es`, `/es/skills`, `/es/proyectos`, etc., **sin**
+`dynamicParams = false`) funcionaban bien — el patrón se repite
+específicamente en rutas con **dos segmentos dinámicos anidados**
+(`[locale]/tools/[tool]`, `[locale]/proyectos/[slug]`) combinados con
+`dynamicParams = false`. Coincide con un patrón de bugs ya reportado en
+`@opennextjs/cloudflare` para esta combinación (ver
+[opennextjs/opennextjs-cloudflare#611](https://github.com/opennextjs/opennextjs-cloudflare/issues/611),
+paquete ya en su última versión, `1.20.1` — no hay update disponible que lo
+resuelva).
+
+**Fix**: `dynamicParams = true` en ambas rutas (no `false`). Esto **no**
+reabre la ruta a resolución arbitraria: las dos ya tenían un chequeo manual
+de defensa en profundidad (`TOOLS.find(...)` / `if (!meta) notFound()` en
+tools, `getProjectSlugs().includes(slug)` en proyectos, corrido **antes**
+de cualquier import dinámico) que sigue cortando cualquier slug fuera de la
+lista con un 404 limpio — verificado explícitamente con
+`/es/tools/no-existe` y `/es/proyectos/no-existe` (ambos 404 bajo
+`wrangler dev` real, tras el cambio). El único cambio real es *dónde* se
+aplica el corte: antes lo hacía el build de Next (rechazando el request
+antes de ejecutar código de la página), ahora lo hace el código de la
+página misma — el resultado observable para un visitante es idéntico.
+
+**Cómo verificar que sigue resuelto**: `rm -rf .next .open-next && npx opennextjs-cloudflare build && npx wrangler dev --port 8788`,
+después confirmar con `curl` que **todos** los slugs listados en
+`TOOLS`/`PROJECT_SLUGS` devuelven 200 y que un slug inventado devuelve 404,
+para ambas rutas y ambos locales.
 
 ## 9. Fases de construcción (propuesta)
 

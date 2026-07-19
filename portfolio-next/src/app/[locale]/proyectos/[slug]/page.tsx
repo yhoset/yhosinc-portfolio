@@ -33,11 +33,20 @@ export async function generateMetadata({
   });
 }
 
-// Ninguna ruta fuera de generateStaticParams se renderiza on-demand — un
-// slug que no esté en la lista cerrada de src/lib/projects.ts da 404
-// directo, nunca intenta importar un archivo arbitrario. Ver
-// seguridad-y-optimizacion.md y src/content/projects/README.md.
-export const dynamicParams = false;
+// Lista cerrada: un slug que no esté en src/lib/projects.ts da 404 directo,
+// nunca intenta importar un archivo arbitrario. Ver seguridad-y-optimizacion.md
+// y src/content/projects/README.md.
+//
+// dynamicParams=true (no false) a propósito: con @opennextjs/cloudflare
+// 1.20.1, dynamicParams=false hace que el runtime de Cloudflare Workers
+// rechace con NoFallbackError (404) incluso los slugs VÁLIDOS listados en
+// generateStaticParams — confirmado con wrangler dev real en /tools/[tool],
+// mismo patrón de ruta (arquitectura.md §8.7). El corte de la lista cerrada
+// lo siguen garantizando los chequeos manuales de abajo
+// (`getProjectSlugs().includes(slug)`, en generateMetadata Y en el default
+// export, antes del import dinámico del MDX) — ya existían como defensa en
+// profundidad, dynamicParams=true solo cambia DÓNDE se aplica el corte.
+export const dynamicParams = true;
 
 export default async function ProjectPage({
   params,

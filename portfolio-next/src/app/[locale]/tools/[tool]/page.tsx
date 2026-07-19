@@ -35,7 +35,17 @@ const Mangafy = dynamic(() => import("@/components/tools/mangafy").then((m) => m
 // Lista cerrada: solo los slugs de TOOLS generan una ruta válida — cualquier
 // otro valor de [tool] cae en notFound() sin intentar resolver nada
 // dinámicamente (mismo criterio de seguridad que /proyectos/[slug]).
-export const dynamicParams = false;
+//
+// dynamicParams=true (no false) a propósito, pese al patrón de "lista
+// cerrada": con @opennextjs/cloudflare 1.20.1, dynamicParams=false hace que
+// el runtime de Cloudflare Workers rechace con NoFallbackError (404) incluso
+// los slugs VÁLIDOS listados en generateStaticParams — confirmado con
+// wrangler dev real (arquitectura.md §8.7). El cierre de la lista lo sigue
+// garantizando el chequeo manual de abajo (`if (!meta) notFound()`), que ya
+// existía como defensa en profundidad — dynamicParams=true solo cambia
+// DÓNDE se aplica el corte (código de la página, no el build de Next),
+// nunca lo elimina.
+export const dynamicParams = true;
 
 export function generateStaticParams() {
   return routing.locales.flatMap((locale) => TOOLS.map((tool) => ({ locale, tool: tool.id })));

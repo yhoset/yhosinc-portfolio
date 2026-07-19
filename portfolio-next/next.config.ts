@@ -17,6 +17,19 @@ const nextConfig: NextConfig = {
   // ver herramientas.md. No se usan como rutas de archivo directas, solo
   // como imports dinámicos desde src/content/projects/.
   pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
+  // Fase 10: @libsql/client (y su cadena de dependencias — hrana-client,
+  // isomorphic-ws) resuelve bajo la condición de export "workerd" (la que
+  // usa el bundle de Cloudflare Workers), pero el output file tracing de
+  // Next solo sigue la rama "node" por defecto al analizar requires
+  // estáticamente — nunca copia los archivos *.workerd.js/web.js/web.mjs
+  // correspondientes, y el build de OpenNext falla con "Could not resolve"
+  // en cascada (primero @libsql/client, después @libsql/isomorphic-ws)
+  // en cualquier página que llegue a getDb(). Confirmado en el build real
+  // (arquitectura.md §8.6) — se incluye todo el scope @libsql en vez de ir
+  // agregando archivo por archivo cada vez que aparece un nuevo eslabón.
+  outputFileTracingIncludes: {
+    "/*": ["node_modules/@libsql/**/*"],
+  },
 };
 
 export default withNextIntl(withMDX(nextConfig));
