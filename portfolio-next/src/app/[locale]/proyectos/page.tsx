@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { useTranslations, hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { getAllProjectsMetadata } from "@/lib/projects";
-import { ProjectCard } from "@/components/projects/project-card";
+import { FilteredProjectsGrid } from "@/components/projects/filtered-projects-grid";
 import { FloatingGlyph } from "@/components/decor/floating-glyph";
 import { pageMetadata } from "@/lib/metadata";
 
@@ -62,15 +63,12 @@ function ProjectsList({
     <div className="halftone-bg min-h-[calc(100vh-4rem)] px-4 py-16 sm:px-6">
       <div className="mx-auto max-w-6xl">
         <h1 className="section-title-panel mb-10">{t("title")}</h1>
-        <div className="columns-1 gap-6 sm:columns-2 lg:columns-3">
-          {projects.map((project, i) => (
-            <ProjectCard
-              key={project.slug}
-              project={project}
-              chapter={String(i + 1).padStart(2, "0")}
-            />
-          ))}
-        </div>
+        {/* useSearchParams (para el filtro ?skill=) necesita un límite de
+            Suspense — el resto de la página sigue prerenderizándose estático,
+            solo esta parte se hidrata en el cliente. */}
+        <Suspense fallback={null}>
+          <FilteredProjectsGrid projects={projects} />
+        </Suspense>
       </div>
     </div>
   );

@@ -69,12 +69,16 @@
   "Projects": {
     "title": "Projects",
     "emptyTitle": "No chapters published yet",
-    "emptyBody": "Case studies are coming soon — in the meantime, you can check the project roadmap at internal/v2-next/arquitectura.md."
+    "emptyBody": "Case studies are coming soon — in the meantime, you can check the project roadmap at internal/v2-next/arquitectura.md.",
+    "filteredBy": "Showing projects using {skill}",
+    "clearFilter": "View all",
+    "emptyFilteredBody": "No published projects use this skill yet."
   },
   "Skills": {
     "eyebrow": "STACK & SKILLS",
     "title": "Skills",
     "filterLabel": "Filter by discipline",
+    "viewProjects": "view projects",
     "filters": {
       "all": "ALL",
       "programming": "PROGRAMMING",

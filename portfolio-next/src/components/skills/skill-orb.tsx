@@ -2,11 +2,19 @@
 
 import { motion } from "motion/react";
 import type { LucideIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import type { Skill } from "@/lib/skills";
 
 const CIRCUMFERENCE = 283; // 2πr para r=45, igual que v1
 const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 const HOVER_SPRING = { type: "spring", stiffness: 340, damping: 22 } as const;
+
+// Envuelve el Link de next-intl (no un <div>) para que el gesto de Motion
+// (whileHover/whileFocus) se dispare sobre el mismo nodo que de verdad
+// recibe el foco de teclado y el click — si el <a> quedara afuera del
+// árbol de Motion, enfocar con Tab no dispararía la animación de hover.
+const MotionLink = motion.create(Link);
 
 export function SkillOrb({
   skill,
@@ -19,21 +27,21 @@ export function SkillOrb({
   Icon: LucideIcon;
   index: number;
 }) {
+  const t = useTranslations("Skills");
   const offset = CIRCUMFERENCE - (skill.level / 100) * CIRCUMFERENCE;
   const delay = index * 0.08;
 
   return (
-    <motion.div
-      className="flex flex-col items-center gap-2"
+    <MotionLink
+      href={`/proyectos?skill=${skill.id}`}
+      className="flex flex-col items-center gap-2 focus:outline-none"
       initial={{ opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
       whileHover="hover"
       whileFocus="hover"
       variants={{ hover: { y: -6, transition: HOVER_SPRING } }}
       transition={{ duration: 0.4, delay, ease: EASE_OUT }}
-      tabIndex={0}
-      role="group"
-      aria-label={`${label} ${skill.level}%`}
+      aria-label={`${label} ${skill.level}% — ${t("viewProjects")}`}
     >
       <motion.div
         className="relative w-full max-w-[140px] aspect-square"
@@ -81,6 +89,6 @@ export function SkillOrb({
       >
         {label}
       </motion.div>
-    </motion.div>
+    </MotionLink>
   );
 }

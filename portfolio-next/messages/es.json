@@ -69,12 +69,16 @@
   "Projects": {
     "title": "Proyectos",
     "emptyTitle": "Todavía no hay capítulos publicados",
-    "emptyBody": "Los case studies llegan pronto — mientras tanto, podés ver el roadmap del proyecto en internal/v2-next/arquitectura.md."
+    "emptyBody": "Los case studies llegan pronto — mientras tanto, podés ver el roadmap del proyecto en internal/v2-next/arquitectura.md.",
+    "filteredBy": "Mostrando proyectos de {skill}",
+    "clearFilter": "Ver todos",
+    "emptyFilteredBody": "Todavía no hay proyectos publicados que usen esta skill."
   },
   "Skills": {
     "eyebrow": "STACK & SKILLS",
     "title": "Skills",
     "filterLabel": "Filtrar por disciplina",
+    "viewProjects": "ver proyectos",
     "filters": {
       "all": "TODAS",
       "programming": "PROGRAMACIÓN",
