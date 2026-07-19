@@ -1,0 +1,525 @@
+<title>Roadmap — ejemplo de contenido</title>
+<style>
+  :root {
+    --paper: #0a0a0f;
+    --panel: #111118;
+    --panel-alt: #16161f;
+    --ink: #f5f5f7;
+    --muted: rgba(245,245,247,0.62);
+    --muted-2: rgba(245,245,247,0.4);
+    --line: rgba(245,245,247,0.16);
+    --cyan: #00f5ff;
+    --yellow: #ffe000;
+    --red: #ff2d55;
+    --display: "Arial Narrow", "Helvetica Neue Condensed", "Roboto Condensed", Oswald, sans-serif;
+    --body: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --paper: #f7f4ec;
+      --panel: #ffffff;
+      --panel-alt: #fbf8f0;
+      --ink: #0a0a0f;
+      --muted: rgba(10,10,15,0.68);
+      --muted-2: rgba(10,10,15,0.45);
+      --line: rgba(10,10,15,0.16);
+      --cyan: #007286;
+      --yellow: #9c6c00;
+      --red: #c81846;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #0a0a0f; --panel: #111118; --panel-alt: #16161f; --ink: #f5f5f7;
+    --muted: rgba(245,245,247,0.62); --muted-2: rgba(245,245,247,0.4); --line: rgba(245,245,247,0.16);
+    --cyan: #00f5ff; --yellow: #ffe000; --red: #ff2d55;
+  }
+  :root[data-theme="light"] {
+    --paper: #f7f4ec; --panel: #ffffff; --panel-alt: #fbf8f0; --ink: #0a0a0f;
+    --muted: rgba(10,10,15,0.68); --muted-2: rgba(10,10,15,0.45); --line: rgba(10,10,15,0.16);
+    --cyan: #007286; --yellow: #9c6c00; --red: #c81846;
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  .wrap {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--body);
+    min-height: 100%;
+    padding: 2.5rem 1.25rem 4rem;
+    background-image: radial-gradient(var(--line) 1px, transparent 1px);
+    background-size: 15px 15px;
+  }
+  .shell { max-width: 74rem; margin: 0 auto; }
+
+  .eyebrow {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 0.78rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    margin: 0 0 0.6rem;
+  }
+  h1 {
+    font-family: var(--display);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    font-size: clamp(1.8rem, 4.2vw, 2.8rem);
+    line-height: 1.05;
+    margin: 0 0 0.75rem;
+    text-wrap: balance;
+    text-shadow: 3px 3px 0 var(--red);
+  }
+  :root[data-theme="light"] h1, @media (prefers-color-scheme: light) h1 { }
+  .lede {
+    max-width: 46rem;
+    font-size: 1.02rem;
+    line-height: 1.6;
+    color: var(--muted);
+    margin: 0 0 2.75rem;
+  }
+  .lede strong { color: var(--ink); font-weight: 700; }
+
+  /* ---------- tech-tree canvas ---------- */
+  .canvas-frame {
+    position: relative;
+    background: var(--panel-alt);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 1.75rem 1.25rem 1.5rem;
+    overflow-x: auto;
+  }
+  .canvas-inner { min-width: 640px; position: relative; }
+
+  .lane-heads {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+    margin-bottom: 1.1rem;
+  }
+  .lane-head {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 0.82rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding-bottom: 0.6rem;
+    border-bottom: 3px solid var(--dot);
+  }
+  .lane-head .dot { width: 10px; height: 10px; border-radius: 999px; background: var(--dot); flex: none; }
+  .lane-head.code { --dot: var(--cyan); }
+  .lane-head.design { --dot: var(--yellow); }
+  .lane-head.ai { --dot: var(--red); }
+
+  .tree-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto auto auto;
+    gap: 2.5rem 1.25rem;
+    position: relative;
+  }
+  #lines { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+
+  .here-row {
+    grid-row: 2;
+    grid-column: 1 / -1;
+    position: relative;
+    height: 0;
+  }
+  .here-row::before {
+    content: "";
+    position: absolute;
+    left: -1.25rem; right: -1.25rem; top: -1.3rem;
+    border-top: 2px dashed var(--yellow);
+    opacity: 0.55;
+  }
+  .here-tag {
+    position: absolute;
+    top: -2.05rem; left: 50%;
+    transform: translateX(-50%);
+    background: var(--yellow);
+    color: #0a0a0f;
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  .node {
+    position: relative;
+    background: var(--panel);
+    border: 3px solid var(--c);
+    border-radius: 3px;
+    padding: 0.85rem 0.9rem 0.8rem;
+    box-shadow: 5px 5px 0 var(--c);
+    transition: transform 0.15s ease;
+  }
+  .node.code { --c: var(--cyan); }
+  .node.design { --c: var(--yellow); }
+  .node.ai { --c: var(--red); }
+
+  .node.done { opacity: 0.62; }
+  .node.upcoming { opacity: 0.5; border-style: dashed; box-shadow: 4px 4px 0 var(--line); }
+  .node.current { transform: translateY(-2px); }
+
+  .node-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.35rem;
+  }
+  .node-title {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 1.02rem;
+    line-height: 1.15;
+    text-transform: uppercase;
+    letter-spacing: -0.005em;
+  }
+  .status-icon { flex: none; width: 20px; height: 20px; margin-top: 2px; }
+  .node-desc { font-size: 0.82rem; line-height: 1.42; color: var(--muted); margin: 0 0 0.6rem; }
+  .node-foot { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+  .level-chip {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 0.62rem;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--muted-2);
+  }
+  .pwr {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 0.72rem;
+    letter-spacing: 0.03em;
+    color: var(--c);
+  }
+
+  /* ---------- anatomy section ---------- */
+  .section-title {
+    font-family: var(--display);
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 1.3rem;
+    letter-spacing: -0.005em;
+    margin: 3.25rem 0 0.4rem;
+  }
+  .section-sub { color: var(--muted); font-size: 0.94rem; margin: 0 0 1.5rem; max-width: 42rem; line-height: 1.55; }
+
+  .anatomy {
+    display: grid;
+    grid-template-columns: minmax(240px, 320px) 1fr;
+    gap: 2.5rem;
+    align-items: start;
+  }
+  .anatomy-card {
+    position: relative;
+    background: var(--panel);
+    border: 3px solid var(--cyan);
+    border-radius: 3px;
+    padding: 1rem 1.05rem;
+    box-shadow: 6px 6px 0 var(--cyan);
+  }
+  .anatomy-card .node-title { font-size: 1.15rem; }
+  .anatomy-card .node-desc { color: var(--muted); }
+
+  .field-list { display: flex; flex-direction: column; gap: 0.9rem; }
+  .field-row { display: flex; gap: 0.85rem; align-items: flex-start; }
+  .field-key {
+    flex: none; width: 8px; height: 8px; border-radius: 999px;
+    background: var(--cyan); margin-top: 0.45rem;
+  }
+  .field-row:nth-child(2) .field-key { background: var(--yellow); }
+  .field-row:nth-child(3) .field-key { background: var(--red); }
+  .field-row:nth-child(4) .field-key { background: var(--cyan); }
+  .field-row:nth-child(5) .field-key { background: var(--yellow); }
+  .field-row:nth-child(6) .field-key { background: var(--red); }
+  .field-name {
+    font-family: var(--display); font-weight: 800; font-size: 0.78rem;
+    letter-spacing: 0.06em; text-transform: uppercase; margin: 0 0 0.15rem;
+  }
+  .field-desc { font-size: 0.88rem; line-height: 1.5; color: var(--muted); margin: 0; }
+  .field-desc code {
+    background: var(--panel-alt); border: 1px solid var(--line); border-radius: 3px;
+    padding: 0.05rem 0.32rem; font-size: 0.82em;
+  }
+
+  /* ---------- mechanics badges ---------- */
+  .mech-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem; margin-top: 1.75rem; }
+  .mech-card {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 4px;
+    padding: 1rem 1.05rem;
+  }
+  .mech-badge {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    font-family: var(--display); font-weight: 800; font-size: 0.72rem;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 0.22rem 0.6rem; border-radius: 999px; margin-bottom: 0.55rem;
+  }
+  .mech-badge.done { background: var(--muted-2); color: var(--paper); }
+  .mech-badge.current { background: var(--yellow); color: #0a0a0f; }
+  .mech-badge.upcoming { background: transparent; border: 1.5px dashed var(--muted-2); color: var(--muted); }
+  .mech-card p { margin: 0; font-size: 0.86rem; line-height: 1.5; color: var(--muted); }
+
+  /* ---------- footer note ---------- */
+  .foot-note {
+    margin-top: 2.75rem; padding-top: 1.25rem; border-top: 1px solid var(--line);
+    font-size: 0.86rem; color: var(--muted-2); line-height: 1.6;
+  }
+  .foot-note code {
+    background: var(--panel-alt); border: 1px solid var(--line); border-radius: 3px;
+    padding: 0.05rem 0.35rem; color: var(--ink);
+  }
+
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+
+  @media (max-width: 640px) {
+    .anatomy { grid-template-columns: 1fr; }
+    .mech-row { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+
+<div class="wrap">
+  <div class="shell">
+    <p class="eyebrow">Guía — cómo llenar tu Roadmap</p>
+    <h1>Así se vería con contenido real</h1>
+    <p class="lede">
+      Tu <code>/roadmap</code> hoy está vacío a propósito. Esto es un ejemplo con
+      contenido inventado (pero creíble) para que veas <strong>qué forma toma</strong>:
+      tres carriles — Código, Diseño, IA — que suben de junior a senior, con nodos
+      conectados por dependencias y un marcador de dónde estás parado hoy.
+    </p>
+
+    <div class="canvas-frame">
+      <div class="canvas-inner">
+        <div class="lane-heads">
+          <div class="lane-head code"><span class="dot"></span>Código</div>
+          <div class="lane-head design"><span class="dot"></span>Diseño</div>
+          <div class="lane-head ai"><span class="dot"></span>IA</div>
+        </div>
+
+        <div class="tree-grid" id="tree">
+          <svg id="lines"></svg>
+
+          <!-- senior row -->
+          <div class="node code upcoming" data-id="c-senior" data-deps="c-mid,ia-mid" style="grid-column:1; grid-row:1;">
+            <div class="node-top">
+              <span class="node-title">Arquitectura a escala</span>
+              <svg class="status-icon" viewBox="0 0 24 24" fill="none"><rect x="6" y="10" width="12" height="9" rx="1.5" stroke="currentColor" stroke-width="2"/><path d="M8.5 10V7a3.5 3.5 0 0 1 7 0v3" stroke="currentColor" stroke-width="2"/></svg>
+            </div>
+            <p class="node-desc">Sistemas multi-servicio, performance y edge runtimes — se apoya en RSC y en integrar IA en producción.</p>
+            <div class="node-foot"><span class="level-chip">Senior</span><span class="pwr">+900 PWR</span></div>
+          </div>
+
+          <div class="node design upcoming" data-id="d-senior" data-deps="d-mid" style="grid-column:2; grid-row:1;">
+            <div class="node-top">
+              <span class="node-title">Dirección creativa</span>
+              <svg class="status-icon" viewBox="0 0 24 24" fill="none"><rect x="6" y="10" width="12" height="9" rx="1.5" stroke="currentColor" stroke-width="2"/><path d="M8.5 10V7a3.5 3.5 0 0 1 7 0v3" stroke="currentColor" stroke-width="2"/></svg>
+            </div>
+            <p class="node-desc">Identidad de marca, narrativa visual y liderazgo del rumbo de producto.</p>
+            <div class="node-foot"><span class="level-chip">Senior</span><span class="pwr">+900 PWR</span></div>
+          </div>
+
+          <div class="node ai upcoming" data-id="ia-senior" data-deps="ia-mid" style="grid-column:3; grid-row:1;">
+            <div class="node-top">
+              <span class="node-title">Agentes multi-paso</span>
+              <svg class="status-icon" viewBox="0 0 24 24" fill="none"><rect x="6" y="10" width="12" height="9" rx="1.5" stroke="currentColor" stroke-width="2"/><path d="M8.5 10V7a3.5 3.5 0 0 1 7 0v3" stroke="currentColor" stroke-width="2"/></svg>
+            </div>
+            <p class="node-desc">Orquestación de herramientas, memoria y autonomía en tareas largas.</p>
+            <div class="node-foot"><span class="level-chip">Senior</span><span class="pwr">+900 PWR</span></div>
+          </div>
+
+          <!-- "you are here" divider -->
+          <div class="here-row"><span class="here-tag">★ Estás acá</span></div>
+
+          <!-- mid row -->
+          <div class="node code current" data-id="c-mid" data-deps="c-junior" style="grid-column:1; grid-row:3;">
+            <div class="node-top">
+              <span class="node-title">React &amp; Server Components</span>
+              <svg class="status-icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="5" fill="currentColor"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5" opacity="0.4"/></svg>
+            </div>
+            <p class="node-desc">Next.js App Router, RSC y Server Actions — lo que estás afilando ahora mismo.</p>
+            <div class="node-foot"><span class="level-chip">Mid</span><span class="pwr">+500 PWR</span></div>
+          </div>
+
+          <div class="node design current" data-id="d-mid" data-deps="d-junior" style="grid-column:2; grid-row:3;">
+            <div class="node-top">
+              <span class="node-title">Design systems</span>
+              <svg class="status-icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="5" fill="currentColor"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5" opacity="0.4"/></svg>
+            </div>
+            <p class="node-desc">Tokens, componentes reutilizables y documentación que otros puedan seguir.</p>
+            <div class="node-foot"><span class="level-chip">Mid</span><span class="pwr">+500 PWR</span></div>
+          </div>
+
+          <div class="node ai current" data-id="ia-mid" data-deps="ia-junior" style="grid-column:3; grid-row:3;">
+            <div class="node-top">
+              <span class="node-title">RAG &amp; embeddings</span>
+              <svg class="status-icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="5" fill="currentColor"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5" opacity="0.4"/></svg>
+            </div>
+            <p class="node-desc">Bases vectoriales, recuperación de contexto y cómo evaluar si funciona de verdad.</p>
+            <div class="node-foot"><span class="level-chip">Mid</span><span class="pwr">+500 PWR</span></div>
+          </div>
+
+          <!-- junior row -->
+          <div class="node code done" data-id="c-junior" style="grid-column:1; grid-row:4;">
+            <div class="node-top">
+              <span class="node-title">Fundamentos web</span>
+              <svg class="status-icon" viewBox="0 0 24 24" fill="none"><path d="M5 13l4.5 4.5L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <p class="node-desc">JS, HTML semántico, CSS y Git — la base sobre la que se para todo lo demás.</p>
+            <div class="node-foot"><span class="level-chip">Junior</span><span class="pwr">+250 PWR</span></div>
+          </div>
+
+          <div class="node design done" data-id="d-junior" style="grid-column:2; grid-row:4;">
+            <div class="node-top">
+              <span class="node-title">Fundamentos visuales</span>
+              <svg class="status-icon" viewBox="0 0 24 24" fill="none"><path d="M5 13l4.5 4.5L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <p class="node-desc">Color, tipografía, jerarquía y grid — el ojo antes que la herramienta.</p>
+            <div class="node-foot"><span class="level-chip">Junior</span><span class="pwr">+250 PWR</span></div>
+          </div>
+
+          <div class="node ai done" data-id="ia-junior" style="grid-column:3; grid-row:4;">
+            <div class="node-top">
+              <span class="node-title">Prompting básico</span>
+              <svg class="status-icon" viewBox="0 0 24 24" fill="none"><path d="M5 13l4.5 4.5L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <p class="node-desc">Instrucciones claras, ejemplos (few-shot) y para qué casos conviene usarlo.</p>
+            <div class="node-foot"><span class="level-chip">Junior</span><span class="pwr">+250 PWR</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="section-title">Anatomía de un nodo</h2>
+    <p class="section-sub">Cada casillero del roadmap es un objeto con estos campos. Se cargan en <code>src/lib/roadmap.ts</code>, no hace falta tocar el componente del canvas.</p>
+
+    <div class="anatomy">
+      <div class="anatomy-card">
+        <div class="node-top">
+          <span class="node-title">React &amp; Server Components</span>
+        </div>
+        <p class="node-desc">Next.js App Router, RSC y Server Actions — lo que estás afilando ahora mismo.</p>
+        <div class="node-foot"><span class="level-chip">Mid · Código</span><span class="pwr">+500 PWR</span></div>
+      </div>
+
+      <div class="field-list">
+        <div class="field-row">
+          <span class="field-key"></span>
+          <div><p class="field-name">title</p><p class="field-desc">El nombre del hito, tal cual se muestra en la tarjeta. Corto — es un título, no la explicación.</p></div>
+        </div>
+        <div class="field-row">
+          <span class="field-key"></span>
+          <div><p class="field-name">description</p><p class="field-desc">Uno o dos renglones. Se ve en la tarjeta y también en el diálogo que se abre al hacer clic.</p></div>
+        </div>
+        <div class="field-row">
+          <span class="field-key"></span>
+          <div><p class="field-name">branch</p><p class="field-desc">A qué carril pertenece: <code>programming</code>, <code>design</code> o <code>ai</code>. Define el color.</p></div>
+        </div>
+        <div class="field-row">
+          <span class="field-key"></span>
+          <div><p class="field-name">level</p><p class="field-desc">En qué fila cae: <code>junior</code>, <code>mid</code> o <code>senior</code>.</p></div>
+        </div>
+        <div class="field-row">
+          <span class="field-key"></span>
+          <div><p class="field-name">dependsOn</p><p class="field-desc">IDs de los nodos previos. Dibuja la línea de conexión — pueden venir de <em>otro</em> carril, como el ejemplo de arriba donde "Arquitectura a escala" también depende de "RAG &amp; embeddings".</p></div>
+        </div>
+        <div class="field-row">
+          <span class="field-key"></span>
+          <div><p class="field-name">powerUp</p><p class="field-desc">Cuánto suma al medidor de Power Level la primera vez que alguien abre ese nodo.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="section-title">Cómo se leen los estados</h2>
+    <p class="section-sub">El campo <code>status</code> cambia el look de la tarjeta — no hace falta que coincida con lo que ya terminaste hoy, es tu forma de contar el avance.</p>
+
+    <div class="mech-row">
+      <div class="mech-card">
+        <span class="mech-badge done">Hecho</span>
+        <p>Tarjeta atenuada, con un check. Ya lo dominás — queda ahí como base del árbol, no como noticia.</p>
+      </div>
+      <div class="mech-card">
+        <span class="mech-badge current">Actual</span>
+        <p>Tarjeta destacada (leve elevación) con el marcador "Estás acá". Es lo que estás aprendiendo en este momento.</p>
+      </div>
+      <div class="mech-card">
+        <span class="mech-badge upcoming">Próximo</span>
+        <p>Borde punteado, más pálida, con candado. Lo que sigue — visible para dar dirección, no para presumir que ya lo sabés.</p>
+      </div>
+    </div>
+
+    <p class="foot-note">
+      Los nueve nodos de arriba son un ejemplo — cambialos por tus propios hitos reales.
+      Se cargan en el array <code>ROADMAP_NODES</code> de <code>src/lib/roadmap.ts</code>;
+      el canvas (React Flow) ya sabe dibujar las líneas de dependencia y abrir el diálogo
+      de detalle solo con que ese array deje de estar vacío.
+    </p>
+  </div>
+</div>
+
+<script>
+  function drawLines() {
+    var svg = document.getElementById('lines');
+    var tree = document.getElementById('tree');
+    if (!svg || !tree) return;
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+    var treeRect = tree.getBoundingClientRect();
+    var nodes = tree.querySelectorAll('.node');
+    var byId = {};
+    nodes.forEach(function (n) { byId[n.getAttribute('data-id')] = n; });
+
+    var cs = getComputedStyle(document.documentElement);
+    function branchColor(el) {
+      if (el.classList.contains('code')) return cs.getPropertyValue('--cyan').trim();
+      if (el.classList.contains('design')) return cs.getPropertyValue('--yellow').trim();
+      return cs.getPropertyValue('--red').trim();
+    }
+
+    nodes.forEach(function (n) {
+      var deps = n.getAttribute('data-deps');
+      if (!deps) return;
+      deps.split(',').forEach(function (depId) {
+        var from = byId[depId];
+        if (!from) return;
+        var fr = from.getBoundingClientRect();
+        var tr = n.getBoundingClientRect();
+        var x1 = fr.left + fr.width / 2 - treeRect.left;
+        var y1 = fr.top - treeRect.top;
+        var x2 = tr.left + tr.width / 2 - treeRect.left;
+        var y2 = tr.bottom - treeRect.top;
+        var midY = (y1 + y2) / 2;
+        var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        var d = 'M' + x2 + ',' + y2 + ' C ' + x2 + ',' + midY + ' ' + x1 + ',' + midY + ' ' + x1 + ',' + y1;
+        path.setAttribute('d', d);
+        path.setAttribute('fill', 'none');
+        path.setAttribute('stroke', branchColor(n));
+        path.setAttribute('stroke-width', '2');
+        path.setAttribute('stroke-dasharray', '4 4');
+        path.setAttribute('opacity', '0.55');
+        svg.appendChild(path);
+      });
+    });
+  }
+  window.addEventListener('load', drawLines);
+  window.addEventListener('resize', function () {
+    clearTimeout(window.__rlt);
+    window.__rlt = setTimeout(drawLines, 120);
+  });
+  if (document.readyState === 'complete') drawLines();
+</script>

@@ -1,0 +1,390 @@
+<title>Proyectos — ejemplo de contenido</title>
+<style>
+  :root {
+    --paper: #0a0a0f;
+    --panel: #111118;
+    --panel-alt: #16161f;
+    --ink: #f5f5f7;
+    --muted: rgba(245,245,247,0.62);
+    --muted-2: rgba(245,245,247,0.4);
+    --line: rgba(245,245,247,0.16);
+    --web: #00f5ff;
+    --design: #ffe000;
+    --dev: #ff2d55;
+    --research: #f5f5f7;
+    --display: "Arial Narrow", "Helvetica Neue Condensed", "Roboto Condensed", Oswald, sans-serif;
+    --body: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --paper: #f7f4ec; --panel: #ffffff; --panel-alt: #fbf8f0; --ink: #0a0a0f;
+      --muted: rgba(10,10,15,0.68); --muted-2: rgba(10,10,15,0.45); --line: rgba(10,10,15,0.16);
+      --web: #007286; --design: #9c6c00; --dev: #c81846; --research: #2a2a33;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #0a0a0f; --panel: #111118; --panel-alt: #16161f; --ink: #f5f5f7;
+    --muted: rgba(245,245,247,0.62); --muted-2: rgba(245,245,247,0.4); --line: rgba(245,245,247,0.16);
+    --web: #00f5ff; --design: #ffe000; --dev: #ff2d55; --research: #f5f5f7;
+  }
+  :root[data-theme="light"] {
+    --paper: #f7f4ec; --panel: #ffffff; --panel-alt: #fbf8f0; --ink: #0a0a0f;
+    --muted: rgba(10,10,15,0.68); --muted-2: rgba(10,10,15,0.45); --line: rgba(10,10,15,0.16);
+    --web: #007286; --design: #9c6c00; --dev: #c81846; --research: #2a2a33;
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  .wrap {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--body);
+    min-height: 100%;
+    padding: 2.5rem 1.25rem 4rem;
+    background-image: radial-gradient(var(--line) 1px, transparent 1px);
+    background-size: 15px 15px;
+  }
+  .shell { max-width: 74rem; margin: 0 auto; }
+
+  .eyebrow {
+    font-family: var(--display); font-weight: 800; font-size: 0.78rem;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--web); margin: 0 0 0.6rem;
+  }
+  h1 {
+    font-family: var(--display); font-weight: 800; text-transform: uppercase;
+    letter-spacing: -0.01em; font-size: clamp(1.8rem, 4.2vw, 2.8rem); line-height: 1.05;
+    margin: 0 0 0.75rem; text-wrap: balance; text-shadow: 3px 3px 0 var(--dev);
+  }
+  .lede { max-width: 46rem; font-size: 1.02rem; line-height: 1.6; color: var(--muted); margin: 0 0 2.5rem; }
+  .lede strong { color: var(--ink); font-weight: 700; }
+  .lede code, .foot-note code, .field-desc code {
+    background: var(--panel-alt); border: 1px solid var(--line); border-radius: 3px;
+    padding: 0.05rem 0.35rem; font-size: 0.86em; color: var(--ink);
+  }
+
+  .section-title {
+    font-family: var(--display); font-weight: 800; text-transform: uppercase;
+    font-size: 1.3rem; letter-spacing: -0.005em; margin: 3.25rem 0 0.4rem;
+  }
+  .section-sub { color: var(--muted); font-size: 0.94rem; margin: 0 0 1.5rem; max-width: 42rem; line-height: 1.55; }
+
+  /* ---------- masonry grid ---------- */
+  .grid-frame {
+    background: var(--panel-alt); border: 1px solid var(--line); border-radius: 4px;
+    padding: 1.5rem;
+  }
+  .masonry { columns: 1; column-gap: 1.1rem; }
+  @media (min-width: 640px) { .masonry { columns: 2; } }
+  @media (min-width: 1024px) { .masonry { columns: 3; } }
+  .card {
+    break-inside: avoid; margin-bottom: 1.1rem;
+    background: var(--panel); border: 3px solid var(--c); border-radius: 3px;
+    box-shadow: 5px 5px 0 var(--c); overflow: hidden;
+  }
+  .card.web { --c: var(--web); }
+  .card.design { --c: var(--design); }
+  .card.dev { --c: var(--dev); }
+  .card.research { --c: var(--research); }
+
+  .cover { position: relative; width: 100%; overflow: hidden; background: var(--panel-alt); }
+  .cover.lg { aspect-ratio: 4 / 3; }
+  .cover.md { aspect-ratio: 4 / 3.4; }
+  .cover.sm { aspect-ratio: 1 / 1; }
+
+  /* abstract cover motifs — no photos, just representative pattern per category */
+  .motif-web { position: absolute; inset: 0; padding: 0.9rem 1rem; }
+  .motif-web .chrome { display: flex; gap: 5px; margin-bottom: 0.7rem; }
+  .motif-web .dot { width: 7px; height: 7px; border-radius: 999px; background: var(--c); opacity: 0.55; }
+  .motif-web .bar-track { height: 8px; border-radius: 2px; background: var(--line); margin-bottom: 0.55rem; }
+  .motif-web .bar { height: 100%; border-radius: 2px; background: var(--c); opacity: 0.7; }
+
+  .motif-design { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(3, 1fr); }
+  .motif-design span { background: var(--c); }
+
+  .motif-dev { position: absolute; inset: 0; padding: 0.9rem 1rem; font-family: "Courier New", monospace; }
+  .motif-dev .chrome { display: flex; gap: 5px; margin-bottom: 0.8rem; }
+  .motif-dev .dot { width: 7px; height: 7px; border-radius: 999px; background: var(--c); opacity: 0.55; }
+  .motif-dev .code-line { height: 7px; border-radius: 1px; background: var(--c); opacity: 0.55; margin-bottom: 0.5rem; }
+  .motif-dev .cursor { display: inline-block; width: 7px; height: 13px; background: var(--c); vertical-align: -2px; }
+
+  .motif-research { position: absolute; inset: 0; }
+  .motif-research svg { width: 100%; height: 100%; }
+
+  .card-body { padding: 1rem 1.05rem 1.1rem; }
+  .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.6rem; margin-bottom: 0.3rem; }
+  .chapter-num { font-family: var(--display); font-weight: 800; font-size: 1.6rem; color: var(--c); line-height: 1; }
+  .cat-chip {
+    font-family: var(--body); font-size: 0.62rem; font-weight: 700; letter-spacing: 0.14em;
+    border: 1.5px solid var(--c); color: var(--c); border-radius: 999px; padding: 0.15rem 0.5rem;
+  }
+  .card-title { font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: 1.2rem; margin: 0.2rem 0 0.15rem; }
+  .card-tagline { font-family: var(--display); font-weight: 700; font-size: 0.72rem; letter-spacing: 0.06em; color: var(--muted-2); text-transform: uppercase; margin: 0 0 0.4rem; }
+  .card-blurb { font-size: 0.85rem; line-height: 1.45; color: var(--muted); margin: 0 0 0.6rem; }
+  .tags { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+  .tag { font-size: 0.68rem; color: var(--muted-2); border: 1px solid var(--line); border-radius: 999px; padding: 0.12rem 0.5rem; }
+
+  /* ---------- case study mock ---------- */
+  .study-frame {
+    background: var(--panel-alt); border: 1px solid var(--line); border-radius: 4px;
+    padding: 1.75rem 1.5rem 2rem;
+  }
+  .study-hero { position: relative; border: 3px solid var(--web); border-radius: 3px; box-shadow: 6px 6px 0 var(--web); aspect-ratio: 21/8; overflow: hidden; margin-bottom: 1.5rem; background: var(--panel); }
+  .study-meta-cat { font-family: var(--display); font-weight: 800; font-size: 0.78rem; letter-spacing: 0.16em; color: var(--web); margin: 0 0 0.3rem; }
+  .study-title { font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: clamp(1.6rem, 3.4vw, 2.2rem); margin: 0 0 0.3rem; }
+  .study-tagline { font-family: var(--display); font-weight: 700; font-size: 1rem; letter-spacing: 0.02em; color: var(--muted); margin: 0 0 1.4rem; }
+  .study-body { max-width: 42rem; }
+  .study-body p { font-size: 0.95rem; line-height: 1.7; color: var(--muted); }
+  .study-figure {
+    margin: 1.4rem 0; border: 2px dashed var(--line); border-radius: 4px;
+    aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center;
+    background: var(--panel); text-align: center; padding: 1rem;
+  }
+  .study-figure span { font-size: 0.8rem; color: var(--muted-2); max-width: 22rem; line-height: 1.5; }
+
+  /* ---------- anatomy ---------- */
+  .anatomy { display: grid; grid-template-columns: minmax(240px, 300px) 1fr; gap: 2.5rem; align-items: start; }
+  .field-list { display: flex; flex-direction: column; gap: 0.9rem; }
+  .field-row { display: flex; gap: 0.85rem; align-items: flex-start; }
+  .field-key { flex: none; width: 8px; height: 8px; border-radius: 999px; margin-top: 0.45rem; background: var(--web); }
+  .field-row:nth-child(2) .field-key { background: var(--design); }
+  .field-row:nth-child(3) .field-key { background: var(--dev); }
+  .field-row:nth-child(4) .field-key { background: var(--research); }
+  .field-row:nth-child(5) .field-key { background: var(--web); }
+  .field-row:nth-child(6) .field-key { background: var(--design); }
+  .field-row:nth-child(7) .field-key { background: var(--dev); }
+  .field-name { font-family: var(--display); font-weight: 800; font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; margin: 0 0 0.15rem; }
+  .field-desc { font-size: 0.88rem; line-height: 1.5; color: var(--muted); margin: 0; }
+  .field-desc em { color: var(--ink); font-style: normal; font-weight: 600; }
+
+  .mini-card { background: var(--panel); border: 3px solid var(--web); border-radius: 3px; box-shadow: 6px 6px 0 var(--web); overflow: hidden; }
+
+  /* ---------- gap callout ---------- */
+  .callout {
+    margin-top: 3rem; border: 1.5px dashed var(--dev); border-radius: 4px;
+    padding: 1.1rem 1.25rem; background: var(--panel);
+  }
+  .callout-title {
+    font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: 0.8rem;
+    letter-spacing: 0.1em; color: var(--dev); margin: 0 0 0.5rem; display: flex; align-items: center; gap: 0.4rem;
+  }
+  .callout p { font-size: 0.9rem; line-height: 1.6; color: var(--muted); margin: 0 0 0.5rem; }
+  .callout p:last-child { margin-bottom: 0; }
+
+  .foot-note { margin-top: 2.5rem; padding-top: 1.25rem; border-top: 1px solid var(--line); font-size: 0.86rem; color: var(--muted-2); line-height: 1.6; }
+
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--web); outline-offset: 2px; }
+
+  @media (max-width: 640px) { .anatomy { grid-template-columns: 1fr; } }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <div class="shell">
+    <p class="eyebrow">Guía — cómo llenar tus Proyectos</p>
+    <h1>Así se vería con contenido real</h1>
+    <p class="lede">
+      Tu <code>/proyectos</code> hoy está vacío a propósito. Este es un ejemplo con
+      5 proyectos inventados (nombres y capturas de relleno, no trabajo real) para
+      que veas <strong>la grilla masonry</strong> y <strong>la página de detalle</strong>
+      de cada caso de estudio.
+    </p>
+
+    <h2 class="section-title">La grilla — /proyectos</h2>
+    <p class="section-sub">Columnas tipo masonry (1 en mobile, 3 en desktop), cada tarjeta con su color de categoría. Las imágenes de portada de abajo son patrones abstractos de relleno — no capturas reales, todavía no existe ese campo (ver la nota al final).</p>
+
+    <div class="grid-frame">
+      <div class="masonry">
+
+        <div class="card web">
+          <div class="cover lg">
+            <div class="motif-web">
+              <div class="chrome"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+              <div class="bar-track"><div class="bar" style="width:38%"></div></div>
+              <div class="bar-track" style="margin-top:14px;"><div class="bar" style="width:70%"></div></div>
+              <div class="bar-track"><div class="bar" style="width:52%"></div></div>
+              <div class="bar-track"><div class="bar" style="width:85%"></div></div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="card-top"><span class="chapter-num">01</span><span class="cat-chip">WEB</span></div>
+            <h3 class="card-title">Ledger Atlas</h3>
+            <p class="card-tagline">Dashboard financiero en tiempo real</p>
+            <p class="card-blurb">Panel de control para un fintech B2B: flujos de caja, alertas y reportes exportables, todo en Server Components.</p>
+            <div class="tags"><span class="tag">Next.js</span><span class="tag">Postgres</span><span class="tag">Stripe</span></div>
+          </div>
+        </div>
+
+        <div class="card design">
+          <div class="cover md">
+            <div class="motif-design">
+              <span style="opacity:.9"></span><span style="opacity:.35"></span><span style="opacity:.6"></span><span style="opacity:.2"></span>
+              <span style="opacity:.4"></span><span style="opacity:.8"></span><span style="opacity:.3"></span><span style="opacity:.55"></span>
+              <span style="opacity:.25"></span><span style="opacity:.5"></span><span style="opacity:.15"></span><span style="opacity:.7"></span>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="card-top"><span class="chapter-num">02</span><span class="cat-chip">DESIGN</span></div>
+            <h3 class="card-title">Kioku Studio</h3>
+            <p class="card-tagline">Identidad + design system</p>
+            <p class="card-blurb">Rebrand completo para un estudio de fotografía: logotipo, paleta, tipografía y un kit de componentes en Figma.</p>
+            <div class="tags"><span class="tag">Identity</span><span class="tag">Design system</span><span class="tag">Figma</span></div>
+          </div>
+        </div>
+
+        <div class="card dev">
+          <div class="cover sm">
+            <div class="motif-dev">
+              <div class="chrome"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+              <div class="code-line" style="width:40%"></div>
+              <div class="code-line" style="width:65%; margin-left:14px;"></div>
+              <div class="code-line" style="width:50%; margin-left:14px;"></div>
+              <div class="code-line" style="width:30%"></div>
+              <span class="cursor"></span>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="card-top"><span class="chapter-num">03</span><span class="cat-chip">DEV</span></div>
+            <h3 class="card-title">Pathfinder CLI</h3>
+            <p class="card-tagline">Herramienta de línea de comandos</p>
+            <p class="card-blurb">CLI en Rust para auditar bundles de JS y sugerir splits — usada a diario en un equipo de 12 personas.</p>
+            <div class="tags"><span class="tag">Rust</span><span class="tag">CLI</span><span class="tag">Perf</span></div>
+          </div>
+        </div>
+
+        <div class="card research">
+          <div class="cover md">
+            <div class="motif-research">
+              <svg viewBox="0 0 200 150" preserveAspectRatio="none">
+                <g stroke="var(--research)" stroke-width="1" opacity="0.5">
+                  <line x1="30" y1="30" x2="90" y2="60"/><line x1="90" y1="60" x2="150" y2="35"/>
+                  <line x1="90" y1="60" x2="70" y2="110"/><line x1="90" y1="60" x2="140" y2="105"/>
+                  <line x1="30" y1="30" x2="70" y2="110"/><line x1="150" y1="35" x2="140" y2="105"/>
+                </g>
+                <g fill="var(--research)">
+                  <circle cx="30" cy="30" r="5"/><circle cx="150" cy="35" r="4"/>
+                  <circle cx="90" cy="60" r="6"/><circle cx="70" cy="110" r="4"/><circle cx="140" cy="105" r="5"/>
+                </g>
+              </svg>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="card-top"><span class="chapter-num">04</span><span class="cat-chip">RESEARCH</span></div>
+            <h3 class="card-title">Signal Map</h3>
+            <p class="card-tagline">Visualización de datos + ML</p>
+            <p class="card-blurb">Explorador interactivo de un modelo de clustering sobre datos de uso — pensado para que el equipo de producto navegue sin SQL.</p>
+            <div class="tags"><span class="tag">Python</span><span class="tag">D3</span><span class="tag">ML</span></div>
+          </div>
+        </div>
+
+        <div class="card web">
+          <div class="cover sm">
+            <div class="motif-web">
+              <div class="chrome"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+              <div class="bar-track"><div class="bar" style="width:60%"></div></div>
+              <div class="bar-track" style="margin-top:14px;"><div class="bar" style="width:45%"></div></div>
+              <div class="bar-track"><div class="bar" style="width:90%"></div></div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="card-top"><span class="chapter-num">05</span><span class="cat-chip">WEB</span></div>
+            <h3 class="card-title">Harbor Goods</h3>
+            <p class="card-tagline">Tienda online headless</p>
+            <p class="card-blurb">E-commerce para una marca de indumentaria, con checkout propio y microinteracciones en cada agregado al carrito.</p>
+            <div class="tags"><span class="tag">Shopify</span><span class="tag">React</span><span class="tag">Motion</span></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <h2 class="section-title">La página de detalle — /proyectos/ledger-atlas</h2>
+    <p class="section-sub">Al hacer clic en una tarjeta se abre el case study completo: portada grande, contexto y el cuerpo en MDX (texto + componentes + figuras).</p>
+
+    <div class="study-frame">
+      <div class="study-hero">
+        <div class="motif-web" style="padding:1.6rem 1.8rem;">
+          <div class="chrome" style="gap:8px; margin-bottom:1.1rem;">
+            <span class="dot" style="width:11px;height:11px;"></span><span class="dot" style="width:11px;height:11px;"></span><span class="dot" style="width:11px;height:11px;"></span>
+          </div>
+          <div class="bar-track" style="height:12px;"><div class="bar" style="width:32%"></div></div>
+          <div class="bar-track" style="height:12px; margin-top:22px;"><div class="bar" style="width:68%"></div></div>
+          <div class="bar-track" style="height:12px;"><div class="bar" style="width:48%"></div></div>
+        </div>
+      </div>
+      <p class="study-meta-cat">WEB</p>
+      <h3 class="study-title">Ledger Atlas</h3>
+      <p class="study-tagline">Dashboard financiero en tiempo real</p>
+      <div class="study-body">
+        <p>Ledger Atlas nació de un problema puntual: el equipo de finanzas de un cliente
+        B2B revisaba el flujo de caja copiando números a mano desde tres sistemas
+        distintos, una vez por semana. El encargo fue armar un panel único, en
+        tiempo real, sin depender de exports manuales.</p>
+        <p>La arquitectura usa Server Components para los datos pesados (el cálculo de
+        flujo de caja corre en el servidor, nunca en el cliente) y streaming para que
+        el layout aparezca antes que los números — el usuario ve la estructura del
+        dashboard de inmediato en vez de una pantalla en blanco.</p>
+
+        <div class="study-figure">
+          <span>Acá adentro va una captura real del producto — mockup, tablero o el sitio en vivo. Formato sugerido: 16:9, con <code>next/image</code> para que Next lo optimice solo.</span>
+        </div>
+
+        <p>El resultado: el cierre semanal pasó de medio día de trabajo manual a una
+        revisión de 15 minutos sobre el dashboard ya armado.</p>
+      </div>
+    </div>
+
+    <h2 class="section-title">Anatomía de un proyecto</h2>
+    <p class="section-sub">Cada tarjeta sale de un objeto <code>metadata</code> exportado al principio del <code>.mdx</code>. Se edita en <code>src/content/projects/&lt;slug&gt;/es.mdx</code> (y su par <code>en.mdx</code>).</p>
+
+    <div class="anatomy">
+      <div class="mini-card">
+        <div class="cover md">
+          <div class="motif-web">
+            <div class="chrome"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+            <div class="bar-track"><div class="bar" style="width:38%"></div></div>
+            <div class="bar-track" style="margin-top:14px;"><div class="bar" style="width:70%"></div></div>
+            <div class="bar-track"><div class="bar" style="width:52%"></div></div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-top"><span class="chapter-num">01</span><span class="cat-chip">WEB</span></div>
+          <h3 class="card-title">Ledger Atlas</h3>
+          <p class="card-tagline">Dashboard financiero en tiempo real</p>
+        </div>
+      </div>
+
+      <div class="field-list">
+        <div class="field-row"><span class="field-key"></span>
+          <div><p class="field-name">title</p><p class="field-desc">Nombre del proyecto tal cual aparece en la tarjeta y el detalle.</p></div></div>
+        <div class="field-row"><span class="field-key"></span>
+          <div><p class="field-name">category</p><p class="field-desc"><code>WEB</code> · <code>DESIGN</code> · <code>DEV</code> · <code>RESEARCH</code> — define el color y el chip.</p></div></div>
+        <div class="field-row"><span class="field-key"></span>
+          <div><p class="field-name">tagline</p><p class="field-desc">Una línea de contexto, debajo del título — qué es, en pocas palabras.</p></div></div>
+        <div class="field-row"><span class="field-key"></span>
+          <div><p class="field-name">blurb</p><p class="field-desc">2-3 líneas para la tarjeta del grid (se corta con <em>line-clamp</em>). El detalle completo va en el cuerpo del MDX.</p></div></div>
+        <div class="field-row"><span class="field-key"></span>
+          <div><p class="field-name">tags</p><p class="field-desc">Lista corta de tecnologías o disciplinas — se muestran como chips.</p></div></div>
+        <div class="field-row"><span class="field-key"></span>
+          <div><p class="field-name">size</p><p class="field-desc"><code>lg</code> · <code>md</code> · <code>sm</code> — qué tan grande se ve la tarjeta en el masonry (no tiene que ver con la importancia, es para que el grid respire).</p></div></div>
+        <div class="field-row"><span class="field-key"></span>
+          <div><p class="field-name">link</p><p class="field-desc">Opcional — URL al sitio en vivo, si existe.</p></div></div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <p class="callout-title">⚠ Esto todavía no existe: el campo de imagen</p>
+      <p>A diferencia del Roadmap (que es 100% datos), Proyectos <strong style="color:var(--ink)">hoy no tiene un campo para portada</strong> —
+      <code>ProjectMetadata</code> no incluye <code>cover</code>, así que las tarjetas actuales muestran solo texto sobre el panel de color. Los patrones de arriba son la propuesta de cómo se vería <em>si</em> lo agregamos.</p>
+      <p>Para que existan de verdad hace falta un cambio chico: sumar <code>cover: string</code> al tipo <code>ProjectMetadata</code> (la ruta a una imagen en <code>public/projects/&lt;slug&gt;/cover.jpg</code>), y renderizarla con <code>next/image</code> en <code>ProjectCard</code> y en el hero de la página de detalle. Cuando tengas las primeras capturas reales, avisame y lo armo junto con el primer proyecto.</p>
+    </div>
+
+    <p class="foot-note">
+      Los 5 proyectos de arriba son ejemplo — cuando tengas los tuyos reales, se
+      cargan en <code>src/content/projects/&lt;slug&gt;/{es,en}.mdx</code> y se agrega
+      el <code>&lt;slug&gt;</code> al array <code>PROJECT_SLUGS</code> de
+      <code>src/lib/projects.ts</code>. El detalle exacto del formato está en
+      <code>src/content/projects/README.md</code>.
+    </p>
+  </div>
+</div>
