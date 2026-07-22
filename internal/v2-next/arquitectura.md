@@ -385,6 +385,54 @@ después confirmar con `curl` que **todos** los slugs listados en
 `TOOLS`/`PROJECT_SLUGS` devuelven 200 y que un slug inventado devuelve 404,
 para ambas rutas y ambos locales.
 
+### 8.8 La Turso de producción tiene nombres de columnas/índices de Prisma (v1), no de Drizzle (v2) (Fase 10, 2026-07-20/22)
+
+Confirmado: al probar `/admin` en el sitio ya desplegado, el login fallaba
+con un error real de query — `getDb()`/`getEnv()` llegaban bien a la Turso
+real (el binding de Cloudflare funciona), pero la consulta en sí fallaba.
+Causa: esa base la creó originalmente el backend v1 con **Prisma**, que usa
+camelCase (`createdAt`, `passwordHash`, `projectSlug`, `visitorId`) y su
+propia convención de nombres de constraint/índice (`admin_users_email_key`).
+El `schema.ts` de Drizzle (v2) espera **snake_case** (`created_at`,
+`password_hash`, etc.) y su propia convención de índices
+(`admin_users_email_unique`). Nunca se había corrido una migración de
+Drizzle contra la Turso real — todo el desarrollo de las Fases 6-9 fue
+contra el sqlite local (`dev.db`), que sí nació con nombres de Drizzle desde
+el principio y por eso nunca mostró este problema.
+
+**Fix**: `npm run db:push` (drizzle-kit push) corrido **contra la Turso de
+producción** (`DATABASE_URL`/`TURSO_AUTH_TOKEN` reales pasados inline al
+comando, nunca guardados en archivos). En cada prompt interactivo
+("¿columna creada o renombrada?") la respuesta correcta es siempre
+**"renamed"**, nunca "create" — elegir "create" deja la columna vieja (con
+los datos reales) huérfana y la nueva vacía. Confirmado con Drizzle mismo:
+antes de aplicar cambios avisa en rojo si alguna operación va a borrar
+datos ("THIS ACTION WILL CAUSE DATA LOSS AND CANNOT BE REVERTED") — un
+intento se abortó a tiempo por esto (una columna `createdAt` con 9 filas
+reales que se iba a borrar por haber elegido mal en un prompt anterior).
+
+**Caso especial — índices que dependen de una columna que se está
+renombrando en la misma corrida**: `drizzle-kit push` maneja bien el rename
+de columnas sueltas, pero para el índice compuesto de `comments`
+(`projectSlug, status`) falló repetidas veces con
+`SQLite error: no such index: comments_project_slug_status_idx` — tanto
+renombrando el índice a mano de antemano como después de limpiar el
+snapshot local (`drizzle/meta/`, que sí se descartó como causa: mismo error
+con y sin él). **Workaround que funcionó**: renombrar las 3 columnas de
+`comments` y recrear su índice **a mano, con SQL directo** (`ALTER TABLE
+... RENAME COLUMN`, `CREATE INDEX`) en la consola SQL del dashboard de
+Turso, sin pasar por el prompt interactivo de push para esa tabla — recién
+ahí el push del resto de las tablas (contact_messages, admin_users,
+analytics_events, visitor_users) terminó limpio en un solo intento.
+
+**Cómo verificar que sigue resuelto**: en el sitio en vivo, un intento de
+login en `/admin` con email válido y contraseña incorrecta debe devolver
+"Credenciales incorrectas" (no un error de servidor) — eso confirma que la
+query contra `admin_users` corre bien. Si en el futuro se agrega una nueva
+tabla con un índice compuesto sobre una columna que también se está
+renombrando, esperar el mismo problema — resolverlo a mano con SQL directo
+para esa tabla puntual en vez de reintentar el push interactivo.
+
 ## 9. Fases de construcción (propuesta)
 
 > **Todo el trabajo es local hasta la fase final.** El usuario pidió
