@@ -8,7 +8,11 @@ import { getVisitorSession } from "@/server/auth/session";
 import { rateLimit } from "@/server/lib/rate-limit";
 import { getClientIp } from "@/server/lib/client-ip";
 
-export type CommentState = { ok: boolean; error?: string };
+// Códigos, no texto — mismo criterio que actions/contact.ts y
+// actions/visitor.ts: página bilingüe, el componente cliente traduce cada
+// código con next-intl (Comments.errors.*).
+export type CommentErrorCode = "notAuthenticated" | "rateLimited" | "validation" | "serverError";
+export type CommentState = { ok: boolean; errorCode?: CommentErrorCode };
 
 export async function getApprovedComments(projectSlug: string) {
   const db = await getDb();
@@ -29,13 +33,13 @@ export async function getApprovedComments(projectSlug: string) {
 export async function createComment(_prev: CommentState, formData: FormData): Promise<CommentState> {
   const visitor = await getVisitorSession();
   if (!visitor) {
-    return { ok: false, error: "No autenticado" };
+    return { ok: false, errorCode: "notAuthenticated" };
   }
 
   const ip = await getClientIp();
   const limit = rateLimit(`comment:${ip}`, 10, 15 * 60 * 1000);
   if (!limit.ok) {
-    return { ok: false, error: "Enviaste demasiados comentarios. Probá de nuevo más tarde." };
+    return { ok: false, errorCode: "rateLimited" };
   }
 
   const parsed = commentSchema.safeParse({
@@ -43,16 +47,21 @@ export async function createComment(_prev: CommentState, formData: FormData): Pr
     content: formData.get("content"),
   });
   if (!parsed.success) {
-    return { ok: false, error: "Datos inválidos" };
+    return { ok: false, errorCode: "validation" };
   }
 
   const db = await getDb();
-  await db.insert(comments).values({
-    projectSlug: parsed.data.projectSlug,
-    content: parsed.data.content,
-    visitorId: Number(visitor.sub),
-    status: "pending",
-  });
+  try {
+    await db.insert(comments).values({
+      projectSlug: parsed.data.projectSlug,
+      content: parsed.data.content,
+      visitorId: Number(visitor.sub),
+      status: "pending",
+    });
+  } catch (err) {
+    console.error("No se pudo guardar el comentario:", err);
+    return { ok: false, errorCode: "serverError" };
+  }
 
   return { ok: true };
 }

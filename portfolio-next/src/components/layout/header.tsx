@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import NextLink from "next/link";
 import { AnimatePresence, motion } from "motion/react";
-import { Menu, Search, X } from "lucide-react";
+import { Coffee, Menu, Search, User, X } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
@@ -92,6 +93,31 @@ export function Header() {
 
         <div className="hidden md:block">{localeSwitcher}</div>
 
+        {/* Cuenta de visitante — a diferencia de Coffee+, esta SÍ es una
+            entrada de navegación normal y visible (registrarse/entrar es
+            algo que un visitante debe poder encontrar). Va a /cuenta,
+            dentro de [locale], por eso usa el Link de next-intl. */}
+        <Link
+          href="/cuenta"
+          className="hidden items-center gap-1.5 rounded-sm border border-white/15 px-2.5 py-1.5 text-xs text-white/60 transition-colors hover:border-cyan/50 hover:text-cyan md:flex"
+        >
+          <User size={14} />
+          <span className="font-label tracking-widest">{t("account")}</span>
+        </Link>
+
+        {/* Entrada al panel de admin — visible para cualquiera (es la
+            gracia, un huevo de pascua con onda "power up"), pero /admin
+            pide login real: un visitante nunca pasa de la pantalla de
+            acceso. Es <a> plano, no el Link de next-intl, porque /admin
+            vive fuera de [locale] (sin prefijo de idioma). */}
+        <NextLink
+          href="/admin"
+          className="hidden items-center gap-1.5 rounded-sm border border-white/15 px-2.5 py-1.5 text-xs text-white/60 transition-colors hover:border-yellow/50 hover:text-yellow md:flex"
+        >
+          <Coffee size={14} />
+          <span className="font-label tracking-widest">{t("adminAccess")}</span>
+        </NextLink>
+
         <button
           type="button"
           onClick={() => setPaletteOpen(true)}
@@ -141,6 +167,20 @@ export function Header() {
                   </Link>
                 </motion.div>
               ))}
+              <Link
+                href="/cuenta"
+                onClick={() => setMenuOpen(false)}
+                className="font-label flex items-center gap-1.5 py-2 text-sm tracking-wider text-white/70 transition-colors hover:text-cyan"
+              >
+                <User size={14} /> {t("account")}
+              </Link>
+              <NextLink
+                href="/admin"
+                onClick={() => setMenuOpen(false)}
+                className="font-label flex items-center gap-1.5 py-2 text-sm tracking-wider text-white/50 transition-colors hover:text-yellow"
+              >
+                <Coffee size={14} /> {t("adminAccess")}
+              </NextLink>
               <div className="pt-2">{localeSwitcher}</div>
             </div>
           </motion.nav>

@@ -1,10 +1,8 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
-import createMDX from "@next/mdx";
 import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
 
 const withNextIntl = createNextIntlPlugin();
-const withMDX = createMDX();
 
 const nextConfig: NextConfig = {
   // Transiciones de página nativas — ver branding-y-filosofia.md §8
@@ -13,10 +11,6 @@ const nextConfig: NextConfig = {
   experimental: {
     viewTransition: true,
   },
-  // Case studies de proyectos (Fase 3) como .mdx importados por slug —
-  // ver herramientas.md. No se usan como rutas de archivo directas, solo
-  // como imports dinámicos desde src/content/projects/.
-  pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
   // Fase 10: @libsql/client (y su cadena de dependencias — hrana-client,
   // isomorphic-ws) resuelve bajo la condición de export "workerd" (la que
   // usa el bundle de Cloudflare Workers), pero el output file tracing de
@@ -32,6 +26,6 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withNextIntl(withMDX(nextConfig));
+export default withNextIntl(nextConfig);
 
 initOpenNextCloudflareForDev();

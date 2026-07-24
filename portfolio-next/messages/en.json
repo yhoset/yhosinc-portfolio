@@ -25,6 +25,10 @@
     "contact": {
       "title": "Contact",
       "description": "Write to YHOSINC — frontend architect and creative director. A direct contact form, no middlemen."
+    },
+    "account": {
+      "title": "Account",
+      "description": "Create a visitor account to comment on YHOSINC's projects."
     }
   },
   "Nav": {
@@ -35,7 +39,9 @@
     "roadmap": "Roadmap",
     "tools": "Tools",
     "about": "About",
-    "contact": "Contact"
+    "contact": "Contact",
+    "adminAccess": "Coffee+",
+    "account": "Account"
   },
   "CommandPalette": {
     "title": "Command palette",
@@ -194,6 +200,49 @@
       "required": "This field is required.",
       "tooLong": "This is too long.",
       "invalidEmail": "Invalid email address."
+    }
+  },
+  "VisitorAuth": {
+    "loginTab": "LOG IN",
+    "registerTab": "CREATE ACCOUNT",
+    "nameLabel": "Name",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "loginSubmit": "LOG IN",
+    "loginSubmitting": "LOGGING IN...",
+    "registerSubmit": "CREATE ACCOUNT",
+    "registerSubmitting": "CREATING...",
+    "why": "Create an account to comment on projects.",
+    "welcomeBack": "You're in!",
+    "loggedInAs": "Signed in as {name}",
+    "logout": "LOG OUT",
+    "errors": {
+      "rateLimited": "Too many attempts. Please try again later.",
+      "validation": "Please check the form fields.",
+      "emailTaken": "An account with that email already exists.",
+      "invalidCredentials": "Incorrect credentials.",
+      "serverError": "Something went wrong. Please try again in a few minutes.",
+      "required": "This field is required.",
+      "tooShort": "This is too short.",
+      "tooLong": "This is too long.",
+      "invalidEmail": "Invalid email address."
+    }
+  },
+  "Comments": {
+    "title": "Comments",
+    "empty": "No comments on this project yet.",
+    "placeholder": "Write a comment...",
+    "submit": "POST",
+    "submitting": "SENDING...",
+    "successTitle": "Comment sent!",
+    "successBody": "It'll go live once we review it.",
+    "loginPrompt": "Log in to comment.",
+    "loginLink": "Go to my account",
+    "errors": {
+      "notAuthenticated": "Log in to comment.",
+      "rateLimited": "You've sent too many comments. Please try again later.",
+      "validation": "Please check your comment.",
+      "serverError": "We couldn't save your comment. Please try again in a few minutes."
     }
   }
 }

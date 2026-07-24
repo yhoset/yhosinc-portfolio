@@ -1,10 +1,12 @@
-import type { MDXComponents } from "mdx/types";
-import Image, { type ImageProps } from "next/image";
+import type { Components } from "react-markdown";
+import Image from "next/image";
 
-// Componentes globales para todo contenido .mdx (case studies de
-// proyectos, Fase 3) — estilo "ink & code" en vez del prose genérico.
-// Ver internal/v2-next/branding-y-filosofia.md §4 y §10.
-const components: MDXComponents = {
+// Estilo "ink & code" para el Markdown de los case studies de proyectos
+// (antes vivía en mdx-components.tsx, para el sistema de .mdx que Fase 10
+// reemplazó por contenido en DB). react-markdown nunca renderiza HTML crudo
+// del texto salvo que se agregue rehype-raw a propósito — no se agrega,
+// así que el contenido que carga el admin no puede inyectar HTML/JS.
+export const markdownComponents: Components = {
   h1: ({ children }) => (
     <h1 className="font-display mt-10 mb-4 text-4xl text-cyan first:mt-0 sm:text-5xl">
       {children}
@@ -45,16 +47,15 @@ const components: MDXComponents = {
       {children}
     </code>
   ),
-  img: ({ alt = "", ...props }) => (
-    <Image
-      sizes="100vw"
-      className="ink-stroke my-6 h-auto w-full"
-      {...(props as ImageProps)}
-      alt={alt}
-    />
-  ),
+  img: ({ alt = "", src }) =>
+    typeof src === "string" ? (
+      <Image
+        src={src}
+        alt={alt}
+        width={1200}
+        height={630}
+        sizes="100vw"
+        className="ink-stroke my-6 h-auto w-full"
+      />
+    ) : null,
 };
-
-export function useMDXComponents(): MDXComponents {
-  return components;
-}

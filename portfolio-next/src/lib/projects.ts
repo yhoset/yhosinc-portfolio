@@ -1,3 +1,6 @@
+import { eq, and, desc } from "drizzle-orm";
+import { getDb } from "@/server/db/client";
+import { projects, projectTranslations } from "@/server/db/schema";
 import type { routing } from "@/i18n/routing";
 
 export type ProjectCategory = "WEB" | "DESIGN" | "DEV" | "RESEARCH";
@@ -13,41 +16,90 @@ export type ProjectMetadata = {
   link?: string;
 };
 
+export type ProjectDetail = ProjectMetadata & { content: string };
+
 type Locale = (typeof routing.locales)[number];
 
-// Lista cerrada y explícita de proyectos publicados — no se auto-descubre
-// desde el filesystem. Ver src/content/projects/README.md. Agregar acá el
-// slug es lo que realmente "publica" un proyecto: generateStaticParams y
-// getProjectSlugs() solo devuelven lo que está en este array, así que
-// ninguna carpeta suelta en src/content/projects/ queda accesible por
-// accidente.
-export const PROJECT_SLUGS: string[] = [];
-
-export function getProjectSlugs(): string[] {
-  return PROJECT_SLUGS;
-}
-
-export async function getProjectMetadata(
-  slug: string,
-  locale: Locale
-): Promise<ProjectMetadata | null> {
-  if (!PROJECT_SLUGS.includes(slug)) return null;
-  try {
-    const mod = await import(`@/content/projects/${slug}/${locale}.mdx`);
-    return mod.metadata as ProjectMetadata;
-  } catch {
-    return null;
-  }
-}
-
+// Fase 10 (post-deploy): reemplaza la lista cerrada PROJECT_SLUGS + imports
+// dinámicos de .mdx — los proyectos ahora viven en la DB (projects +
+// project_translations) y se cargan desde /admin, no desde el filesystem.
+// El slug ya no necesita una allowlist en código: `WHERE slug = ?`
+// parametrizado es seguro para cualquier string, a diferencia del import
+// dinámico por path que sí requería ese cierre.
 export async function getAllProjectsMetadata(
   locale: Locale
 ): Promise<Array<ProjectMetadata & { slug: string }>> {
-  const entries = await Promise.all(
-    PROJECT_SLUGS.map(async (slug) => {
-      const metadata = await getProjectMetadata(slug, locale);
-      return metadata ? { ...metadata, slug } : null;
+  const db = await getDb();
+  const rows = await db
+    .select({
+      slug: projects.slug,
+      category: projects.category,
+      size: projects.size,
+      tags: projects.tags,
+      link: projects.link,
+      title: projectTranslations.title,
+      tagline: projectTranslations.tagline,
+      blurb: projectTranslations.blurb,
     })
-  );
-  return entries.filter((p): p is ProjectMetadata & { slug: string } => p !== null);
+    .from(projects)
+    .innerJoin(
+      projectTranslations,
+      and(eq(projectTranslations.projectId, projects.id), eq(projectTranslations.locale, locale))
+    )
+    .orderBy(desc(projects.createdAt));
+
+  return rows.map((r) => ({
+    slug: r.slug,
+    title: r.title,
+    category: r.category as ProjectCategory,
+    size: r.size as ProjectSize,
+    tags: JSON.parse(r.tags) as string[],
+    link: r.link ?? undefined,
+    tagline: r.tagline,
+    blurb: r.blurb,
+  }));
+}
+
+export async function getProjectDetail(
+  slug: string,
+  locale: Locale
+): Promise<ProjectDetail | null> {
+  const db = await getDb();
+  const [row] = await db
+    .select({
+      category: projects.category,
+      size: projects.size,
+      tags: projects.tags,
+      link: projects.link,
+      title: projectTranslations.title,
+      tagline: projectTranslations.tagline,
+      blurb: projectTranslations.blurb,
+      content: projectTranslations.content,
+    })
+    .from(projects)
+    .innerJoin(
+      projectTranslations,
+      and(eq(projectTranslations.projectId, projects.id), eq(projectTranslations.locale, locale))
+    )
+    .where(eq(projects.slug, slug))
+    .limit(1);
+
+  if (!row) return null;
+
+  return {
+    title: row.title,
+    category: row.category as ProjectCategory,
+    size: row.size as ProjectSize,
+    tags: JSON.parse(row.tags) as string[],
+    link: row.link ?? undefined,
+    tagline: row.tagline,
+    blurb: row.blurb,
+    content: row.content,
+  };
+}
+
+export async function getProjectSlugs(): Promise<string[]> {
+  const db = await getDb();
+  const rows = await db.select({ slug: projects.slug }).from(projects);
+  return rows.map((r) => r.slug);
 }

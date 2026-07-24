@@ -25,6 +25,10 @@
     "contact": {
       "title": "Contacto",
       "description": "Escribile a YHOSINC — arquitecto frontend y director creativo. Formulario de contacto directo, sin intermediarios."
+    },
+    "account": {
+      "title": "Cuenta",
+      "description": "Creá una cuenta de visitante para comentar en los proyectos de YHOSINC."
     }
   },
   "Nav": {
@@ -35,7 +39,9 @@
     "roadmap": "Roadmap",
     "tools": "Tools",
     "about": "Sobre mí",
-    "contact": "Contacto"
+    "contact": "Contacto",
+    "adminAccess": "Coffee+",
+    "account": "Cuenta"
   },
   "CommandPalette": {
     "title": "Paleta de comandos",
@@ -194,6 +200,49 @@
       "required": "Este campo es obligatorio.",
       "tooLong": "Es demasiado largo.",
       "invalidEmail": "Email inválido."
+    }
+  },
+  "VisitorAuth": {
+    "loginTab": "INICIAR SESIÓN",
+    "registerTab": "CREAR CUENTA",
+    "nameLabel": "Nombre",
+    "emailLabel": "Email",
+    "passwordLabel": "Contraseña",
+    "loginSubmit": "ENTRAR",
+    "loginSubmitting": "ENTRANDO...",
+    "registerSubmit": "CREAR CUENTA",
+    "registerSubmitting": "CREANDO...",
+    "why": "Creá una cuenta para comentar en los proyectos.",
+    "welcomeBack": "¡Ya estás dentro!",
+    "loggedInAs": "Sesión iniciada como {name}",
+    "logout": "CERRAR SESIÓN",
+    "errors": {
+      "rateLimited": "Demasiados intentos. Probá de nuevo más tarde.",
+      "validation": "Revisá los datos del formulario.",
+      "emailTaken": "Ya existe una cuenta con ese email.",
+      "invalidCredentials": "Credenciales incorrectas.",
+      "serverError": "Algo salió mal. Probá de nuevo en unos minutos.",
+      "required": "Este campo es obligatorio.",
+      "tooShort": "Es demasiado corto.",
+      "tooLong": "Es demasiado largo.",
+      "invalidEmail": "Email inválido."
+    }
+  },
+  "Comments": {
+    "title": "Comentarios",
+    "empty": "Todavía no hay comentarios en este proyecto.",
+    "placeholder": "Escribí un comentario...",
+    "submit": "PUBLICAR",
+    "submitting": "ENVIANDO...",
+    "successTitle": "¡Comentario enviado!",
+    "successBody": "Se publica en cuanto lo revisemos.",
+    "loginPrompt": "Iniciá sesión para comentar.",
+    "loginLink": "Ir a mi cuenta",
+    "errors": {
+      "notAuthenticated": "Iniciá sesión para comentar.",
+      "rateLimited": "Enviaste demasiados comentarios. Probá de nuevo más tarde.",
+      "validation": "Revisá el comentario.",
+      "serverError": "No pudimos guardar tu comentario. Probá de nuevo en unos minutos."
     }
   }
 }

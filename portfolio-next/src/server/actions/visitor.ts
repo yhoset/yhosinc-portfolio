@@ -9,7 +9,33 @@ import { createVisitorSession, destroyVisitorSession } from "@/server/auth/sessi
 import { rateLimit } from "@/server/lib/rate-limit";
 import { getClientIp } from "@/server/lib/client-ip";
 
-export type VisitorAuthState = { ok: boolean; error?: string };
+// Códigos, no texto — mismo criterio que actions/contact.ts: el sitio es
+// bilingüe y el Server Action no sabe en qué idioma está el visitante, el
+// componente cliente traduce cada código con next-intl (VisitorAuth.errors.*).
+export type VisitorFieldErrorCode = "required" | "tooShort" | "tooLong" | "invalidEmail";
+export type VisitorErrorCode =
+  | "rateLimited"
+  | "validation"
+  | "emailTaken"
+  | "invalidCredentials"
+  | "serverError";
+
+export type VisitorAuthState = {
+  ok: boolean;
+  errorCode?: VisitorErrorCode;
+  fieldErrors?: Partial<Record<"name" | "email" | "password", VisitorFieldErrorCode>>;
+};
+
+function issueToFieldErrorCode(issue: {
+  code: string;
+  format?: string;
+  minimum?: number | bigint;
+}): VisitorFieldErrorCode {
+  if (issue.code === "too_big") return "tooLong";
+  if (issue.code === "too_small") return Number(issue.minimum ?? 1) > 1 ? "tooShort" : "required";
+  if (issue.code === "invalid_format" && issue.format === "email") return "invalidEmail";
+  return "required";
+}
 
 // Función construida a pedido del usuario pero mantenida sin ningún punto
 // de entrada visible en el frontend hasta nuevo aviso (mismo criterio que
@@ -20,7 +46,7 @@ export async function registerVisitor(_prev: VisitorAuthState, formData: FormDat
   const ip = await getClientIp();
   const limit = rateLimit(`visitor-register:${ip}`, 5, 15 * 60 * 1000);
   if (!limit.ok) {
-    return { ok: false, error: "Demasiados intentos. Probá de nuevo más tarde." };
+    return { ok: false, errorCode: "rateLimited" };
   }
 
   const parsed = visitorRegisterSchema.safeParse({
@@ -29,7 +55,14 @@ export async function registerVisitor(_prev: VisitorAuthState, formData: FormDat
     password: formData.get("password"),
   });
   if (!parsed.success) {
-    return { ok: false, error: parsed.error.issues[0]?.message ?? "Datos inválidos" };
+    const fieldErrors: VisitorAuthState["fieldErrors"] = {};
+    for (const issue of parsed.error.issues) {
+      const field = issue.path[0];
+      if (field === "name" || field === "email" || field === "password") {
+        fieldErrors[field] = issueToFieldErrorCode(issue);
+      }
+    }
+    return { ok: false, errorCode: "validation", fieldErrors };
   }
 
   const { name, email, password } = parsed.data;
@@ -37,7 +70,7 @@ export async function registerVisitor(_prev: VisitorAuthState, formData: FormDat
   const db = await getDb();
   const [existing] = await db.select().from(visitorUsers).where(eq(visitorUsers.email, email)).limit(1);
   if (existing) {
-    return { ok: false, error: "Ya existe una cuenta con ese email" };
+    return { ok: false, errorCode: "emailTaken" };
   }
 
   const passwordHash = await bcrypt.hash(password, 12);
@@ -51,7 +84,7 @@ export async function loginVisitor(_prev: VisitorAuthState, formData: FormData):
   const ip = await getClientIp();
   const limit = rateLimit(`visitor-login:${ip}`, 5, 15 * 60 * 1000);
   if (!limit.ok) {
-    return { ok: false, error: "Demasiados intentos. Probá de nuevo más tarde." };
+    return { ok: false, errorCode: "rateLimited" };
   }
 
   const parsed = visitorLoginSchema.safeParse({
@@ -59,7 +92,7 @@ export async function loginVisitor(_prev: VisitorAuthState, formData: FormData):
     password: formData.get("password"),
   });
   if (!parsed.success) {
-    return { ok: false, error: "Datos inválidos" };
+    return { ok: false, errorCode: "validation" };
   }
 
   const { email, password } = parsed.data;
@@ -67,12 +100,12 @@ export async function loginVisitor(_prev: VisitorAuthState, formData: FormData):
   const db = await getDb();
   const [visitor] = await db.select().from(visitorUsers).where(eq(visitorUsers.email, email)).limit(1);
   if (!visitor) {
-    return { ok: false, error: "Credenciales incorrectas" };
+    return { ok: false, errorCode: "invalidCredentials" };
   }
 
   const valid = await bcrypt.compare(password, visitor.passwordHash);
   if (!valid) {
-    return { ok: false, error: "Credenciales incorrectas" };
+    return { ok: false, errorCode: "invalidCredentials" };
   }
 
   await createVisitorSession(visitor);

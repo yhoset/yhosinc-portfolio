@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { sqliteTable, integer, text, index } from "drizzle-orm/sqlite-core";
+import { sqliteTable, integer, text, index, uniqueIndex } from "drizzle-orm/sqlite-core";
 
 // Modelo heredado de v1 (backend/prisma/schema.prisma), portado 1:1 a
 // Drizzle — mismos nombres de tabla/columna para no perder los datos que
@@ -59,4 +59,44 @@ export const comments = sqliteTable(
       .references(() => visitorUsers.id),
   },
   (table) => [index("comments_project_slug_status_idx").on(table.projectSlug, table.status)]
+);
+
+// Fase 10 (post-deploy): Proyectos pasa de archivos .mdx a la base, para
+// que el admin los cargue desde /admin en vez de tocar código. `tags` va
+// como JSON-en-texto (array de strings) — son solo etiquetas cosméticas,
+// no ameritan una tabla de join para esto. `category`/`size` se validan
+// como enum en Zod (server/actions/schemas.ts), no a nivel de columna —
+// SQLite no tiene CHECK enum nativo cómodo vía Drizzle acá.
+export const projects = sqliteTable("projects", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  slug: text("slug").notNull().unique(),
+  category: text("category").notNull(), // WEB | DESIGN | DEV | RESEARCH
+  size: text("size").notNull().default("md"), // lg | md | sm
+  tags: text("tags").notNull().default("[]"),
+  link: text("link"),
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .notNull()
+    .default(sql`(unixepoch())`),
+});
+
+// Contenido por idioma, separado del proyecto en sí — mismo patrón que
+// v1 tenía con es.mdx/en.mdx, pero como filas en vez de archivos. `content`
+// es Markdown (no HTML ni JSX) — se renderiza server-side con un parser
+// que escapa HTML crudo, nunca dangerouslySetInnerHTML directo sobre esto.
+export const projectTranslations = sqliteTable(
+  "project_translations",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    projectId: integer("project_id")
+      .notNull()
+      .references(() => projects.id, { onDelete: "cascade" }),
+    locale: text("locale").notNull(), // "es" | "en"
+    title: text("title").notNull(),
+    tagline: text("tagline").notNull(),
+    blurb: text("blurb").notNull(),
+    content: text("content").notNull(),
+  },
+  (table) => [
+    uniqueIndex("project_translations_project_locale_unique").on(table.projectId, table.locale),
+  ]
 );

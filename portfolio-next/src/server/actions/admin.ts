@@ -8,7 +8,9 @@ import { getAdminSession } from "@/server/auth/session";
 
 // Cada función vuelve a chequear la sesión de admin en el propio server —
 // nunca confía en que el que llama ya haya validado nada del lado cliente.
-async function requireAdmin() {
+// Exportada para que otros módulos de Server Actions con acciones
+// admin-only (ej. actions/projects.ts) reusen el mismo chequeo.
+export async function requireAdmin() {
   const admin = await getAdminSession();
   if (!admin) {
     throw new Error("No autenticado");

@@ -13,6 +13,11 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
+// Contenido viene de la DB y lo agrega el admin en runtime — force-dynamic
+// para que aparezca sin esperar un rebuild/redeploy (evita además cualquier
+// problema de ISR/incremental cache en Cloudflare Workers, ver arquitectura.md).
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({
   params,
 }: {

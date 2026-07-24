@@ -1,8 +1,10 @@
 import { getAdminSession } from "@/server/auth/session";
 import { getMessages, getAnalyticsSummary, getAllComments } from "@/server/actions/admin";
+import { listProjectsAdmin } from "@/server/actions/projects";
 import { AdminLoginForm } from "@/components/admin/admin-login-form";
 import { LogoutButton } from "@/components/admin/logout-button";
 import { CommentsPanel } from "@/components/admin/comments-panel";
+import { ProjectsPanel } from "@/components/admin/projects-panel";
 
 function formatDate(date: Date) {
   return new Intl.DateTimeFormat("es-AR", { dateStyle: "medium", timeStyle: "short" }).format(date);
@@ -14,10 +16,11 @@ export default async function AdminPage() {
     return <AdminLoginForm />;
   }
 
-  const [messages, analytics, comments] = await Promise.all([
+  const [messages, analytics, comments, projects] = await Promise.all([
     getMessages(),
     getAnalyticsSummary(),
     getAllComments(),
+    listProjectsAdmin(),
   ]);
 
   return (
@@ -74,6 +77,10 @@ export default async function AdminPage() {
               ))}
             </div>
           )}
+        </section>
+
+        <section className="mb-10">
+          <ProjectsPanel initialProjects={projects} />
         </section>
 
         <CommentsPanel initialComments={comments} />
