@@ -1,6 +1,6 @@
 {
   "Metadata": {
-    "siteTitle": "YHOSINC — Frontend architect & creative director",
+    "siteTitle": "YHOSINC — Design & code",
     "siteDescription": "Yhoset Gonzalez's (YHOSINC) portfolio: interfaces built with ink & code. Projects, skills, a learning roadmap, and mini-tools for devs and designers.",
     "projects": {
       "title": "Projects",
@@ -20,11 +20,11 @@
     },
     "about": {
       "title": "About",
-      "description": "Who Yhoset Gonzalez (YHOSINC) is: history, philosophy, and how he works as a frontend architect and creative director."
+      "description": "Who Yhoset Gonzalez (YHOSINC) is: his path blending graphic design and programming, learning fast and wanting to do things right."
     },
     "contact": {
       "title": "Contact",
-      "description": "Write to YHOSINC — frontend architect and creative director. A direct contact form, no middlemen."
+      "description": "Write to YHOSINC — design and code. A direct contact form, no middlemen."
     },
     "account": {
       "title": "Account",
@@ -59,16 +59,16 @@
   },
   "HomePage": {
     "badge": "CH. 01 — PORTFOLIO ONLINE",
-    "subtitlePrefix": "Frontend architect & creative director. ",
-    "subtitleShipping": "Shipping",
+    "subtitlePrefix": "Design and code, mixed together. ",
+    "subtitleShipping": "Learning",
     "subtitleMid": " interfaces with ",
     "subtitleInk": "ink & code",
     "subtitleEnd": ".",
-    "body": "I design systems that feel like the splash page of a manga — loud where it matters, precise where it counts. Six years turning product chaos into shipping velocity.",
+    "body": "I design systems that feel like the splash page of a manga — loud where it matters, precise where it counts. Learning fast, and wanting to leave everything properly done.",
     "seeWork": "SEE THE WORK",
     "getInTouch": "GET IN TOUCH",
-    "statProjects": "SHIPPED PROJECTS",
-    "statYears": "IN THE FIELD",
+    "statProjects": "TOOLS SHIPPED",
+    "statYears": "FAST LEARNER",
     "statCoffee": "COFFEE LEVEL",
     "codeInk": "CODE + INK"
   },
@@ -107,11 +107,12 @@
     "emptyBody": "The learning path (junior → mid → senior, across programming, design, and AI) is coming soon.",
     "unlocked": "Unlocked"
   },
-  "ComingSoon": {
-    "about": {
-      "title": "About",
-      "body": "Page under construction."
-    }
+  "About": {
+    "eyebrow": "DESIGN + CODE",
+    "title": "About",
+    "paragraph1": "I got into programming almost by accident: friends kept telling me \"this might interest you,\" and they were right. That's where I really discovered what programming is, and I got hooked — it's a field I love, especially because I can mix it with something I already loved: graphic design. I can design pretty much anything, and code lets me carry those ideas past the page.",
+    "paragraph2": "I'm a versatile person — I like getting my hands into all kinds of tasks, and above all, leaving things properly done, not half-finished.",
+    "paragraph3": "I'm still building up real experience, but I'm learning fast — every new project is an excuse to go deeper."
   },
   "Tools": {
     "eyebrow": "MINI-TOOLS",

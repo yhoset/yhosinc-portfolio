@@ -79,8 +79,8 @@ function Home() {
           </div>
 
           <div className="mt-10 flex flex-wrap gap-8">
-            <Stat value="47+" colorClass="text-cyan" label={t("statProjects")} />
-            <Stat value="6YR" colorClass="text-yellow" label={t("statYears")} />
+            <Stat value="6" colorClass="text-cyan" label={t("statProjects")} />
+            <Stat value="⚡" colorClass="text-yellow" label={t("statYears")} />
             <Stat value="∞" colorClass="text-red" label={t("statCoffee")} />
           </div>
         </div>

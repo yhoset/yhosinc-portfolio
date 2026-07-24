@@ -1,6 +1,6 @@
 {
   "Metadata": {
-    "siteTitle": "YHOSINC — Arquitecto frontend & director creativo",
+    "siteTitle": "YHOSINC — Diseño y código",
     "siteDescription": "Portfolio de Yhoset Gonzalez (YHOSINC): interfaces con tinta y código. Proyectos, skills, roadmap de aprendizaje y mini-herramientas para devs y diseñadores.",
     "projects": {
       "title": "Proyectos",
@@ -20,11 +20,11 @@
     },
     "about": {
       "title": "Sobre mí",
-      "description": "Quién es Yhoset Gonzalez (YHOSINC): historia, filosofía y forma de trabajar como arquitecto frontend y director creativo."
+      "description": "Quién es Yhoset Gonzalez (YHOSINC): su camino mezclando diseño gráfico y programación, aprendiendo rápido y con ganas de hacer las cosas bien."
     },
     "contact": {
       "title": "Contacto",
-      "description": "Escribile a YHOSINC — arquitecto frontend y director creativo. Formulario de contacto directo, sin intermediarios."
+      "description": "Escribile a YHOSINC — diseño y código. Formulario de contacto directo, sin intermediarios."
     },
     "account": {
       "title": "Cuenta",
@@ -59,16 +59,16 @@
   },
   "HomePage": {
     "badge": "CAP. 01 — PORTFOLIO EN LÍNEA",
-    "subtitlePrefix": "Arquitecto frontend y director creativo. ",
-    "subtitleShipping": "Entregando",
+    "subtitlePrefix": "Diseño y código, mezclados. ",
+    "subtitleShipping": "Aprendiendo",
     "subtitleMid": " interfaces con ",
     "subtitleInk": "tinta y código",
     "subtitleEnd": ".",
-    "body": "Diseño sistemas que se sienten como la portada de un manga: fuertes donde importa, precisos donde cuenta. Seis años convirtiendo el caos de producto en velocidad de entrega.",
+    "body": "Diseño sistemas que se sienten como la portada de un manga: fuertes donde importa, precisos donde cuenta. Aprendiendo rápido, con ganas de dejar todo bien hecho.",
     "seeWork": "VER EL TRABAJO",
     "getInTouch": "ESCRIBIME",
-    "statProjects": "PROYECTOS ENTREGADOS",
-    "statYears": "AÑOS EN EL RUBRO",
+    "statProjects": "HERRAMIENTAS SHIPPEADAS",
+    "statYears": "APRENDIZAJE RÁPIDO",
     "statCoffee": "NIVEL DE CAFÉ",
     "codeInk": "TINTA + CÓDIGO"
   },
@@ -107,11 +107,12 @@
     "emptyBody": "El camino de aprendizaje (junior → mid → senior, en programación, diseño e IA) llega pronto.",
     "unlocked": "Desbloqueado"
   },
-  "ComingSoon": {
-    "about": {
-      "title": "Sobre mí",
-      "body": "Página en construcción."
-    }
+  "About": {
+    "eyebrow": "DISEÑO + CÓDIGO",
+    "title": "Sobre mí",
+    "paragraph1": "Llegué a la programación medio de casualidad: amigos que me decían \"esto te puede interesar\", y tenían razón. Ahí conocí de verdad lo que es programar, y me enganchó — es un área que me encanta, sobre todo porque la puedo mezclar con algo que ya me gustaba: el diseño gráfico. Puedo diseñar de todo un poco, y el código me deja llevar esas ideas más allá del papel.",
+    "paragraph2": "Soy una persona polivalente — me gusta meterle mano a todo tipo de tareas, y sobre todo dejar las cosas bien hechas, no a medias.",
+    "paragraph3": "Todavía estoy construyendo mi experiencia real, pero voy aprendiendo a pasos agigantados — cada proyecto nuevo es una excusa para meterle más profundidad."
   },
   "Tools": {
     "eyebrow": "MINI-HERRAMIENTAS",
